@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6903F2892CE3FED60058630B /* GoogleSignIn */; };
+		6903F28C2CE3FED60058630B /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6903F28B2CE3FED60058630B /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		6903F2542CE2A27B0058630B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +34,22 @@
 		6903F25D2CE2A27B0058630B /* dewyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dewyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6903F2A02CE444530058630B /* Exceptions for "dewy" folder in "dewy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6903F23D2CE2A2790058630B /* dewy */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6903F2402CE2A2790058630B /* dewy */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6903F2A02CE444530058630B /* Exceptions for "dewy" folder in "dewy" target */,
+			);
 			path = dewy;
 			sourceTree = "<group>";
 		};
@@ -52,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */,
+				6903F28C2CE3FED60058630B /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +132,8 @@
 			);
 			name = dewy;
 			packageProductDependencies = (
+				6903F2892CE3FED60058630B /* GoogleSignIn */,
+				6903F28B2CE3FED60058630B /* GoogleSignInSwift */,
 			);
 			productName = dewy;
 			productReference = 6903F23E2CE2A2790058630B /* dewy.app */;
@@ -195,6 +217,9 @@
 			);
 			mainGroup = 6903F2352CE2A2790058630B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6903F23F2CE2A2790058630B /* Products */;
 			projectDirPath = "";
@@ -398,6 +423,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"dewy/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dewy/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -426,6 +452,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"dewy/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dewy/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -552,6 +579,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6903F2892CE3FED60058630B /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		6903F28B2CE3FED60058630B /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6903F2362CE2A2790058630B /* Project object */;
 }

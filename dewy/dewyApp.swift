@@ -1,20 +1,35 @@
-//
-//  dewyApp.swift
-//  dewy
-//
-//  Created by Chad Montoya on 11/11/24.
-//
-
 import SwiftUI
+import GoogleSignIn
 
 @main
 struct dewyApp: App {
-    let persistenceController = PersistenceController.shared
-
+    @StateObject private var authViewModel = AuthenticationViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(authViewModel)
+                .onAppear(perform: restorePreviousSignIn)
+                .onOpenURL(perform: handleURL)
+        }
+    }
+        
+    private func handleURL(_ url: URL) {
+        GIDSignIn.sharedInstance.handle(url)
+    }
+
+    private func restorePreviousSignIn() {
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            if let user = user {
+                self.authViewModel.state = .signedIn(user)
+            }
+            else if let error = error {
+                self.authViewModel.state = .signedOut
+                print("there was an error restoring the previous sign in: \(error)")
+            }
+            else {
+                self.authViewModel.state = .signedOut
+            }
         }
     }
 }

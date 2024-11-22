@@ -11,7 +11,7 @@ struct ContentView: View {
                 case .signedIn:
                     UserProfileView()
                 case .signedOut:
-                    SignInView()
+                    AuthenticationView()
                 }
             }
         }

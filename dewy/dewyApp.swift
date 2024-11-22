@@ -7,7 +7,7 @@ struct dewyApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
                 .environmentObject(authViewModel)
                 .onAppear(perform: restorePreviousSignIn)
                 .onOpenURL(perform: handleURL)

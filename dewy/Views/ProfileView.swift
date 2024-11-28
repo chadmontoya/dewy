@@ -70,7 +70,6 @@ struct ProfileView: View {
                 }
             }
         }
-        .navigationTitle("Profile")
         .sheet(isPresented: $showingEditProfile) {
             EditProfileView()
         }

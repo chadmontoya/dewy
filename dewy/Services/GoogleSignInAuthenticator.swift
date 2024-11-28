@@ -14,13 +14,15 @@ final class GoogleSignInAuthenticator: ObservableObject {
             return
         }
         
-        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
-            guard let signInResult = signInResult else {
+        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { result, error in
+            guard let result = result else {
                 print("error \(String(describing: error))")
                 return
             }
             
-            self.authViewModel.state = .signedIn(signInResult.user)
+            // make call to backend server to retrieve jwt. user will be created if does not exist already
+            
+            self.authViewModel.state = .signedIn(result.user)
             print(self.authViewModel.state)
         }
     }

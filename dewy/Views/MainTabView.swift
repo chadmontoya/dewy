@@ -13,16 +13,16 @@ struct MainTabView: View {
             .tabItem {
                 Label("Swipe", systemImage: "flame.fill")
             }
-            
             NavigationStack {
-                SwipeView(user: user)
+                LocationSelectView()
             }
             .tabItem {
-                Label("Swipe 2", systemImage: "message.fill")
+                Label("Location", systemImage: "message.fill")
             }
             
             NavigationStack {
                 ProfileView(user: user)
+//                ProfileViewWIP()
             }
             .tabItem {
                 Label("Profile", systemImage: "person.fill")

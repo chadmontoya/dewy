@@ -3,6 +3,8 @@ import GoogleSignIn
 
 final class AuthenticationViewModel: ObservableObject {
     
+    let googleAuth = GoogleAuth()
+    
     @Published var state: State
     private var authenticator: GoogleSignInAuthenticator {
         return GoogleSignInAuthenticator(authViewModel: self)

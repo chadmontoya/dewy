@@ -21,12 +21,6 @@ struct AuthenticationView: View {
                         .accessibility(hint: Text("Sign in with Google Button."))
                         .padding()
                         .frame(maxWidth: 280)
-                    
-                    VStack {
-                        HStack {
-                            
-                        }
-                    }
                 }
             }
             

@@ -2,23 +2,26 @@ import SwiftUI
 import GoogleSignIn
 
 struct UserProfileView: View {
-    @EnvironmentObject var authViewModel: AuthenticationViewModel
-    
-    private var user: GIDGoogleUser? {
-        return GIDSignIn.sharedInstance.currentUser
-    }
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
         return Group {
-            if let userProfile = user?.profile {
+            if let appUser = authViewModel.user {
                 VStack() {
-                    Text("Hello, \(userProfile.name)").font(.title)
+                    Text("hello, \(appUser.email!)").font(.title)
                     
                     Spacer()
                     
-                    Button(action: {
-                        authViewModel.signOut()
-                    }) {
+                    Button {
+                        Task {
+                            do {
+                                try await authViewModel.signOut()
+                            }
+                            catch {
+                                print("sign out error")
+                            }
+                        }
+                    } label: {
                         Text("Sign Out")
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -32,5 +35,10 @@ struct UserProfileView: View {
                 }
             }
         }
+        .onAppear(perform: {
+            Task {
+                try await AuthManager.shared.getSession()
+            }
+        })
     }
 }

@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
         return Group {
@@ -11,7 +11,7 @@ struct ContentView: View {
                 case .signedIn:
                     UserProfileView()
                 case .signedOut:
-                    AuthenticationView()
+                    AuthView()
                 }
             }
         }

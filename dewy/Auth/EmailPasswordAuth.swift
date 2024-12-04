@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AuthWithEmailAndPassword: View {
+struct EmailPasswordAuth: View {
     enum Mode {
         case signIn, signUp
     }
@@ -9,10 +9,10 @@ struct AuthWithEmailAndPassword: View {
         case needsEmailConfirmation
     }
     
+    @Binding var authState: ActionState<Void, Error>
     @State private var email = ""
     @State private var password = ""
     @State private var mode: Mode = .signUp
-    @State private var actionState = ActionState<Result, Error>.idle
     @State private var isPresentingResetPassword = false
     @State private var isPasswordVisible = false
     
@@ -115,7 +115,7 @@ struct AuthWithEmailAndPassword: View {
     
     private var errorMessageView: some View {
         Group {
-            switch actionState {
+            switch authState {
             case .result(.failure(let error)):
                 Text(error.localizedDescription)
                     .foregroundColor(.red)
@@ -151,7 +151,7 @@ struct AuthWithEmailAndPassword: View {
     @MainActor
     private func primaryActionButtonTapped() async {
         do {
-            actionState = .inFlight
+            authState = .inFlight
             
             switch mode {
             case .signIn:
@@ -161,7 +161,7 @@ struct AuthWithEmailAndPassword: View {
             }
         } catch {
             withAnimation {
-                actionState = .result(.failure(error))
+                authState = .result(.failure(error))
             }
         }
     }
@@ -173,16 +173,11 @@ struct AuthWithEmailAndPassword: View {
     
     @MainActor
     private func signUp() async throws {
-        let response = try await supabase.auth.signUp(email: email, password: password)
-        
-        if case .user = response {
-            actionState = .result(.success(.needsEmailConfirmation))
-        }
+       try await supabase.auth.signUp(email: email, password: password)
     }
     
     private func toggleMode() {
         mode = mode == .signIn ? .signUp : .signIn
-        actionState = .idle
         
         email = ""
         password = ""

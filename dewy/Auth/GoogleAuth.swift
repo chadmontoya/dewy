@@ -1,23 +1,28 @@
-@preconcurrency import GoogleSignIn
+import GoogleSignIn
 import GoogleSignInSwift
 import Supabase
 import SwiftUI
 
 @MainActor
-struct GoogleSignIn: View {
-    var body: some View {
-        GoogleSignInButton(action: handleSignIn)
-            .accessibilityIdentifier("GoogleSignInButton")
-            .accessibility(hint: Text("Sign in with Google Button."))
-            .padding()
-            .frame(maxWidth: 280)
+struct GoogleAuth: View {
+    @ObservedObject var vm = GoogleSignInButtonViewModel()
+    
+    init() {
+        vm.style = .wide
+        vm.scheme = .dark
     }
     
-    func handleSignIn() {
+    var body: some View {
+        GoogleSignInButton(viewModel: vm, action: handleSignIn)
+            .frame(width: 250, height: 45)
+            .padding(.vertical, 5)
+    }
+    
+    private func handleSignIn() {
         Task {
             do {
                 guard let rootViewController = getRootViewController() else {
-                    print("cant get root view controller")
+                    print("unable to get root view controller")
                     return
                 }
                 
@@ -28,10 +33,13 @@ struct GoogleSignIn: View {
                     return
                 }
                 
+                let accessToken = result.user.accessToken.tokenString
+                
                 try await supabase.auth.signInWithIdToken(
                     credentials: OpenIDConnectCredentials(
                         provider: .google,
-                        idToken: idToken
+                        idToken: idToken,
+                        accessToken: accessToken
                     )
                 )
             }
@@ -65,5 +73,4 @@ struct GoogleSignIn: View {
         
         return vc
     }
-    
 }

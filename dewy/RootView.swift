@@ -9,7 +9,7 @@ struct RootView: View {
             AuthView()
         }
         else {
-            HomeView()
+            OnboardingView(birthday: Date())
         }
     }
 }
@@ -29,3 +29,4 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+

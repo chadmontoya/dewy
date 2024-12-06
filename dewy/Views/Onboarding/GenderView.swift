@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct BirthdayView: View {
+struct GenderView: View {
     @EnvironmentObject var onboardingData: OnboardingData
     
     var body: some View {
         VStack {
-            Text("enter your birthday")
+            Text("select your gender")
                 .padding()
                 .font(.title)
                 .bold()
@@ -14,7 +14,7 @@ struct BirthdayView: View {
             
             Spacer()
             
-            Text("Date of Birth")
+            Text("Gender")
                 .font(.footnote)
                 .textCase(.uppercase)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -23,7 +23,7 @@ struct BirthdayView: View {
             Button {
                 
             } label: {
-                Text(onboardingData.birthday.formatted(date: .numeric, time: .omitted))
+                Text(onboardingData.gender.type.rawValue)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.gray)
@@ -32,9 +32,8 @@ struct BirthdayView: View {
             .cornerRadius(10)
             .padding(.bottom)
             
-            
             NavigationLink {
-                LocationView()
+                GetStartedView()
                     .environmentObject(onboardingData)
                     .toolbarRole(.editor)
             } label: {
@@ -48,11 +47,13 @@ struct BirthdayView: View {
             
             Spacer()
             
-            DatePicker("", selection: $onboardingData.birthday, displayedComponents: .date)
-                .labelsHidden()
-                .datePickerStyle(.wheel)
-                .colorScheme(.light)
-                .padding()
+            Picker("Gender", selection: $onboardingData.gender.type) {
+                ForEach(Gender.GenderType.allCases, id: \.self) { genderType in
+                    Text(genderType.rawValue).tag(genderType)
+                }
+            }
+            .pickerStyle(.wheel)
+            .colorScheme(.light)
             
             Spacer()
         }

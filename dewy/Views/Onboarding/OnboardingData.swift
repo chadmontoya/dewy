@@ -5,7 +5,7 @@ class OnboardingData: ObservableObject {
     @Published var location: Location = Location(latitude: 0, longitude: 0)
     @Published var gender: Gender
     
-    init(birthday: Date = Date(), gender: Gender = Gender(type: .nonBinary), location: Location = Location(latitude: 0, longitude: 0)) {
+    init(birthday: Date = Date(), gender: Gender = Gender(type: .male), location: Location = Location(latitude: 0, longitude: 0)) {
         self.birthday = birthday
         self.gender = gender
         self.location = location

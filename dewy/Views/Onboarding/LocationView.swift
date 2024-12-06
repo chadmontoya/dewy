@@ -6,43 +6,59 @@ struct LocationView: View {
     @State private var visibleRegion: MKCoordinateRegion?
     @State private var currentCity: String = ""
     @State private var searchCity: String = ""
+    @State private var isUserInteracting = false
+    
     @FocusState private var isSearchFocused: Bool
     
     @State var vm = LocationSearchViewModel()
     
     @EnvironmentObject var onboardingData: OnboardingData
-
+    
     var body: some View {
-        NavigationStack {
+        VStack {
+            Text("choose your location")
+                .padding()
+                .font(.title)
+                .bold()
+                .foregroundStyle(Color.coffee)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            mapDisplay
+            
             VStack {
-                Text("Where are you located?")
-                    .padding()
-                    .font(.title)
-                    .bold()
-                    .foregroundStyle(Color.coffee)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                locationSearchBar
+                    .padding(.bottom)
                 
-                mapDisplay
-                
-                VStack {
-                    locationSearchBar
-                    
-                    if !vm.results.isEmpty && isSearchFocused {
-                        locationResults
+                if !isSearchFocused {
+                    NavigationLink {
+                        GenderView()
+                            .environmentObject(onboardingData)
+                            .toolbarRole(.editor)
+                    } label: {
+                        Text("Next")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(.white)
+                            .background(Color.coffee)
                     }
+                    .cornerRadius(10)
                 }
                 
-                Spacer()
-            }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color.cream)
-            .onTapGesture {
-                withAnimation {
-                    isSearchFocused = false
+                if !vm.results.isEmpty && isSearchFocused {
+                    locationResults
                 }
-                hideKeyboard()
             }
+            
+            Spacer()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(Color.cream)
+        .onTapGesture {
+            withAnimation {
+                isSearchFocused = false
+            }
+            hideKeyboard()
         }
     }
     
@@ -60,11 +76,16 @@ struct LocationView: View {
                     visibleRegion = context.region
                     getCityName(from: context.region.center)
                     
+                    if isUserInteracting {
+                        vm.query = ""
+                    }
+                    
                     onboardingData.location.latitude = context.region.center.latitude
                     onboardingData.location.longitude = context.region.center.longitude
                 }
                 .toolbarBackgroundVisibility(.hidden)
                 .colorScheme(.light)
+            
             
             Text(currentCity)
                 .padding(8)
@@ -77,7 +98,7 @@ struct LocationView: View {
     }
     
     private var locationSearchBar: some View {
-        TextField("", text: $vm.query, prompt: Text("Search for a location").foregroundStyle(.gray))
+        TextField("", text: $vm.query, prompt: Text("Search...").foregroundStyle(.gray))
             .focused($isSearchFocused)
             .foregroundStyle(.black)
             .autocorrectionDisabled()

@@ -42,7 +42,12 @@ class LocationViewModel: NSObject {
 extension LocationViewModel: MKLocalSearchCompleterDelegate {
     
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        self.results = completer.results.map({ result in
+        self.results = completer.results.filter { result in
+            guard result.title.contains(",") || !result.subtitle.isEmpty else { return false }
+            guard !result.subtitle.contains("Nearby") else { return false }
+            return true
+        }
+        .map({ result in
             LocationResult(title: result.title, subtitle: result.subtitle)
         })
         self.status = .result

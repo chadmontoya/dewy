@@ -13,41 +13,38 @@ struct LocationView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if !isSearchFocused {
-                    Text("Where are you located?")
-                        .padding()
-                        .font(.title)
-                        .bold()
-                        .foregroundStyle(Color.coffee)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    VStack {
-                        ZStack {
-                            Map(position: $cameraPosition)
-                                .onAppear {
-                                    let myLocation = CLLocationCoordinate2D(latitude: 33.975575, longitude: -117.849784)
-                                    let myLocationSpan = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                                    let myLocationRegion = MKCoordinateRegion(center: myLocation, span: myLocationSpan)
-                                    cameraPosition = .region(myLocationRegion)
-                                    getCityName(from: myLocation)
-                                }
-                                .onMapCameraChange(frequency: .onEnd) { context in
-                                    visibleRegion = context.region
-                                    getCityName(from: context.region.center)
-                                }
-                                .toolbarBackgroundVisibility(.hidden)
-                                .colorScheme(.light)
-                            
-                            Text(currentCity)
-                                .padding(8)
-                                .background(Color.white.opacity(0.8))
-                                .cornerRadius(8)
-                                .shadow(radius: 2)
-                                .colorScheme(.light)
-                        }
-                        .frame(height: 400)
+                Text("Where are you located?")
+                    .padding()
+                    .font(.title)
+                    .bold()
+                    .foregroundStyle(Color.coffee)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                VStack {
+                    ZStack {
+                        Map(position: $cameraPosition)
+                            .onAppear {
+                                let myLocation = CLLocationCoordinate2D(latitude: 33.975575, longitude: -117.849784)
+                                let myLocationSpan = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                                let myLocationRegion = MKCoordinateRegion(center: myLocation, span: myLocationSpan)
+                                cameraPosition = .region(myLocationRegion)
+                                getCityName(from: myLocation)
+                            }
+                            .onMapCameraChange(frequency: .onEnd) { context in
+                                visibleRegion = context.region
+                                getCityName(from: context.region.center)
+                            }
+                            .toolbarBackgroundVisibility(.hidden)
+                            .colorScheme(.light)
+                        
+                        Text(currentCity)
+                            .padding(8)
+                            .background(Color.white.opacity(0.8))
+                            .cornerRadius(8)
+                            .shadow(radius: 2)
+                            .colorScheme(.light)
                     }
-                    .transition(.move(edge: .top))
+                    .frame(height: 400)
                 }
                 
                 VStack {
@@ -61,6 +58,22 @@ struct LocationView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
                         )
+                        .overlay(
+                            HStack {
+                                Spacer()
+                                if !vm.query.isEmpty {
+                                    Button(action: {
+                                        vm.query = ""
+                                        isSearchFocused = false
+                                        hideKeyboard()
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(.gray)
+                                    }
+                                    .padding(.trailing, 8)
+                                }
+                            }
+                        )
                     
                     if !vm.results.isEmpty && isSearchFocused {
                         ScrollView {
@@ -69,7 +82,24 @@ struct LocationView: View {
                                     Button(action: {
                                         vm.query = result.title
                                         isSearchFocused = false
-                                        print(result)
+                                        
+                                        let geocoder = CLGeocoder()
+                                        geocoder.geocodeAddressString(result.title) { placemarks, error in
+                                            if let error = error {
+                                                print("geocoding error: \(error)")
+                                                return
+                                            }
+                                            
+                                            if let location = placemarks?.first?.location {
+                                                let newCoordinate = location.coordinate
+                                                let newRegion = MKCoordinateRegion(
+                                                    center: newCoordinate,
+                                                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                                                )
+                                                cameraPosition = .region(newRegion)
+                                                getCityName(from: newCoordinate)
+                                            }
+                                        }
                                     }) {
                                         HStack {
                                             VStack(alignment: .leading, spacing: 4) {

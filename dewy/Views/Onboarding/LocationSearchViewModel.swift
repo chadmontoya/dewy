@@ -2,7 +2,7 @@ import SwiftUI
 import MapKit
 
 @Observable
-class LocationViewModel: NSObject {
+class LocationSearchViewModel: NSObject {
     
     var query: String = "" {
         didSet {
@@ -39,7 +39,7 @@ class LocationViewModel: NSObject {
     }
 }
 
-extension LocationViewModel: MKLocalSearchCompleterDelegate {
+extension LocationSearchViewModel: MKLocalSearchCompleterDelegate {
     
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         self.results = completer.results.filter { result in
@@ -69,11 +69,4 @@ enum SearchStatus: Equatable {
     case searching
     case error(String)
     case result
-}
-
-struct CityResult: Hashable {
-    var city: String
-    var country: String
-    var latitude: Double
-    var longitude: Double
 }

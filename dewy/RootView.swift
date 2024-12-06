@@ -9,7 +9,7 @@ struct RootView: View {
             AuthView()
         }
         else {
-            OnboardingView(birthday: Date())
+            OnboardingView()
         }
     }
 }

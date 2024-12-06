@@ -6,11 +6,11 @@ struct OnboardingView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("How old are you?")
+                Text("What is your age?")
+                    .padding()
                     .font(.title)
                     .bold()
                     .foregroundStyle(Color.coffee)
-                    .padding(.vertical, 24)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Spacer()

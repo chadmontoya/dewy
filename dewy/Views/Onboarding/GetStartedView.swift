@@ -1,14 +1,24 @@
 import SwiftUI
 
 struct GetStartedView: View {
-    @EnvironmentObject var onboardingData: OnboardingData
-    
+    @EnvironmentObject var vm: OnboardingViewModel
+    @Environment(AuthController.self) var auth
+
     var body: some View {
         VStack {
+            Text("thank you")
+                .padding()
+                .font(.title)
+                .bold()
+                .foregroundStyle(Color.coffee)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
             Spacer()
             
-            NavigationLink {
-                HomeView()
+            Button {
+                Task {
+                    print("hello world")
+                }
             } label: {
                 Text("Get Started")
                     .padding()
@@ -23,10 +33,5 @@ struct GetStartedView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.cream)
-        .onAppear {
-            print(onboardingData.birthday.formatted())
-            print(onboardingData.gender.type.rawValue)
-            print(onboardingData.location)
-        }
     }
 }

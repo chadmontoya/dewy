@@ -10,21 +10,22 @@ struct LocationView: View {
     
     @FocusState private var isSearchFocused: Bool
     
-    @State var vm = LocationSearchViewModel()
+    @State var locationSearchVM = LocationSearchViewModel()
     
-    @EnvironmentObject var onboardingData: OnboardingData
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
         VStack {
-            Text("choose your location")
-                .padding()
-                .font(.title)
-                .bold()
-                .foregroundStyle(Color.coffee)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
-            mapDisplay
-            
+            if !isSearchFocused {
+                Text("choose your location")
+                    .padding()
+                    .font(.title)
+                    .bold()
+                    .foregroundStyle(Color.coffee)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                mapDisplay
+            }
             VStack {
                 locationSearchBar
                     .padding(.bottom)
@@ -32,7 +33,7 @@ struct LocationView: View {
                 if !isSearchFocused {
                     NavigationLink {
                         GenderView()
-                            .environmentObject(onboardingData)
+                            .environmentObject(onboardingVM)
                             .toolbarRole(.editor)
                     } label: {
                         Text("Next")
@@ -44,7 +45,7 @@ struct LocationView: View {
                     .cornerRadius(10)
                 }
                 
-                if !vm.results.isEmpty && isSearchFocused {
+                if !locationSearchVM.results.isEmpty && isSearchFocused {
                     locationResults
                 }
             }
@@ -77,11 +78,10 @@ struct LocationView: View {
                     getCityName(from: context.region.center)
                     
                     if isUserInteracting {
-                        vm.query = ""
+                        locationSearchVM.query = ""
                     }
                     
-                    onboardingData.location.latitude = context.region.center.latitude
-                    onboardingData.location.longitude = context.region.center.longitude
+                    onboardingVM.location = context.region.center
                 }
                 .toolbarBackgroundVisibility(.hidden)
                 .colorScheme(.light)
@@ -98,7 +98,7 @@ struct LocationView: View {
     }
     
     private var locationSearchBar: some View {
-        TextField("", text: $vm.query, prompt: Text("Search...").foregroundStyle(.gray))
+        TextField("", text: $locationSearchVM.query, prompt: Text("Search...").foregroundStyle(.gray))
             .focused($isSearchFocused)
             .foregroundStyle(.black)
             .autocorrectionDisabled()
@@ -111,9 +111,9 @@ struct LocationView: View {
             .overlay(
                 HStack {
                     Spacer()
-                    if !vm.query.isEmpty {
+                    if !locationSearchVM.query.isEmpty {
                         Button(action: {
-                            vm.query = ""
+                            locationSearchVM.query = ""
                             isSearchFocused = false
                             hideKeyboard()
                         }) {
@@ -129,9 +129,9 @@ struct LocationView: View {
     private var locationResults: some View {
         ScrollView {
             VStack {
-                ForEach(vm.results) { result in
+                ForEach(locationSearchVM.results) { result in
                     Button(action: {
-                        vm.query = result.title
+                        locationSearchVM.query = result.title
                         isSearchFocused = false
                         
                         let geocoder = CLGeocoder()

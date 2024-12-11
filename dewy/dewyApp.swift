@@ -5,11 +5,14 @@ import GoogleSignIn
 struct dewyApp: App {
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(AuthController())
-                .onOpenURL {
-                    supabase.handle($0)
-                }
+            NavigationStack {
+                RootView()
+                    .environment(AuthController())
+                    .onOpenURL {
+                        supabase.handle($0)
+                    }
+            }
+            .tint(Color.coffee)
         }
     }
 }

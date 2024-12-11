@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct BirthdayView: View {
-    @EnvironmentObject var onboardingData: OnboardingData
+    @StateObject private var vm = OnboardingViewModel()
+    @Environment(AuthController.self) var auth
     
     var body: some View {
         VStack {
@@ -23,7 +24,7 @@ struct BirthdayView: View {
             Button {
                 
             } label: {
-                Text(onboardingData.birthday.formatted(date: .numeric, time: .omitted))
+                Text(vm.birthday.formatted(date: .numeric, time: .omitted))
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.gray)
@@ -35,7 +36,7 @@ struct BirthdayView: View {
             
             NavigationLink {
                 LocationView()
-                    .environmentObject(onboardingData)
+                    .environmentObject(vm)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")
@@ -48,7 +49,7 @@ struct BirthdayView: View {
             
             Spacer()
             
-            DatePicker("", selection: $onboardingData.birthday, displayedComponents: .date)
+            DatePicker("", selection: $vm.birthday, displayedComponents: .date)
                 .labelsHidden()
                 .datePickerStyle(.wheel)
                 .colorScheme(.light)
@@ -59,5 +60,8 @@ struct BirthdayView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.cream)
+        .onAppear {
+            print(auth.currentUserId)
+        }
     }
 }

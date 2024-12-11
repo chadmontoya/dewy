@@ -2,7 +2,7 @@ import SwiftUI
 import MapKit
 
 @Observable
-class LocationSearchViewModel: NSObject {
+class LocationSearchViewModel: NSObject, MKLocalSearchCompleterDelegate {
     
     var query: String = "" {
         didSet {
@@ -26,21 +26,6 @@ class LocationSearchViewModel: NSObject {
         completer.resultTypes = types
     }
     
-    private func handleSearchFragment(_ fragment: String) {
-        self.status = .searching
-        
-        if !fragment.isEmpty {
-            self.completer.queryFragment = fragment
-        }
-        else {
-            self.status = .idle
-            self.results = []
-        }
-    }
-}
-
-extension LocationSearchViewModel: MKLocalSearchCompleterDelegate {
-    
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         self.results = completer.results.filter { result in
             guard result.title.contains(",") || !result.subtitle.isEmpty else { return false }
@@ -55,6 +40,18 @@ extension LocationSearchViewModel: MKLocalSearchCompleterDelegate {
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         self.status = .error(error.localizedDescription)
+    }
+    
+    private func handleSearchFragment(_ fragment: String) {
+        self.status = .searching
+        
+        if !fragment.isEmpty {
+            self.completer.queryFragment = fragment
+        }
+        else {
+            self.status = .idle
+            self.results = []
+        }
     }
 }
 

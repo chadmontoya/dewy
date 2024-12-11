@@ -5,11 +5,14 @@ struct RootView: View {
     @Environment(AuthController.self) var auth
     
     var body: some View {
-        if auth.session == nil {
+        if auth.isLoading {
+            LoadingView()
+        }
+        else if auth.session == nil {
             AuthView()
         }
         else {
-            OnboardingView()
+            HomeView()
         }
     }
 }

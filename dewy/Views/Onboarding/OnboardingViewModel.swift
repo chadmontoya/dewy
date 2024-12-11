@@ -10,6 +10,8 @@ class OnboardingData: ObservableObject {
         self.gender = gender
         self.location = location
     }
+    
+    
 }
 
 struct Location: Codable {

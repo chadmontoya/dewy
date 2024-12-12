@@ -10,6 +10,8 @@ struct Line: View {
 }
 
 struct AuthView: View {
+    @State private var authState: ActionState<Void, Error> = .idle
+    
     var body: some View {
         ZStack {
             Color.cream
@@ -21,7 +23,7 @@ struct AuthView: View {
             VStack {
                 Spacer()
                 
-                AuthWithEmailAndPassword()
+                EmailPasswordAuth(authState: $authState)
                 
                 HStack {
                     Line()
@@ -33,7 +35,7 @@ struct AuthView: View {
                 .padding(.horizontal)
                 
                 VStack {
-                    GoogleAuth()
+                    GoogleAuth(authState: $authState)
                     
                     AppleAuth()
                 }
@@ -41,6 +43,15 @@ struct AuthView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            if case .inFlight = authState {
+                LoadingView()
+                    .onAppear {
+                        hideKeyboard()
+                    }
+            }
+            
         }
+        .ignoresSafeArea(.keyboard)
     }
 }

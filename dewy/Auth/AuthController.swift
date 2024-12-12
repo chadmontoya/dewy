@@ -1,17 +1,15 @@
 import Auth
 import SwiftUI
 
-@Observable
 @MainActor
-final class AuthController {
-    var session: Session?
+class AuthController: ObservableObject {
+    @Published var session: Session?
+    @Published var hasProfile: Bool = false
+    @Published var isLoading: Bool = true
     
     var currentUserId: UUID {
-        guard let id = session?.user.id else {
-            preconditionFailure("no session")
-        }
-        return id
-    }
+        (session?.user.id)!
+   }
     
     @ObservationIgnored
     private var observeAuthStateChangesTask: Task<Void, Never>?
@@ -21,6 +19,13 @@ final class AuthController {
             for await (event, session) in supabase.auth.authStateChanges {
                 if [.initialSession, .signedIn, .signedOut].contains(event) {
                     self.session = session
+                    
+                    if session?.user.id != nil {
+                        await self.checkUserProfile()
+                    }
+                    else {
+                        isLoading = false
+                    }
                 }
             }
         }
@@ -28,5 +33,24 @@ final class AuthController {
     
     deinit {
         observeAuthStateChangesTask?.cancel()
+    }
+    
+    func checkUserProfile() async {
+        isLoading = true
+        do {
+            try await supabase
+                .from("Profiles")
+                .select()
+                .eq("user_id", value: currentUserId)
+                .single()
+                .execute()
+            
+            hasProfile = true
+        }
+        catch {
+            hasProfile = false
+            print("error checking profile: \(error)")
+        }
+        isLoading = false
     }
 }

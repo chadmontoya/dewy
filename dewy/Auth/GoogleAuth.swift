@@ -6,14 +6,16 @@ import SwiftUI
 @MainActor
 struct GoogleAuth: View {
     @ObservedObject var vm = GoogleSignInButtonViewModel()
+    @Binding var authState: ActionState<Void, Error>
     
-    init() {
+    init(authState: Binding<ActionState<Void, Error>>) {
+        self._authState = authState
         vm.style = .wide
         vm.scheme = .dark
     }
     
     var body: some View {
-        GoogleSignInButton(viewModel: vm, action: handleSignIn)
+        GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide), action: handleSignIn)
             .frame(width: 250, height: 45)
             .padding(.vertical, 5)
     }
@@ -21,6 +23,10 @@ struct GoogleAuth: View {
     private func handleSignIn() {
         Task {
             do {
+                withAnimation {
+                    authState = .inFlight
+                }
+                
                 guard let rootViewController = getRootViewController() else {
                     print("unable to get root view controller")
                     return
@@ -42,8 +48,13 @@ struct GoogleAuth: View {
                         accessToken: accessToken
                     )
                 )
+                
+                authState = .result(.success(()))
             }
             catch {
+                withAnimation {
+                    authState = .idle
+                }
                 print("google sign in failed: \(error)")
             }
         }

@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct GenderView: View {
-    @EnvironmentObject var vm: OnboardingViewModel
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    @EnvironmentObject var authController: AuthController
     
     var body: some View {
         VStack {
@@ -23,7 +24,7 @@ struct GenderView: View {
             Button {
                 
             } label: {
-                Text(vm.gender.type.rawValue)
+                Text(onboardingVM.gender.type.rawValue)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.gray)
@@ -34,7 +35,8 @@ struct GenderView: View {
             
             NavigationLink {
                 GetStartedView()
-                    .environmentObject(vm)
+                    .environmentObject(onboardingVM)
+                    .environmentObject(authController)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")
@@ -47,7 +49,7 @@ struct GenderView: View {
             
             Spacer()
             
-            Picker("Gender", selection: $vm.gender.type) {
+            Picker("Gender", selection: $onboardingVM.gender.type) {
                 ForEach(Gender.GenderType.allCases, id: \.self) { genderType in
                     Text(genderType.rawValue).tag(genderType)
                 }

@@ -1,12 +1,11 @@
 import Auth
 import SwiftUI
 
-@Observable
 @MainActor
-final class AuthController: ObservableObject {
-    var session: Session?
-    var hasProfile: Bool = false
-    var isLoading: Bool = true
+class AuthController: ObservableObject {
+    @Published var session: Session?
+    @Published var hasProfile: Bool = false
+    @Published var isLoading: Bool = true
     
     var currentUserId: UUID {
         (session?.user.id)!
@@ -21,12 +20,12 @@ final class AuthController: ObservableObject {
                 if [.initialSession, .signedIn, .signedOut].contains(event) {
                     self.session = session
                     
-                    if event != .signedOut {
-                        if session?.user.id != nil {
-                            await checkUserProfile()
-                        }
+                    if session?.user.id != nil {
+                        await self.checkUserProfile()
                     }
-                    
+                    else {
+                        isLoading = false
+                    }
                 }
             }
         }
@@ -36,7 +35,7 @@ final class AuthController: ObservableObject {
         observeAuthStateChangesTask?.cancel()
     }
     
-    private func checkUserProfile() async {
+    func checkUserProfile() async {
         isLoading = true
         do {
             try await supabase

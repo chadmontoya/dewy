@@ -12,6 +12,7 @@ struct LocationView: View {
     
     @State var locationSearchVM = LocationSearchViewModel()
     
+    @EnvironmentObject var authController: AuthController
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
@@ -34,6 +35,7 @@ struct LocationView: View {
                     NavigationLink {
                         GenderView()
                             .environmentObject(onboardingVM)
+                            .environmentObject(authController)
                             .toolbarRole(.editor)
                     } label: {
                         Text("Next")

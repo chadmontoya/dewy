@@ -13,12 +13,17 @@ class OnboardingViewModel: ObservableObject {
         self.gender = gender
         self.location = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     }
-
+    
     @MainActor
     func saveProfile(userId: UUID) async throws {
         isLoading = true
         
-        let profile: Profile = Profile(userId: userId, birthday: birthday, gender: gender.type.rawValue, location: location)
+        let profile: Profile = Profile(
+            userId: userId,
+            birthday: birthday,
+            gender: gender.type.rawValue,
+            location: location
+        )
         
         try await supabase
             .from("Profiles")
@@ -27,19 +32,5 @@ class OnboardingViewModel: ObservableObject {
         
         isComplete = true
         isLoading = false
-    }
-}
-
-struct Gender: Codable, Equatable {
-    enum GenderType: String, Codable, CaseIterable {
-        case male = "Male"
-        case female = "Female"
-        case nonBinary = "Non-Binary"
-    }
-    
-    var type: GenderType
-    
-    init(type: GenderType) {
-        self.type = type
     }
 }

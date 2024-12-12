@@ -76,7 +76,7 @@ struct Profile: Codable, Identifiable {
         
         // Encode location as geography (latitude, longitude)
         if let location = location {
-            let geoString = "(\(location.latitude),\(location.longitude))"
+            let geoString = "POINT(\(location.latitude) \(location.longitude))"
             try container.encode(geoString, forKey: .location)
         } else {
             try container.encodeNil(forKey: .location)

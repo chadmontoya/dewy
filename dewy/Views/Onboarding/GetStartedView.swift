@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct GetStartedView: View {
-    @EnvironmentObject var vm: OnboardingViewModel
-    @Environment(AuthController.self) var auth
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    @EnvironmentObject var authController: AuthController
+    @State private var onboardingComplete = false
 
     var body: some View {
         VStack {
@@ -17,7 +18,9 @@ struct GetStartedView: View {
             
             Button {
                 Task {
-                    print("hello world")
+                    try await onboardingVM.saveProfile(userId: authController.currentUserId)
+                    await authController.checkUserProfile()
+                    onboardingComplete = true
                 }
             } label: {
                 Text("Get Started")
@@ -33,5 +36,10 @@ struct GetStartedView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.cream)
+        .navigationDestination(isPresented: $onboardingComplete) {
+            RootView()
+                .environmentObject(authController)
+                .navigationBarBackButtonHidden()
+        }
     }
 }

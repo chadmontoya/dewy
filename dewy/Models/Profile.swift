@@ -41,13 +41,13 @@ struct Profile: Codable, Identifiable {
         
         gender = try container.decodeIfPresent(String.self, forKey: .gender)
         
-        // Decode location as geography (latitude, longitude)
+        // Decode location as geography (longitude, latitude)
         if let geoString = try container.decodeIfPresent(String.self, forKey: .location) {
             let components = geoString
                 .trimmingCharacters(in: CharacterSet(charactersIn: "()"))
-                .split(separator: ",")
+                .split(separator: " ")
                 .map { Double($0.trimmingCharacters(in: .whitespaces)) }
-            if let latitude = components.first, let longitude = components.last, components.count == 2 {
+            if let latitude = components.last, let longitude = components.first, components.count == 2 {
                 location = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
             } else {
                 location = nil
@@ -74,15 +74,13 @@ struct Profile: Codable, Identifiable {
         
         try container.encode(gender, forKey: .gender)
         
-        // Encode location as geography (latitude, longitude)
+        // Encode location as geography (longitude, latitude)
         if let location = location {
-            let geoString = "POINT(\(location.latitude) \(location.longitude))"
+            let geoString = "POINT(\(location.longitude) \(location.latitude))"
             try container.encode(geoString, forKey: .location)
         } else {
             try container.encodeNil(forKey: .location)
         }
-    }
-    
-    
+    }    
 }
 

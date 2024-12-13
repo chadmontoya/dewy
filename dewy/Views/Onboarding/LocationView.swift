@@ -3,10 +3,9 @@ import MapKit
 
 struct LocationView: View {
     @State private var cameraPosition: MapCameraPosition = .automatic
-    @State private var visibleRegion: MKCoordinateRegion?
     @State private var currentCity: String = ""
     @State private var searchCity: String = ""
-    @State private var isUserInteracting = false
+    @State private var isMapInitialized: Bool = false
     
     @FocusState private var isSearchFocused: Bool
     
@@ -14,6 +13,8 @@ struct LocationView: View {
     
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var onboardingVM: OnboardingViewModel
+    
+    @ObservedObject var locationManager = LocationManager.shared
     
     var body: some View {
         VStack {
@@ -63,31 +64,51 @@ struct LocationView: View {
             }
             hideKeyboard()
         }
+        .onAppear {
+            if onboardingVM.location == nil {
+                locationManager.requestLocation()
+                onboardingVM.location = locationManager.userLocation.coordinate
+            }
+        }
     }
     
     private var mapDisplay: some View {
         ZStack {
             Map(position: $cameraPosition)
                 .onAppear {
-                    let myLocation = CLLocationCoordinate2D(latitude: 33.975575, longitude: -117.849784)
-                    let myLocationSpan = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                    let myLocationRegion = MKCoordinateRegion(center: myLocation, span: myLocationSpan)
-                    cameraPosition = .region(myLocationRegion)
-                    getCityName(from: myLocation)
+                    if !isMapInitialized {
+                        let location = onboardingVM.location
+                        let locationRegion = MKCoordinateRegion(
+                            center: location!,
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        )
+                        cameraPosition = .region(locationRegion)
+                        isMapInitialized = true
+                    }
                 }
                 .onMapCameraChange(frequency: .onEnd) { context in
-                    visibleRegion = context.region
-                    getCityName(from: context.region.center)
-                    
-                    if isUserInteracting {
-                        locationSearchVM.query = ""
+                    guard isMapInitialized else {
+                        return
                     }
-                    
-                    onboardingVM.location = context.region.center
+                    let location = context.region.center
+                    let locationRegion = MKCoordinateRegion(
+                        center: location,
+                        span: context.region.span
+                    )
+                    onboardingVM.location = location
+                    cameraPosition = .region(locationRegion)
+                    getCityName(from: onboardingVM.location!)
+                }
+                .onChange(of: locationManager.userLocation) {
+                    onboardingVM.location = locationManager.userLocation.coordinate
+                    let locationRegion = MKCoordinateRegion(
+                        center: onboardingVM.location!,
+                        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                    )
+                    cameraPosition = .region(locationRegion)
                 }
                 .toolbarBackgroundVisibility(.hidden)
                 .colorScheme(.light)
-            
             
             Text(currentCity)
                 .padding(8)
@@ -150,7 +171,6 @@ struct LocationView: View {
                                     span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
                                 )
                                 cameraPosition = .region(newRegion)
-                                getCityName(from: newCoordinate)
                             }
                         }
                     }) {

@@ -3,7 +3,7 @@ import MapKit
 
 class OnboardingViewModel: ObservableObject {
     @Published var birthday: Date
-    @Published var location: CLLocationCoordinate2D
+    @Published var location: CLLocationCoordinate2D?
     @Published var gender: Gender
     @Published var isLoading: Bool = false
     @Published var isComplete: Bool = false
@@ -11,7 +11,7 @@ class OnboardingViewModel: ObservableObject {
     init(birthday: Date = Date(), gender: Gender = Gender(type: .male)) {
         self.birthday = birthday
         self.gender = gender
-        self.location = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        self.location = nil
     }
     
     @MainActor

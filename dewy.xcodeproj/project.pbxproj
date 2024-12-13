@@ -431,6 +431,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = dewy/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = dewy;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow us to accurately set the current city you are located in. We do not track or share your exact location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -466,6 +467,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = dewy/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = dewy;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow us to accurately set the current city you are located in. We do not track or share your exact location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

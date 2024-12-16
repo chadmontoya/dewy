@@ -36,7 +36,6 @@ struct LocationView: View {
                     NavigationLink {
                         GenderView()
                             .environmentObject(onboardingVM)
-                            .environmentObject(authController)
                             .toolbarRole(.editor)
                     } label: {
                         Text("Next")
@@ -87,9 +86,7 @@ struct LocationView: View {
                     }
                 }
                 .onMapCameraChange(frequency: .onEnd) { context in
-                    guard isMapInitialized else {
-                        return
-                    }
+                    guard isMapInitialized else { return }
                     let location = context.region.center
                     let locationRegion = MKCoordinateRegion(
                         center: location,

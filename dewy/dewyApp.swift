@@ -9,11 +9,11 @@ struct dewyApp: App {
         WindowGroup {
             NavigationStack {
                 RootView()
-                    .environmentObject(authController)
                     .onOpenURL {
                         supabase.handle($0)
                     }
             }
+            .environmentObject(authController)
             .tint(Color.coffee)
         }
     }

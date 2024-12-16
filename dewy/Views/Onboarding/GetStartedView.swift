@@ -38,7 +38,6 @@ struct GetStartedView: View {
         .background(Color.cream)
         .navigationDestination(isPresented: $onboardingComplete) {
             RootView()
-                .environmentObject(authController)
                 .navigationBarBackButtonHidden()
         }
     }

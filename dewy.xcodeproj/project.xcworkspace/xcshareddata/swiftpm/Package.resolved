@@ -1,5 +1,5 @@
 {
-  "originHash" : "181ce8178dc2f6b39aa71e75de4e3dab26b6ec35dc553486b1a0715579be918c",
+  "originHash" : "7c78ab19b008f2ab58fc2f854a334975373b6dda89399d9b6802825ea86426d8",
   "pins" : [
     {
       "identity" : "app-check",
@@ -83,15 +83,6 @@
       }
     },
     {
-      "identity" : "swift-case-paths",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-case-paths.git",
-      "state" : {
-        "revision" : "bc92c4b27f9a84bfb498cdbfdf35d5a357e9161f",
-        "version" : "1.5.6"
-      }
-    },
-    {
       "identity" : "swift-concurrency-extras",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-concurrency-extras",
@@ -119,12 +110,12 @@
       }
     },
     {
-      "identity" : "swift-syntax",
+      "identity" : "swiftycrop",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-syntax",
+      "location" : "https://github.com/benedom/SwiftyCrop",
       "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
-        "version" : "600.0.1"
+        "branch" : "master",
+        "revision" : "454d0a0d4faf6f3a19c8d817ab9d7d27524bd79f"
       }
     },
     {

@@ -7,6 +7,5 @@ struct OnboardingView: View {
     var body: some View {
         BirthdayView()
             .environmentObject(onboardingVM)
-            .environmentObject(authController)
     }
 }

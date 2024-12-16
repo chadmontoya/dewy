@@ -36,7 +36,6 @@ struct GenderView: View {
             NavigationLink {
                 GetStartedView()
                     .environmentObject(onboardingVM)
-                    .environmentObject(authController)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")

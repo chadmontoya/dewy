@@ -37,7 +37,6 @@ struct BirthdayView: View {
             NavigationLink {
                 LocationView()
                     .environmentObject(onboardingVM)
-                    .environmentObject(authController)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")

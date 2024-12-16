@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		690188772CF8FE37006A0CA6 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 690188762CF8FE37006A0CA6 /* Supabase */; };
 		6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6903F2892CE3FED60058630B /* GoogleSignIn */; };
-		6903F28C2CE3FED60058630B /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6903F28B2CE3FED60058630B /* GoogleSignInSwift */; };
+		690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 690991172D0E3B2400419383 /* GoogleSignInSwift */; };
+		6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = 690991192D0E3B2400419383 /* SwiftyCrop */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,8 +72,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */,
+				690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */,
 				6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */,
-				6903F28C2CE3FED60058630B /* GoogleSignInSwift in Frameworks */,
 				690188772CF8FE37006A0CA6 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,6 +102,7 @@
 				6903F2402CE2A2790058630B /* dewy */,
 				6903F2562CE2A27B0058630B /* dewyTests */,
 				6903F2602CE2A27B0058630B /* dewyUITests */,
+				690991162D0E3B2400419383 /* Frameworks */,
 				6903F23F2CE2A2790058630B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +115,13 @@
 				6903F25D2CE2A27B0058630B /* dewyUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		690991162D0E3B2400419383 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +145,9 @@
 			name = dewy;
 			packageProductDependencies = (
 				6903F2892CE3FED60058630B /* GoogleSignIn */,
-				6903F28B2CE3FED60058630B /* GoogleSignInSwift */,
 				690188762CF8FE37006A0CA6 /* Supabase */,
+				690991172D0E3B2400419383 /* GoogleSignInSwift */,
+				690991192D0E3B2400419383 /* SwiftyCrop */,
 			);
 			productName = dewy;
 			productReference = 6903F23E2CE2A2790058630B /* dewy.app */;
@@ -223,7 +234,7 @@
 			packageReferences = (
 				6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				690188752CF8FE37006A0CA6 /* XCRemoteSwiftPackageReference "supabase-swift" */,
-				6943668A2CFED95B002F0B01 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+				6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6903F23F2CE2A2790058630B /* Products */;
@@ -616,12 +627,12 @@
 				minimumVersion = 8.0.0;
 			};
 		};
-		6943668A2CFED95B002F0B01 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+		6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-case-paths.git";
+			repositoryURL = "https://github.com/benedom/SwiftyCrop";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.6;
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -637,10 +648,15 @@
 			package = 6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
 		};
-		6903F28B2CE3FED60058630B /* GoogleSignInSwift */ = {
+		690991172D0E3B2400419383 /* GoogleSignInSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		690991192D0E3B2400419383 /* SwiftyCrop */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */;
+			productName = SwiftyCrop;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

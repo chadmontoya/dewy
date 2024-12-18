@@ -14,7 +14,7 @@ struct OutfitDetailsView: View {
                     Image(uiImage: selectedImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(height: 450)
+                        .frame(height: 400)
                         .clipShape((RoundedRectangle(cornerRadius: 10)))
                 }
             }
@@ -44,6 +44,7 @@ struct OutfitDetailsView: View {
                     .sheet(isPresented: $showLocationSheet) {
                         ZStack {
                             Color.softBeige.ignoresSafeArea()
+                            OutfitLocationView()
                         }
                     }
                 }

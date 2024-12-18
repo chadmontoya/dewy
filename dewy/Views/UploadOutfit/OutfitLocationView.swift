@@ -2,20 +2,15 @@ import SwiftUI
 import MapKit
 
 struct OutfitLocationView: View {
+    @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
+    
+    @State private var cameraPosition: MapCameraPosition = .automatic
+    @State private var currentCity: String = ""
+    @State private var searchCity: String = ""
+    
     @State var locationSearchVM = LocationSearchViewModel()
-    
+
     var body: some View {
-        Text("set outfit location")
-    }
-    
-    private var mapDisplay: some View {
-        ZStack {
-            Map()
-                .onMapCameraChange(frequency: .onEnd) { context in
-                    let location = context.region.center
-                    let locationRegion = MKCoordinateRegion(center: location, span: context.region.span)
-                    
-                }
-        }
+        MapView(location: $uploadOutfitVM.location)
     }
 }

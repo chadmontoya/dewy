@@ -4,13 +4,25 @@ import MapKit
 struct OutfitLocationView: View {
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
     
-    @State private var cameraPosition: MapCameraPosition = .automatic
-    @State private var currentCity: String = ""
-    @State private var searchCity: String = ""
+    @Binding var showLocationSheet: Bool
     
-    @State var locationSearchVM = LocationSearchViewModel()
-
     var body: some View {
-        MapView(location: $uploadOutfitVM.location)
+        VStack {
+            Spacer()
+            
+            MapView(location: $uploadOutfitVM.location)
+            
+            Button {
+                showLocationSheet = false
+            } label: {
+                Text("Update")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(Color.coffee)
+            }
+            .cornerRadius(10)
+            .padding()
+        }
     }
 }

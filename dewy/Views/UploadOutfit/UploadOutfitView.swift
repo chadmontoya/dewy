@@ -5,6 +5,8 @@ struct UploadOutfitView: View {
     @EnvironmentObject var authController: AuthController
     
     @StateObject private var uploadOutfitVM: UploadOutfitViewModel = UploadOutfitViewModel()
+    
+    var onComplete: () -> Void
 
     var body: some View {
         ZStack {
@@ -63,7 +65,7 @@ struct UploadOutfitView: View {
             }
         }
         .photosPicker(isPresented: $uploadOutfitVM.showImagePicker, selection: $uploadOutfitVM.imageSelection, matching: .images)
-        .fullScreenCover(isPresented: $uploadOutfitVM.imageSelected) {
+        .fullScreenCover(isPresented: $uploadOutfitVM.unCroppedImageSelected) {
             if let outfitImage = uploadOutfitVM.outfitImage {
                 SwiftyCropView(
                     imageToCrop: outfitImage,
@@ -79,7 +81,7 @@ struct UploadOutfitView: View {
             }
         }
         .navigationDestination(isPresented: $uploadOutfitVM.croppedImageSelected) {
-            OutfitDetailsView()
+            OutfitDetailsView(onComplete: onComplete)
                 .environmentObject(uploadOutfitVM)
                 .toolbarRole(.editor)
         }
@@ -93,8 +95,13 @@ let configuration = SwiftyCropConfiguration(
     rotateImage: false,
     zoomSensitivity: 4.0,
     rectAspectRatio: 9/16,
+    texts: SwiftyCropConfiguration.Texts(
+        saveButton: "Crop"
+    ),
     colors: SwiftyCropConfiguration.Colors(
+        cancelButton: Color.black,
         interactionInstructions: Color.coffee,
+        saveButton: Color.black,
         background: Color.lightSand
     )
 )

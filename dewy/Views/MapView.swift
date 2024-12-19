@@ -30,7 +30,7 @@ struct MapView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.cream)
+        .contentShape(Rectangle())
         .onTapGesture {
             withAnimation {
                 isSearchFocused = false
@@ -53,6 +53,7 @@ struct MapView: View {
                 .onAppear {
                     if !isMapInitialized {
                         let mapLocation = location
+                        getCityName(from: mapLocation!)
                         let mapLocationRegion = MKCoordinateRegion(
                             center: mapLocation!,
                             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
@@ -64,21 +65,21 @@ struct MapView: View {
                 .onMapCameraChange(frequency: .onEnd) { context in
                     guard isMapInitialized else { return }
                     let mapLocation = context.region.center
+                    getCityName(from: mapLocation)
                     let mapLocationRegion = MKCoordinateRegion(
                         center: mapLocation,
                         span: context.region.span
                     )
                     cameraPosition = .region(mapLocationRegion)
-                    getCityName(from: mapLocation)
                     location = mapLocation
                 }
                 .onChange(of: locationManager.userLocation) {
                     location = locationManager.userLocation.coordinate
+                    getCityName(from: location!)
                     let locationRegion = MKCoordinateRegion(
                         center: location!,
                         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
                     )
-                    getCityName(from: location!)
                     cameraPosition = .region(locationRegion)
                 }
                 .toolbarBackgroundVisibility(.hidden)
@@ -185,7 +186,6 @@ struct MapView: View {
                     Divider()
                 }
             }
-            .background(Color.cream)
             .cornerRadius(10)
         }
     }

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct GenderView: View {
     @EnvironmentObject var onboardingVM: OnboardingViewModel
-    @EnvironmentObject var authController: AuthController
     
     var body: some View {
         VStack {

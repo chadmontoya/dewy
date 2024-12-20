@@ -35,9 +35,3 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
-
-extension CLLocationCoordinate2D : Equatable {
-    static public func ==(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool {
-        return left.latitude == right.latitude && left.longitude == right.longitude
-    }
-}

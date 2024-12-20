@@ -24,13 +24,11 @@ struct Profile: Codable, Identifiable {
         self.location = location
     }
     
-    // Custom decoding to handle "YYYY-MM-dd" format for birthday and geography for location
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(Int64.self, forKey: .id)
         userId = try container.decode(UUID.self, forKey: .userId)
         
-        // Decode birthday as a Date from a "YYYY-MM-dd" string
         if let birthdayString = try container.decodeIfPresent(String.self, forKey: .birthday) {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
@@ -41,7 +39,6 @@ struct Profile: Codable, Identifiable {
         
         gender = try container.decodeIfPresent(String.self, forKey: .gender)
         
-        // Decode location as geography (longitude, latitude)
         if let geoString = try container.decodeIfPresent(String.self, forKey: .location) {
             let components = geoString
                 .trimmingCharacters(in: CharacterSet(charactersIn: "()"))
@@ -57,13 +54,11 @@ struct Profile: Codable, Identifiable {
         }
     }
     
-    // Custom encoding to handle "YYYY-MM-dd" format for birthday and geography for location
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encode(userId, forKey: .userId)
         
-        // Encode birthday as a "YYYY-MM-dd" string
         if let birthday = birthday {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
@@ -74,7 +69,6 @@ struct Profile: Codable, Identifiable {
         
         try container.encode(gender, forKey: .gender)
         
-        // Encode location as geography (longitude, latitude)
         if let location = location {
             let geoString = "POINT(\(location.longitude) \(location.latitude))"
             try container.encode(geoString, forKey: .location)

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct BirthdayView: View {
-    @EnvironmentObject var authController: AuthController
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     var body: some View {

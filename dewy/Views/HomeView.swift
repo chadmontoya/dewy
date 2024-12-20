@@ -27,7 +27,6 @@ struct HomeView: View {
                 }
                 
                 Tab("Saved", systemImage: "questionmark.circle.fill", value: .saved) {
-                    //                ClosetView(uploadOutfit: $uploadOutfit)
                 }
                 
                 Tab("Closet", systemImage: "questionmark.circle.fill", value: .closet) {

@@ -3,6 +3,7 @@ import SwiftUI
 struct GetStartedView: View {
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     @EnvironmentObject var authController: AuthController
+    
     @State private var onboardingComplete = false
 
     var body: some View {
@@ -42,21 +43,3 @@ struct GetStartedView: View {
         }
     }
 }
-
-struct Restaurant: Codable {
-    let name: String
-    let location: String // You could also use a custom type with a custom `Encodable` conformance for convenience.
-}
-
-struct Response: Codable {
-    let id: Int
-    let name: String
-    let lat: Double
-    let long: Double
-    
-    enum CodingKeys: String, CodingKey {
-        case id, name, lat, long
-    }
-}
-
-

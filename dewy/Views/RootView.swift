@@ -13,11 +13,9 @@ struct RootView: View {
         }
         else if !authController.hasProfile {
             OnboardingView()
-                .environmentObject(authController)
         }
         else if authController.hasProfile {
             HomeView()
-                .environmentObject(authController)
         }
     }
 }

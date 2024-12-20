@@ -1,15 +1,15 @@
 import CoreLocation
 
 class LocationManager: NSObject, ObservableObject {
-    private let manager = CLLocationManager()
+    @Published var manager = CLLocationManager()
     @Published var userLocation: CLLocation = CLLocation(latitude: 34.0549, longitude: -118.2426)
+    
     static let shared = LocationManager()
     
     override init() {
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.startUpdatingLocation()
     }
     
     func requestLocation() {
@@ -26,10 +26,9 @@ extension LocationManager: CLLocationManagerDelegate {
             print("restricted")
         case .denied:
             print("denied")
-        case .authorizedWhenInUse:
-            print("authorized when in use")
-        case .authorizedAlways:
-            print("authorized always")
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("authorized")
+            manager.startUpdatingLocation()
         @unknown default:
             break
         }
@@ -39,5 +38,9 @@ extension LocationManager: CLLocationManagerDelegate {
         guard let location = locations.last else { return }
         self.userLocation = location
         manager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("location manager failed with error: \(error.localizedDescription)")
     }
 }

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct BirthdayView: View {
-    @EnvironmentObject var authController: AuthController
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
@@ -35,9 +34,8 @@ struct BirthdayView: View {
             
             
             NavigationLink {
-                LocationView()
+                UserLocationView()
                     .environmentObject(onboardingVM)
-                    .environmentObject(authController)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")

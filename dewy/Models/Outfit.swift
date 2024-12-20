@@ -1,43 +1,40 @@
-import Foundation
+import SwiftUI
 import MapKit
 
-struct Profile: Codable, Identifiable {
+struct Outfit: Codable {
     let id: Int64?
-    let userId: UUID
-    let birthday: Date?
-    let gender: String?
+    let createDate: Date?
+    let userId: UUID?
+    let imageURL: String?
     let location: CLLocationCoordinate2D?
+    let isPublic: Bool?
     
     enum CodingKeys: String, CodingKey {
         case id
+        case createDate = "created_at"
         case userId = "user_id"
-        case birthday
-        case gender
+        case imageURL = "image_url"
         case location
+        case isPublic = "public"
     }
     
-    init(userId: UUID = UUID(), birthday: Date? = nil, gender: String? = nil, location: CLLocationCoordinate2D? = nil) {
+    init(userId: UUID, createDate: Date = Date(), imageURL: String? = nil, location: CLLocationCoordinate2D? = nil, isPublic: Bool? = nil) {
         self.id = nil
+        self.createDate = createDate
         self.userId = userId
-        self.birthday = birthday
-        self.gender = gender
+        self.imageURL = imageURL
         self.location = location
+        self.isPublic = isPublic
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
         id = try container.decodeIfPresent(Int64.self, forKey: .id)
+        createDate = try container.decodeIfPresent(Date.self, forKey: .createDate)
         userId = try container.decode(UUID.self, forKey: .userId)
-        
-        if let birthdayString = try container.decodeIfPresent(String.self, forKey: .birthday) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            birthday = formatter.date(from: birthdayString)
-        } else {
-            birthday = nil
-        }
-        
-        gender = try container.decodeIfPresent(String.self, forKey: .gender)
+        imageURL = try container.decodeIfPresent(String.self, forKey: .imageURL)
+        isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic)
         
         if let geoString = try container.decodeIfPresent(String.self, forKey: .location) {
             let components = geoString
@@ -57,17 +54,9 @@ struct Profile: Codable, Identifiable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(id, forKey: .id)
+        try container.encode(createDate, forKey: .createDate)
         try container.encode(userId, forKey: .userId)
-        
-        if let birthday = birthday {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            try container.encode(formatter.string(from: birthday), forKey: .birthday)
-        } else {
-            try container.encodeNil(forKey: .birthday)
-        }
-        
-        try container.encode(gender, forKey: .gender)
+        try container.encode(imageURL, forKey: .imageURL)
         
         if let location = location {
             let geoString = "POINT(\(location.longitude) \(location.latitude))"
@@ -75,6 +64,7 @@ struct Profile: Codable, Identifiable {
         } else {
             try container.encodeNil(forKey: .location)
         }
-    }    
+        
+        try container.encode(isPublic, forKey: .isPublic)
+    }
 }
-

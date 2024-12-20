@@ -1,63 +1,36 @@
 import SwiftUI
 import MapKit
 
-struct LocationView: View {
+struct MapView: View {
+    @Binding var location: CLLocationCoordinate2D?
+    
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var currentCity: String = ""
     @State private var searchCity: String = ""
     @State private var isMapInitialized: Bool = false
-    
-    @FocusState private var isSearchFocused: Bool
+    @FocusState var isSearchFocused: Bool
     
     @State var locationSearchVM = LocationSearchViewModel()
     
-    @EnvironmentObject var authController: AuthController
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
-    
-    @ObservedObject var locationManager = LocationManager.shared
+    @StateObject var locationManager = LocationManager.shared
     
     var body: some View {
         VStack {
             if !isSearchFocused {
-                Text("choose your location")
-                    .padding()
-                    .font(.title)
-                    .bold()
-                    .foregroundStyle(Color.coffee)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
                 mapDisplay
             }
             VStack {
                 locationSearchBar
                     .padding(.bottom)
                 
-                if !isSearchFocused {
-                    NavigationLink {
-                        GenderView()
-                            .environmentObject(onboardingVM)
-                            .environmentObject(authController)
-                            .toolbarRole(.editor)
-                    } label: {
-                        Text("Next")
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(.white)
-                            .background(Color.coffee)
-                    }
-                    .cornerRadius(10)
-                }
-                
                 if !locationSearchVM.results.isEmpty && isSearchFocused {
                     locationResults
                 }
             }
-            
-            Spacer()
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.cream)
+        .contentShape(Rectangle())
         .onTapGesture {
             withAnimation {
                 isSearchFocused = false
@@ -65,11 +38,13 @@ struct LocationView: View {
             hideKeyboard()
         }
         .onAppear {
-            if onboardingVM.location == nil {
+            if location == nil {
                 locationManager.requestLocation()
-                onboardingVM.location = locationManager.userLocation.coordinate
+                location = locationManager.userLocation.coordinate
             }
         }
+        
+        Spacer()
     }
     
     private var mapDisplay: some View {
@@ -77,32 +52,32 @@ struct LocationView: View {
             Map(position: $cameraPosition)
                 .onAppear {
                     if !isMapInitialized {
-                        let location = onboardingVM.location
-                        let locationRegion = MKCoordinateRegion(
-                            center: location!,
+                        let mapLocation = location
+                        getCityName(from: mapLocation!)
+                        let mapLocationRegion = MKCoordinateRegion(
+                            center: mapLocation!,
                             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
                         )
-                        cameraPosition = .region(locationRegion)
+                        cameraPosition = .region(mapLocationRegion)
                         isMapInitialized = true
                     }
                 }
                 .onMapCameraChange(frequency: .onEnd) { context in
-                    guard isMapInitialized else {
-                        return
-                    }
-                    let location = context.region.center
-                    let locationRegion = MKCoordinateRegion(
-                        center: location,
+                    guard isMapInitialized else { return }
+                    let mapLocation = context.region.center
+                    getCityName(from: mapLocation)
+                    let mapLocationRegion = MKCoordinateRegion(
+                        center: mapLocation,
                         span: context.region.span
                     )
-                    onboardingVM.location = location
-                    cameraPosition = .region(locationRegion)
-                    getCityName(from: onboardingVM.location!)
+                    cameraPosition = .region(mapLocationRegion)
+                    location = mapLocation
                 }
                 .onChange(of: locationManager.userLocation) {
-                    onboardingVM.location = locationManager.userLocation.coordinate
+                    location = locationManager.userLocation.coordinate
+                    getCityName(from: location!)
                     let locationRegion = MKCoordinateRegion(
-                        center: onboardingVM.location!,
+                        center: location!,
                         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
                     )
                     cameraPosition = .region(locationRegion)
@@ -118,6 +93,25 @@ struct LocationView: View {
                 .colorScheme(.light)
         }
         .frame(height: 400)
+    }
+    
+    private func getCityName(from location: CLLocationCoordinate2D) {
+        let geocoder = CLGeocoder()
+        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            if let error = error {
+                print("geocoding error: \(error)")
+                return
+            }
+            
+            if let city = placemarks?.first?.locality {
+                currentCity = city
+            }
+            else {
+                currentCity = "Unknown Location"
+            }
+        }
     }
     
     private var locationSearchBar: some View {
@@ -192,27 +186,7 @@ struct LocationView: View {
                     Divider()
                 }
             }
-            .background(Color.cream)
             .cornerRadius(10)
-        }
-    }
-    
-    private func getCityName(from location: CLLocationCoordinate2D) {
-        let geocoder = CLGeocoder()
-        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
-        
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let error = error {
-                print("geocoding error: \(error)")
-                return
-            }
-            
-            if let city = placemarks?.first?.locality {
-                currentCity = city
-            }
-            else {
-                currentCity = "Unknown Location"
-            }
         }
     }
 }

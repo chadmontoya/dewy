@@ -1,7 +1,7 @@
 import SwiftUI
 import MapKit
 
-struct Outfit: Codable {
+struct Outfit: Codable, Identifiable {
     let id: Int64?
     let createDate: Date?
     let userId: UUID?

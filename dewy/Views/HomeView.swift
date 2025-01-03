@@ -16,6 +16,12 @@ struct HomeView: View {
     @State private var navigationPath: [String] = []
     
     init() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = UIColor(Color.cream)
+        
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
         UITabBar.appearance().unselectedItemTintColor = .gray
     }
     

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct OutfitDetailsView: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
     

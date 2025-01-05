@@ -14,7 +14,7 @@ struct UploadOutfitView: View {
             
             VStack(spacing: 16) {
                 Button(action: {
-//                    nextPage = true
+                    // TODO: implement camera functionality
                 }) {
                     HStack {
                         Spacer()

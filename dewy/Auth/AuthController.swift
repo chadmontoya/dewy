@@ -9,26 +9,13 @@ class AuthController: ObservableObject {
     
     var currentUserId: UUID {
         (session?.user.id)!
-   }
+    }
     
     @ObservationIgnored
     private var observeAuthStateChangesTask: Task<Void, Never>?
     
     init() {
-        observeAuthStateChangesTask = Task {
-            for await (event, session) in supabase.auth.authStateChanges {
-                if [.initialSession, .signedIn, .signedOut].contains(event) {
-                    self.session = session
-                    
-                    if session?.user.id != nil {
-                        await self.checkUserProfile()
-                    }
-                    else {
-                        isLoading = false
-                    }
-                }
-            }
-        }
+        setupAuthStateObserver()
     }
     
     deinit {
@@ -52,5 +39,22 @@ class AuthController: ObservableObject {
             print("error checking profile: \(error)")
         }
         isLoading = false
+    }
+    
+    private func setupAuthStateObserver() {
+        observeAuthStateChangesTask = Task {
+            for await (event, session) in supabase.auth.authStateChanges {
+                if [.initialSession, .signedIn, .signedOut].contains(event) {
+                    self.session = session
+                    
+                    if session?.user.id != nil {
+                        await self.checkUserProfile()
+                    }
+                    else {
+                        isLoading = false
+                    }
+                }
+            }
+        }
     }
 }

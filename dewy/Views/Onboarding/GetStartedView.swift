@@ -20,7 +20,7 @@ struct GetStartedView: View {
             Button {
                 Task {
                     try await onboardingVM.saveProfile(userId: authController.currentUserId)
-                    await authController.checkUserProfile()
+                    authController.hasProfile = true
                     onboardingComplete = true
                 }
             } label: {

@@ -1,7 +1,7 @@
 import SwiftUI
 import MapKit
 
-struct Outfit: Codable {
+struct Outfit: Codable, Identifiable, Hashable {
     let id: Int64?
     let createDate: Date?
     let userId: UUID?
@@ -66,5 +66,27 @@ struct Outfit: Codable {
         }
         
         try container.encode(isPublic, forKey: .isPublic)
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(createDate)
+        hasher.combine(userId)
+        hasher.combine(imageURL)
+        if let location = location {
+            hasher.combine(location.latitude)
+            hasher.combine(location.longitude)
+        }
+        hasher.combine(isPublic)
+    }
+    
+    static func == (lhs: Outfit, rhs: Outfit) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.createDate == rhs.createDate &&
+        lhs.userId == rhs.userId &&
+        lhs.imageURL == rhs.imageURL &&
+        lhs.isPublic == rhs.isPublic &&
+        lhs.location?.latitude == rhs.location?.latitude &&
+        lhs.location?.longitude == rhs.location?.longitude
     }
 }

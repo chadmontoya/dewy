@@ -4,8 +4,8 @@ import SwiftUI
 @MainActor
 class AuthController: ObservableObject {
     @Published var session: Session?
-    @Published var hasProfile: Bool = false
     @Published var isLoading: Bool = true
+    @Published var requireOnboarding: Bool = true
     
     var currentUserId: UUID {
         (session?.user.id)!
@@ -32,10 +32,9 @@ class AuthController: ObservableObject {
                 .single()
                 .execute()
             
-            hasProfile = true
+            requireOnboarding = false
         }
         catch {
-            hasProfile = false
             print("error checking profile: \(error)")
         }
         isLoading = false

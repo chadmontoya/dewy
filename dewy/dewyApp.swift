@@ -1,6 +1,4 @@
 import SwiftUI
-import GoogleSignIn
-import MapKit
 
 @main
 struct dewyApp: App {
@@ -8,14 +6,12 @@ struct dewyApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                RootView()
-                    .onOpenURL {
-                        supabase.handle($0)
-                    }
-            }
-            .environmentObject(authController)
-            .tint(Color.coffee)
+            RootView()
+                .onOpenURL {
+                    supabase.handle($0)
+                }
+                .environmentObject(authController)
+                .tint(Color.coffee)
         }
     }
 }

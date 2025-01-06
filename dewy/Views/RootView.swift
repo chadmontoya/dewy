@@ -11,10 +11,7 @@ struct RootView: View {
         else if authController.session == nil {
             AuthView()
         }
-        else if !authController.hasProfile {
-            OnboardingView()
-        }
-        else if authController.hasProfile {
+        else {
             HomeView()
         }
     }

@@ -51,5 +51,8 @@ struct HomeView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $authController.requireOnboarding) {
+            OnboardingView()
+        }
     }
 }

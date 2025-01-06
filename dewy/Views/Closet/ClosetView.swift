@@ -10,8 +10,7 @@ struct ClosetView: View {
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     
     var body: some View {
-        ZStack {
-            Color.cream.ignoresSafeArea()
+        Group {
             NavigationStack {
                 VStack {
                     HStack {
@@ -34,6 +33,7 @@ struct ClosetView: View {
                     
                     OutfitList(screenSize: UIScreen.main.bounds.size)
                 }
+                .background(Color.cream.ignoresSafeArea())
                 .navigationDestination(for: Outfit.self) { outfit in
                     OutfitDetailView(outfit: outfit, animation: animation, closetVM: closetVM)
                         .toolbarVisibility(.hidden, for: .navigationBar)

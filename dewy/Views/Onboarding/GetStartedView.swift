@@ -20,8 +20,8 @@ struct GetStartedView: View {
             Button {
                 Task {
                     try await onboardingVM.saveProfile(userId: authController.currentUserId)
-                    authController.hasProfile = true
                     onboardingComplete = true
+                    authController.requireOnboarding = false
                 }
             } label: {
                 Text("Get Started")
@@ -37,9 +37,5 @@ struct GetStartedView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.cream)
-        .navigationDestination(isPresented: $onboardingComplete) {
-            RootView()
-                .navigationBarBackButtonHidden()
-        }
     }
 }

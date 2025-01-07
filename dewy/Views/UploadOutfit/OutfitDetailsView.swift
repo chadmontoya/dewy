@@ -85,9 +85,11 @@ struct OutfitDetailsView: View {
                 Button {
                     Task {
                         do {
-                            let outfit = try await uploadOutfitVM.saveOutfit(userId: authController.currentUserId)
-                            closetVM.addOutfit(outfit: outfit)
-                            onComplete()
+                            if let userId = authController.session?.user.id {
+                                let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
+                                closetVM.addOutfit(outfit: outfit)
+                                onComplete()
+                            }
                         }
                         catch {
                             print("error saving outfit: \(error)")

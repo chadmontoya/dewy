@@ -5,7 +5,7 @@ struct GetStartedView: View {
     @EnvironmentObject var authController: AuthController
     
     @State private var onboardingComplete = false
-
+    
     var body: some View {
         VStack {
             Text("thank you")
@@ -19,9 +19,12 @@ struct GetStartedView: View {
             
             Button {
                 Task {
-                    try await onboardingVM.saveProfile(userId: authController.currentUserId)
-                    onboardingComplete = true
-                    authController.requireOnboarding = false
+                    if let userId = authController.session?.user.id {
+                        try await onboardingVM.saveProfile(userId: userId)
+                        onboardingComplete = true
+                        authController.requireOnboarding = false
+                        
+                    }
                 }
             } label: {
                 Text("Get Started")

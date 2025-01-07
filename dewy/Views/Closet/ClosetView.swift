@@ -50,7 +50,9 @@ struct ClosetView: View {
         }
         .onAppear {
             Task {
-                try await closetVM.fetchOutfits(userId: authController.currentUserId)
+                if let userId = authController.session?.user.id {
+                    try await closetVM.fetchOutfits(userId: userId)
+                }
             }
         }
     }

@@ -7,10 +7,6 @@ class AuthController: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var requireOnboarding: Bool = true
     
-    var currentUserId: UUID {
-        (session?.user.id)!
-    }
-    
     @ObservationIgnored
     private var observeAuthStateChangesTask: Task<Void, Never>?
     
@@ -28,7 +24,7 @@ class AuthController: ObservableObject {
             try await supabase
                 .from("Profiles")
                 .select()
-                .eq("user_id", value: currentUserId)
+                .eq("user_id", value: session?.user.id)
                 .single()
                 .execute()
             

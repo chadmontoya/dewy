@@ -62,8 +62,8 @@ class UploadOutfitViewModel: ObservableObject {
         }
     }
     
-    func saveOutfit(userId: UUID) async {
-        guard !isLoading else { return }
+    func saveOutfit(userId: UUID) async throws -> Outfit {
+        guard !isLoading else { throw UploadOutfitError.alreadyLoading }
         
         isLoading = true
         
@@ -71,33 +71,26 @@ class UploadOutfitViewModel: ObservableObject {
             isLoading = false
         }
         
-        do {
-            guard let outfitImageURL = await uploadOutfitImage(userId: userId) else {
-                print("failed to upload image")
-                return
-            }
-            
-            let outfit: Outfit = Outfit(
-                userId: userId,
-                imageURL: outfitImageURL,
-                location: location,
-                isPublic: isPublic
-            )
-            
-            try await supabase
-                .from("Outfits")
-                .insert(outfit)
-                .execute()
-            
-            isComplete = true
-        }
-        catch {
-            print("error saving outfit to database: \(error)")
+        guard let outfitImageURL = await uploadOutfitImage(userId: userId) else {
+            throw UploadOutfitError.imageUploadFailed
         }
         
-        isLoading = false
+        let outfit: Outfit = Outfit(
+            userId: userId,
+            imageURL: outfitImageURL,
+            location: location,
+            isPublic: isPublic
+        )
+        
+        try await supabase
+            .from("Outfits")
+            .insert(outfit)
+            .execute()
+        
+        isComplete = true
+        return outfit
     }
-
+    
     func setCityLocation(from location: CLLocationCoordinate2D) {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
@@ -156,4 +149,9 @@ class UploadOutfitViewModel: ObservableObject {
         location = nil
         cityLocation = ""
     }
+}
+
+enum UploadOutfitError: Error {
+    case alreadyLoading
+    case imageUploadFailed
 }

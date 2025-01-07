@@ -46,6 +46,7 @@ struct ClosetView: View {
                         .toolbarRole(.editor)
                 }
             }
+            .environmentObject(closetVM)
         }
         .onAppear {
             Task {

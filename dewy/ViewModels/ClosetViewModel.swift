@@ -5,6 +5,14 @@ class ClosetViewModel: ObservableObject {
     @Published var outfits: [Outfit] = []
     @Published var loadedImages: [String: Image] = [:]
     
+    func addOutfit(outfit: Outfit) {
+        outfits.append(outfit)
+        
+        if let imageURL = outfit.imageURL {
+            loadImage(from: imageURL)
+        }
+    }
+    
     func fetchOutfits(userId: UUID) async throws {
         outfits = try await supabase
             .from("Outfits")

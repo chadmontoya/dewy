@@ -3,6 +3,7 @@ import SwiftUI
 struct OutfitDetailsView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
+    @EnvironmentObject var closetVM: ClosetViewModel
     
     @State private var showStyleTagSheet: Bool = false
     @State private var showLocationSheet: Bool = false
@@ -83,8 +84,14 @@ struct OutfitDetailsView: View {
                 
                 Button {
                     Task {
-                        await uploadOutfitVM.saveOutfit(userId: authController.currentUserId)
-                        onComplete()
+                        do {
+                            let outfit = try await uploadOutfitVM.saveOutfit(userId: authController.currentUserId)
+                            closetVM.addOutfit(outfit: outfit)
+                            onComplete()
+                        }
+                        catch {
+                            print("error saving outfit: \(error)")
+                        }
                     }
                 } label: {
                     Text("Add")

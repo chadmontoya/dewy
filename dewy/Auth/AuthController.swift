@@ -28,9 +28,11 @@ class AuthController: ObservableObject {
                 .single()
                 .execute()
             
+            print("has profile")
             requireOnboarding = false
         }
         catch {
+            requireOnboarding = true
             print("error checking profile: \(error)")
         }
         isLoading = false

@@ -5,6 +5,8 @@ import PhotosUI
 @MainActor
 class UploadOutfitViewModel: ObservableObject {
     @Published var outfitImage: UIImage? = nil
+    @Published var selectedStyles: [Int64: String] = [:]
+    @Published var availableStyles: [Style] = []
     @Published var styleTags: Set<String> = []
     @Published var location: CLLocationCoordinate2D? {
         didSet {
@@ -26,17 +28,30 @@ class UploadOutfitViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isComplete: Bool = false
     
+    init() {
+        Task {
+            try await fetchStyles()
+        }
+    }
+    
+    func fetchStyles() async throws {
+        availableStyles = try await supabase
+            .from("Styles")
+            .select()
+            .execute()
+            .value
+    }
+    
     func setCroppedImage(_ croppedImage: UIImage) {
         outfitImage = croppedImage
         croppedImageSelected = true
         imageSelection = nil
     }
     
-    func uploadOutfitImage(userId: UUID) async -> String? {
+    func uploadOutfitImage(userId: UUID) async throws -> String? {
         guard let image = outfitImage,
               let imageData = image.jpegData(compressionQuality: 0.8) else {
-            print("unable to get image data")
-            return nil
+            throw UploadOutfitError.imageUploadFailed
         }
         
         let filename = generateRandomFilename()
@@ -57,8 +72,7 @@ class UploadOutfitViewModel: ObservableObject {
             return publicURL.absoluteString
         }
         catch {
-            print("error uploading image to bucket: \(error)")
-            return nil
+            throw UploadOutfitError.imageUploadFailed
         }
     }
     
@@ -71,24 +85,40 @@ class UploadOutfitViewModel: ObservableObject {
             isLoading = false
         }
         
-        guard let outfitImageURL = await uploadOutfitImage(userId: userId) else {
-            throw UploadOutfitError.imageUploadFailed
+        do {
+            let outfitImageURL = try await uploadOutfitImage(userId: userId)
+            
+            let outfit: Outfit = try await supabase
+                .from("Outfits")
+                .insert(Outfit(userId: userId, imageURL: outfitImageURL, location: location, isPublic: isPublic))
+                .select()
+                .single()
+                .execute()
+                .value
+            
+            guard let outfitId = outfit.id else {
+                throw UploadOutfitError.outfitSaveFailed
+            }
+            
+            try await saveOutfitStyles(outfitId: outfitId)
+            
+            isComplete = true
+            return outfit
+        }
+        catch {
+            throw UploadOutfitError.outfitSaveFailed
+        }
+    }
+    
+    func saveOutfitStyles(outfitId: Int64) async throws {
+        let outfitStyles = selectedStyles.map { (styleId, styleName) in
+            OutfitStyle(outfitId: outfitId, styleId: styleId)
         }
         
-        let outfit: Outfit = Outfit(
-            userId: userId,
-            imageURL: outfitImageURL,
-            location: location,
-            isPublic: isPublic
-        )
-        
         try await supabase
-            .from("Outfits")
-            .insert(outfit)
+            .from("Outfit_Styles")
+            .insert(outfitStyles)
             .execute()
-        
-        isComplete = true
-        return outfit
     }
     
     func setCityLocation(from location: CLLocationCoordinate2D) {
@@ -154,4 +184,5 @@ class UploadOutfitViewModel: ObservableObject {
 enum UploadOutfitError: Error {
     case alreadyLoading
     case imageUploadFailed
+    case outfitSaveFailed
 }

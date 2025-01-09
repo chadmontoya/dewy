@@ -4,7 +4,7 @@ struct CardView: View {
     @State private var xOffset: CGFloat = 0
     @State private var yOffset: CGFloat = 0
     
-    let imageURL = "https://riycadlhyixpkdpvxhpx.supabase.co/storage/v1/object/public/outfits/5623D9D6-868A-42E7-8DE7-A12F81E2E333/F875DDB8-9494-48E5-B5B9-6F24DAE2E903-1736220057.jpg"
+    let imageURL = "https://riycadlhyixpkdpvxhpx.supabase.co/storage/v1/object/public/outfits/5623D9D6-868A-42E7-8DE7-A12F81E2E333/5EAF2AB7-791D-4EEA-AADC-CB6FB56FD45D-1736462983.jpg"
     
     var body: some View {
         ZStack {
@@ -32,6 +32,7 @@ struct CardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .offset(x: xOffset, y: yOffset)
         .animation(.snappy, value: xOffset)
+        .animation(.snappy, value: yOffset)
         .gesture(
             DragGesture()
                 .onChanged(onDragChanged)
@@ -41,9 +42,29 @@ struct CardView: View {
 }
 
 private extension CardView {
+    func swipeRight() {
+        xOffset = 500
+    }
+    
+    func swipeUp() {
+        yOffset = 1000
+    }
+    
+    func swipeDown() {
+        yOffset = -1000
+    }
+    
+    func swipeLeft() {
+        xOffset = -500
+    }
+}
+
+private extension CardView {
     func onDragChanged(_ value: _ChangedGesture<DragGesture>.Value) {
-        xOffset = value.translation.width
-        yOffset = value.translation.height
+        let dragMultiplier: CGFloat = 1.5
+        
+        xOffset = value.translation.width * dragMultiplier
+        yOffset = value.translation.height * dragMultiplier
         
     }
     
@@ -54,16 +75,28 @@ private extension CardView {
         if abs(width) <= abs(screenCutoff) {
             xOffset = 0
         }
+        else if width >= screenCutoff {
+            swipeRight()
+        }
+        else if width < screenCutoff {
+            swipeLeft()
+        }
         
         if abs(height) <= abs(screenCutoff) {
             yOffset = 0
+        }
+        else if height >= screenCutoff {
+            swipeUp()
+        }
+        else if height < screenCutoff {
+            swipeDown()
         }
     }
 }
 
 private extension CardView {
     var screenCutoff: CGFloat {
-        (UIScreen.main.bounds.width / 2) * 0.8
+        (UIScreen.main.bounds.width / 2) * 0.5
     }
     
     var cardWidth: CGFloat {

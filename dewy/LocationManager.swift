@@ -27,7 +27,6 @@ extension LocationManager: CLLocationManagerDelegate {
         case .denied:
             print("denied")
         case .authorizedWhenInUse, .authorizedAlways:
-            print("authorized")
             manager.startUpdatingLocation()
         @unknown default:
             break

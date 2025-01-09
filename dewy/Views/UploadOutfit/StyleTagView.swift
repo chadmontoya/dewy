@@ -5,31 +5,11 @@ struct StyleTagView: View {
     
     @Binding var showStyleTagSheet: Bool
     
-    let styleTags = ["casual", "streetwear", "athleisure", "formal", "minimal", "y2k", "vintage", "luxury"]
-    
     var body: some View {
         VStack {
             Spacer()
             
-            FlowLayout {
-                ForEach(styleTags, id: \.self) { styleTag in
-                    HStack {
-                        Text(styleTag)
-                            .padding()
-                            .background(uploadOutfitVM.styleTags.contains(styleTag) ? Color.chocolate : .gray)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .onTapGesture {
-                                if uploadOutfitVM.styleTags.contains(styleTag) {
-                                    uploadOutfitVM.styleTags.remove(styleTag)
-                                }
-                                else {
-                                    uploadOutfitVM.styleTags.insert(styleTag)
-                                }
-                            }
-                    }
-                    .padding(5)
-                }
-            }
+            styleList
             
             Spacer()
             
@@ -44,6 +24,28 @@ struct StyleTagView: View {
             }
             .cornerRadius(10)
             .padding()
+        }
+    }
+    
+    var styleList: some View {
+        FlowLayout {
+            ForEach(uploadOutfitVM.availableStyles) { style in
+                HStack {
+                    Text(style.name)
+                        .padding()
+                        .background(uploadOutfitVM.selectedStyles.keys.contains(style.id) ? Color.chocolate : .gray)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .onTapGesture {
+                            if uploadOutfitVM.selectedStyles.keys.contains(style.id) {
+                                uploadOutfitVM.selectedStyles.removeValue(forKey: style.id)
+                            }
+                            else {
+                                uploadOutfitVM.selectedStyles[style.id] = style.name
+                            }
+                        }
+                }
+                .padding(5)
+            }
         }
     }
 }

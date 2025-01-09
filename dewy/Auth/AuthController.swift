@@ -28,7 +28,6 @@ class AuthController: ObservableObject {
                 .single()
                 .execute()
             
-            print("has profile")
             requireOnboarding = false
         }
         catch {

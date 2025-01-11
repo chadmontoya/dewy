@@ -1,4 +1,4 @@
-struct Gender: Codable, Equatable {
+struct Gender: Codable, Equatable, Hashable {
     enum GenderType: String, Codable, CaseIterable {
         case male = "Male"
         case female = "Female"

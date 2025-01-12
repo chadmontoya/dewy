@@ -14,6 +14,10 @@ struct PreferencesView: View {
                         .background(
                             NavigationLink("", destination: GenderPreferenceView(preferencesVM:  preferencesVM)).opacity(0)
                         )
+                    PreferenceRow(title: "Age range", value: preferencesVM.agePreferenceText)
+                        .background(
+                            NavigationLink("", destination: AgePreferenceView(preferencesVM: preferencesVM)).opacity(0)
+                        )
                 }
                 .contentMargins(.vertical, 0)
                 .listStyle(.inset)

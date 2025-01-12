@@ -8,7 +8,7 @@ struct SwipeView: View {
             ZStack {
                 Color.cream.ignoresSafeArea()
                 
-                ForEach(0 ..< 100) { card in
+                ForEach(0 ..< 10) { card in
                     CardView()
                 }
             }

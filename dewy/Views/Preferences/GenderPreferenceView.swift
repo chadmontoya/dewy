@@ -56,7 +56,7 @@ struct GenderPreferenceView: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Gender Preferences")
+                    Text("Gender Preference")
                         .foregroundStyle(Color.black)
                 }
                 

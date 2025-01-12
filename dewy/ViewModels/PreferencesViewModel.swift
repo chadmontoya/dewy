@@ -2,6 +2,9 @@ import SwiftUI
 
 class PreferencesViewModel: ObservableObject {
     @Published var selectedGenders: Set<Gender> = [Gender(type: Gender.GenderType.male)]
+    @Published var minAge: Int = 22
+    @Published var maxAge: Int = 30
+    @Published var allAgesSelected = false
     @Published var allGendersSelected = false
     
     var genderPreferenceText: String {
@@ -11,6 +14,15 @@ class PreferencesViewModel: ObservableObject {
         else {
             return selectedGenders.map { $0.type.rawValue }.sorted().joined(separator: ", ")
         }
+    }
+    
+    var agePreferenceText: String {
+        return "\(minAge)-\(maxAge)"
+    }
+    
+    func updateAgePreference(minAge: Int, maxAge: Int) {
+        self.minAge = minAge
+        self.maxAge = maxAge
     }
     
     func toggleGender(_ genderType: Gender.GenderType) {

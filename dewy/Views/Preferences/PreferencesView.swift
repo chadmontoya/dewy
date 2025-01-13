@@ -10,7 +10,7 @@ struct PreferencesView: View {
             ZStack {
                 Color.softBeige.ignoresSafeArea()
                 List {
-                    PreferenceRow(title: "I'm interested in", value: preferencesVM.genderPreferenceText)
+                    PreferenceRow(title: "I'm interested in outfits from", value: preferencesVM.genderPreferenceText)
                         .background(
                             NavigationLink("", destination: GenderPreferenceView(preferencesVM:  preferencesVM)).opacity(0)
                         )

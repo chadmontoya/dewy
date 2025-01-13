@@ -32,7 +32,7 @@ struct GenderPreferenceView: View {
                 ForEach(Gender.GenderType.allCases, id: \.self) { genderType in
                     Button(action: { preferencesVM.toggleGender(genderType) }) {
                         HStack {
-                            Text(genderType.rawValue)
+                            Text(genderType.preferenceDisplayName)
                                 .foregroundStyle(.black)
                             Spacer()
                             if preferencesVM.selectedGenders.contains(Gender(type: genderType)) {

@@ -10,7 +10,7 @@ struct UploadOutfitView: View {
 
     var body: some View {
         ZStack {
-            Color.softBeige.ignoresSafeArea()
+            Color.cream.ignoresSafeArea()
             
             VStack(spacing: 16) {
                 Button(action: {
@@ -102,6 +102,6 @@ let configuration = SwiftyCropConfiguration(
         cancelButton: Color.black,
         interactionInstructions: Color.coffee,
         saveButton: Color.black,
-        background: Color.lightSand
+        background: Color.cream
     )
 )

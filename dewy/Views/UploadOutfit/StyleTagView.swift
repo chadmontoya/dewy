@@ -34,7 +34,7 @@ struct StyleTagView: View {
                     Text(style.name)
                         .padding()
                         .background(uploadOutfitVM.selectedStyles.keys.contains(style.id) ? Color.chocolate : .gray)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .clipShape(RoundedRectangle(cornerRadius: 30))
                         .onTapGesture {
                             if uploadOutfitVM.selectedStyles.keys.contains(style.id) {
                                 uploadOutfitVM.selectedStyles.removeValue(forKey: style.id)

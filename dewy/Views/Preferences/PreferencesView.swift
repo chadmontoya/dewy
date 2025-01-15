@@ -18,6 +18,10 @@ struct PreferencesView: View {
                         .background(
                             NavigationLink("", destination: AgePreferenceView(preferencesVM: preferencesVM)).opacity(0)
                         )
+                    PreferenceRow(title: "My location", value: preferencesVM.cityLocation)
+                        .background(
+                            NavigationLink("", destination: LocationPreferenceView(preferencesVM: preferencesVM)).opacity(0)
+                        )
                 }
                 .contentMargins(.vertical, 0)
                 .listStyle(.inset)

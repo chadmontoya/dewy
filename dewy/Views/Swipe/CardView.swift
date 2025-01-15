@@ -63,9 +63,8 @@ private extension CardView {
     func onDragChanged(_ value: _ChangedGesture<DragGesture>.Value) {
         let dragMultiplier: CGFloat = 1.5
         
-        xOffset = value.translation.width * dragMultiplier
-        yOffset = value.translation.height * dragMultiplier
-        
+        xOffset = value.translation.width
+        yOffset = value.translation.height
     }
     
     func onDragEnded(_ value: _ChangedGesture<DragGesture>.Value) {

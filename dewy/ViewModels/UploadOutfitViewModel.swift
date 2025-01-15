@@ -122,31 +122,12 @@ class UploadOutfitViewModel: ObservableObject {
     }
     
     func setCityLocation(from location: CLLocationCoordinate2D) {
-        let geocoder = CLGeocoder()
-        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
-        
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let error = error {
-                print("geocoding error: \(error)")
-                return
-            }
-            
-            if let placemark = placemarks?.first {
-                var locationString = ""
-                
-                if let city = placemark.locality {
-                    locationString = city
-                }
-                
-                if let state = placemark.administrativeArea {
-                    locationString += locationString.isEmpty ? state : ", \(state)"
-                }
-                
-                if let country = placemark.country {
-                    locationString += locationString.isEmpty ? country : ", \(country)"
-                }
-                
+        location.getCityLocation { result in
+            switch result {
+            case .success(let locationString):
                 self.cityLocation = locationString
+            case .failure(let error):
+                print("geocoding error: \(error)")
             }
         }
     }

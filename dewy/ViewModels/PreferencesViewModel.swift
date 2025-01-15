@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 class PreferencesViewModel: ObservableObject {
     @Published var selectedGenders: Set<Gender> = []
@@ -6,6 +7,15 @@ class PreferencesViewModel: ObservableObject {
     
     @Published var minAge: Int = 22
     @Published var maxAge: Int = 30
+    
+    @Published var location: CLLocationCoordinate2D? {
+        didSet {
+            if let location {
+                setCityLocation(from: location)
+            }
+        }
+    }
+    @Published var cityLocation: String = ""
     
     var genderPreferenceText: String {
         if allGendersSelected {
@@ -49,5 +59,16 @@ class PreferencesViewModel: ObservableObject {
     func selectAllGenders() {
         allGendersSelected = true
         selectedGenders.removeAll()
+    }
+    
+    func setCityLocation(from location: CLLocationCoordinate2D) {
+        location.getCityLocation { result in
+            switch result {
+            case .success(let locationString):
+                self.cityLocation = locationString
+            case .failure(let error):
+                print("geocoding error: \(error)")
+            }
+        }
     }
 }

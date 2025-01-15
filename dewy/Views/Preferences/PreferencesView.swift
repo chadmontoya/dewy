@@ -71,7 +71,3 @@ struct PreferenceRow: View {
         .listSectionSeparator(.hidden, edges: .top)
     }
 }
-
-#Preview {
-    PreferencesView(showPreferences: .constant(true))
-}

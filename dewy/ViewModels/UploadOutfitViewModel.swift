@@ -28,18 +28,23 @@ class UploadOutfitViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isComplete: Bool = false
     
-    init() {
+    private let styleService: StyleService
+    
+    init(styleService: StyleService) {
+        self.styleService = styleService
+        
         Task {
             try await fetchStyles()
         }
     }
     
     func fetchStyles() async throws {
-        availableStyles = try await supabase
-            .from("Styles")
-            .select()
-            .execute()
-            .value
+        do {
+            self.availableStyles = try await styleService.fetchStyles()
+        }
+        catch {
+            print("failed to fetch styles: \(error))")
+        }
     }
     
     func setCroppedImage(_ croppedImage: UIImage) {

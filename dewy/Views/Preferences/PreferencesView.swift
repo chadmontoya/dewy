@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PreferencesView: View {
-    @StateObject private var preferencesVM: PreferencesViewModel = PreferencesViewModel()
+    @StateObject private var preferencesVM: PreferencesViewModel = PreferencesViewModel(styleService: StyleService())
     
     @Binding var showPreferences: Bool
     
@@ -9,6 +9,7 @@ struct PreferencesView: View {
         NavigationStack {
             ZStack {
                 Color.softBeige.ignoresSafeArea()
+                
                 List {
                     PreferenceRow(title: "I'm interested in outfits from", value: preferencesVM.genderPreferenceText)
                         .background(
@@ -21,6 +22,10 @@ struct PreferencesView: View {
                     PreferenceRow(title: "My location", value: preferencesVM.cityLocation)
                         .background(
                             NavigationLink("", destination: LocationPreferenceView(preferencesVM: preferencesVM)).opacity(0)
+                        )
+                    PreferenceRow(title: "Styles", value: "")
+                        .background(
+                            NavigationLink("", destination: StylePreferenceView(preferencesVM: preferencesVM)).opacity(0)
                         )
                 }
                 .contentMargins(.vertical, 0)

@@ -8,6 +8,9 @@ class PreferencesViewModel: ObservableObject {
     @Published var minAge: Int = 22
     @Published var maxAge: Int = 30
     
+    @Published var availableStyles: [Style] = []
+    @Published var selectedStyles: [Int64: String] = [:]
+
     @Published var location: CLLocationCoordinate2D? {
         didSet {
             if let location {
@@ -28,6 +31,29 @@ class PreferencesViewModel: ObservableObject {
     
     var agePreferenceText: String {
         return "\(minAge)-\(maxAge)"
+    }
+    
+    var stylePreferenceText: String {
+        return ""
+    }
+    
+    private let styleService: StyleService
+    
+    init(styleService: StyleService) {
+        self.styleService = styleService
+        
+        Task {
+            try await fetchStyles()
+        }
+    }
+    
+    func fetchStyles() async throws {
+        do {
+            self.availableStyles = try await styleService.fetchStyles()
+        }
+        catch {
+            print("failed to fetch styles: \(error)")
+        }
     }
     
     func updateAgePreference(minAge: Int, maxAge: Int) {

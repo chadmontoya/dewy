@@ -3,9 +3,8 @@ import CoreLocation
 
 struct PreferencesService {
     func fetchPreferences(userId: UUID) async throws -> Preferences {
-        var preferences: Preferences = try await supabase
-            .from("Preferences")
-            .select()
+        let preferences: Preferences = try await supabase
+            .rpc("get_preferences")
             .eq("user_id", value: userId)
             .single()
             .execute()

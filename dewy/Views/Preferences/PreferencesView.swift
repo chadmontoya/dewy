@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PreferencesView: View {
-    @StateObject private var preferencesVM: PreferencesViewModel = PreferencesViewModel(styleService: StyleService())
+    @ObservedObject var preferencesVM: PreferencesViewModel
     
     @Binding var showPreferences: Bool
     

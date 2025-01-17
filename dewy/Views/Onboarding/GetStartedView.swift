@@ -20,10 +20,9 @@ struct GetStartedView: View {
             Button {
                 Task {
                     if let userId = authController.session?.user.id {
-                        try await onboardingVM.saveProfile(userId: userId)
+                        try await onboardingVM.completeOnboarding(userId: userId)
                         onboardingComplete = true
                         authController.requireOnboarding = false
-                        
                     }
                 }
             } label: {

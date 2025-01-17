@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct SwipeView: View {
+    @EnvironmentObject var authController: AuthController
+    @StateObject private var preferencesVM: PreferencesViewModel = PreferencesViewModel(
+        preferencesService: PreferencesService(),
+        styleService: StyleService())
     @State private var showPreferences = false
     
     var body: some View {
@@ -23,7 +27,14 @@ struct SwipeView: View {
                 }
             }
             .fullScreenCover(isPresented: $showPreferences) {
-                PreferencesView(showPreferences: $showPreferences)
+                PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
+            }
+        }
+        .onAppear {
+            if let userId = authController.session?.user.id {
+                Task {
+                    try await preferencesVM.fetchPreferences(userId: userId)
+                }
             }
         }
     }

@@ -4,14 +4,11 @@ import CoreLocation
 @MainActor
 class PreferencesViewModel: ObservableObject {
     @Published var selectedGenders: Set<Gender> = []
-    @Published var allGendersSelected = true
-    
-    @Published var minAge: Int = 22
-    @Published var maxAge: Int = 30
-    
+    @Published var allGendersSelected = false
+    @Published var minAge: Int = 18
+    @Published var maxAge: Int = 19
     @Published var availableStyles: [Style] = []
     @Published var selectedStyles: [Int64: String] = [:]
-
     @Published var location: CLLocationCoordinate2D? {
         didSet {
             if let location {
@@ -38,13 +35,25 @@ class PreferencesViewModel: ObservableObject {
         return ""
     }
     
+    private let preferencesService: PreferencesService
     private let styleService: StyleService
     
-    init(styleService: StyleService) {
+    init(preferencesService: PreferencesService, styleService: StyleService) {
+        self.preferencesService = preferencesService
         self.styleService = styleService
         
         Task {
             try await fetchStyles()
+        }
+    }
+    
+    func fetchPreferences(userId: UUID) async throws {
+        do {
+            let preferences: Preferences = try await preferencesService.fetchPreferences(userId: userId)
+            updatePreferences(from: preferences)
+        }
+        catch {
+            print("failed to fetch preferences: \(error)")
         }
     }
     
@@ -97,5 +106,20 @@ class PreferencesViewModel: ObservableObject {
                 print("geocoding error: \(error)")
             }
         }
+    }
+    
+    private func updatePreferences(from preferences: Preferences) {
+        if preferences.preferredGenders.count == Gender.GenderType.allCases.count {
+            allGendersSelected = true
+            selectedGenders.removeAll()
+        }
+        else {
+            allGendersSelected = false
+            selectedGenders = Set(preferences.preferredGenders.map(Gender.init))
+        }
+        
+        minAge = preferences.minAge
+        maxAge = preferences.maxAge
+        location = preferences.location
     }
 }

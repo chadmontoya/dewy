@@ -2,12 +2,11 @@ import Foundation
 import CoreLocation
 
 struct ProfileService {
-    func saveProfile(userId: UUID, birthday: Date, gender: Gender, location: CLLocationCoordinate2D?) async throws {
+    func saveProfile(userId: UUID, birthday: Date, gender: Gender) async throws {
         let profile: Profile = Profile(
             userId: userId,
             birthday: birthday,
-            gender: gender.type.rawValue,
-            location: location
+            gender: gender.type.rawValue
         )
         
         try await supabase

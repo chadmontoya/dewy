@@ -15,8 +15,7 @@ class ClosetViewModel: ObservableObject {
     
     func fetchOutfits(userId: UUID) async throws {
         outfits = try await supabase
-            .from("Outfits")
-            .select()
+            .rpc("get_outfits")
             .eq("user_id", value: userId)
             .execute()
             .value

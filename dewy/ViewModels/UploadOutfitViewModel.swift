@@ -1,5 +1,5 @@
 import SwiftUI
-import MapKit
+import CoreLocation
 import PhotosUI
 
 @MainActor

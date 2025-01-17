@@ -1,34 +1,31 @@
-import SwiftUI
-import MapKit
+import Foundation
+import CoreLocation
 
+@MainActor
 class OnboardingViewModel: ObservableObject {
-    @Published var birthday: Date
-    @Published var location: CLLocationCoordinate2D?
-    @Published var gender: Gender
+    @Published var birthday: Date = Date()
+    @Published var location: CLLocationCoordinate2D? = nil
+    @Published var gender: Gender = Gender(type: .male)
     @Published var isLoading: Bool = false
     @Published var isComplete: Bool = false
     
-    init(birthday: Date = Date(), gender: Gender = Gender(type: .male)) {
-        self.birthday = birthday
-        self.gender = gender
-        self.location = nil
+    private let profileService: ProfileService
+    private let preferencesService: PreferencesService
+    
+    init(profileService: ProfileService, preferencesService: PreferencesService) {
+        self.profileService = profileService
+        self.preferencesService = preferencesService
     }
     
-    @MainActor
-    func saveProfile(userId: UUID) async throws {
+    func completeOnboarding(userId: UUID) async throws {
         isLoading = true
         
-        let profile: Profile = Profile(
+        try await profileService.saveProfile(
             userId: userId,
             birthday: birthday,
-            gender: gender.type.rawValue,
+            gender: gender,
             location: location
         )
-        
-        try await supabase
-            .from("Profiles")
-            .insert(profile)
-            .execute()
         
         isComplete = true
         isLoading = false

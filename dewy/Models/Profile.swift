@@ -1,12 +1,12 @@
 import Foundation
-import MapKit
+import CoreLocation
 
 struct Profile: Codable, Identifiable {
-    let id: Int64?
-    let userId: UUID
-    let birthday: Date?
-    let gender: String?
-    let location: CLLocationCoordinate2D?
+    var id: Int64?
+    var userId: UUID
+    var birthday: Date?
+    var gender: String?
+    var location: CLLocationCoordinate2D?
     
     enum CodingKeys: String, CodingKey {
         case id

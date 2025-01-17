@@ -1,6 +1,7 @@
 import SwiftUI
-import MapKit
+import CoreLocation
 
+@MainActor
 class PreferencesViewModel: ObservableObject {
     @Published var selectedGenders: Set<Gender> = []
     @Published var allGendersSelected = true

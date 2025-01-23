@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		690188772CF8FE37006A0CA6 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 690188762CF8FE37006A0CA6 /* Supabase */; };
+		6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6903F2892CE3FED60058630B /* GoogleSignIn */; };
+		690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 690991172D0E3B2400419383 /* GoogleSignInSwift */; };
+		6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = 690991192D0E3B2400419383 /* SwiftyCrop */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		6903F2542CE2A27B0058630B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +36,22 @@
 		6903F25D2CE2A27B0058630B /* dewyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dewyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6903F2A02CE444530058630B /* Exceptions for "dewy" folder in "dewy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6903F23D2CE2A2790058630B /* dewy */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6903F2402CE2A2790058630B /* dewy */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6903F2A02CE444530058630B /* Exceptions for "dewy" folder in "dewy" target */,
+			);
 			path = dewy;
 			sourceTree = "<group>";
 		};
@@ -52,6 +72,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */,
+				690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */,
+				6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */,
+				690188772CF8FE37006A0CA6 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +102,7 @@
 				6903F2402CE2A2790058630B /* dewy */,
 				6903F2562CE2A27B0058630B /* dewyTests */,
 				6903F2602CE2A27B0058630B /* dewyUITests */,
+				690991162D0E3B2400419383 /* Frameworks */,
 				6903F23F2CE2A2790058630B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +115,13 @@
 				6903F25D2CE2A27B0058630B /* dewyUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		690991162D0E3B2400419383 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +144,10 @@
 			);
 			name = dewy;
 			packageProductDependencies = (
+				6903F2892CE3FED60058630B /* GoogleSignIn */,
+				690188762CF8FE37006A0CA6 /* Supabase */,
+				690991172D0E3B2400419383 /* GoogleSignInSwift */,
+				690991192D0E3B2400419383 /* SwiftyCrop */,
 			);
 			productName = dewy;
 			productReference = 6903F23E2CE2A2790058630B /* dewy.app */;
@@ -195,6 +231,11 @@
 			);
 			mainGroup = 6903F2352CE2A2790058630B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				690188752CF8FE37006A0CA6 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6903F23F2CE2A2790058630B /* Products */;
 			projectDirPath = "";
@@ -396,13 +437,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"dewy/Preview Content\"";
+				DEVELOPMENT_TEAM = 39KZ64UMWB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dewy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = dewy;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow us to accurately set the current city you are located in. We do not track or share your exact location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -410,9 +455,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chadmontoya.dewy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -424,13 +473,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"dewy/Preview Content\"";
+				DEVELOPMENT_TEAM = 39KZ64UMWB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = dewy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = dewy;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow us to accurately set the current city you are located in. We do not track or share your exact location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -438,9 +491,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chadmontoya.dewy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -552,6 +609,56 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		690188752CF8FE37006A0CA6 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+		6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+		6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/benedom/SwiftyCrop";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		690188762CF8FE37006A0CA6 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 690188752CF8FE37006A0CA6 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		6903F2892CE3FED60058630B /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		690991172D0E3B2400419383 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		690991192D0E3B2400419383 /* SwiftyCrop */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */;
+			productName = SwiftyCrop;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6903F2362CE2A2790058630B /* Project object */;
 }

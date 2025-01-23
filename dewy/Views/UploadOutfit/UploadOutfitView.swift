@@ -4,7 +4,10 @@ import SwiftyCrop
 struct UploadOutfitView: View {
     @EnvironmentObject var authController: AuthController
     
-    @StateObject private var uploadOutfitVM: UploadOutfitViewModel = UploadOutfitViewModel(styleService: StyleService())
+    @StateObject var uploadOutfitVM: UploadOutfitViewModel = UploadOutfitViewModel(
+        styleService: StyleService(),
+        preferencesService: PreferencesService()
+    )
     
     var onComplete: () -> Void
 

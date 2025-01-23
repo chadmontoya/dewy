@@ -29,13 +29,11 @@ class UploadOutfitViewModel: ObservableObject {
     @Published var isComplete: Bool = false
     
     private let styleService: StyleService
+    private let preferencesService: PreferencesService
     
-    init(styleService: StyleService) {
+    init(styleService: StyleService, preferencesService: PreferencesService) {
         self.styleService = styleService
-        
-        Task {
-            try await fetchStyles()
-        }
+        self.preferencesService = preferencesService
     }
     
     func fetchStyles() async throws {
@@ -44,6 +42,17 @@ class UploadOutfitViewModel: ObservableObject {
         }
         catch {
             print("failed to fetch styles: \(error))")
+        }
+    }
+    
+    func fetchLocation(userId: UUID) async throws {
+        do {
+            let fetchedLocation: CLLocationCoordinate2D = try await preferencesService.fetchLocation(userId: userId)
+            self.location = fetchedLocation
+            setCityLocation(from: fetchedLocation)
+        }
+        catch {
+            print("failed to fetch location: \(error)")
         }
     }
     
@@ -171,4 +180,9 @@ enum UploadOutfitError: Error {
     case alreadyLoading
     case imageUploadFailed
     case outfitSaveFailed
+}
+
+struct LocationResponse: Decodable {
+    let lat: Double
+    let long: Double
 }

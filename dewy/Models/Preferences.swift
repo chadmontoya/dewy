@@ -73,3 +73,19 @@ extension Preferences: Codable {
         }
     }
 }
+
+struct LocationPreference: Decodable {
+    let lat: Double
+    let long: Double
+    let userId: UUID
+    
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: lat, longitude: long)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case lat
+        case long
+        case userId = "user_id"
+    }
+}

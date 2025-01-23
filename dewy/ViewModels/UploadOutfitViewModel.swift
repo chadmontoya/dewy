@@ -1,5 +1,5 @@
 import SwiftUI
-import MapKit
+import CoreLocation
 import PhotosUI
 
 @MainActor
@@ -28,18 +28,32 @@ class UploadOutfitViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isComplete: Bool = false
     
-    init() {
-        Task {
-            try await fetchStyles()
-        }
+    private let styleService: StyleService
+    private let preferencesService: PreferencesService
+    
+    init(styleService: StyleService, preferencesService: PreferencesService) {
+        self.styleService = styleService
+        self.preferencesService = preferencesService
     }
     
     func fetchStyles() async throws {
-        availableStyles = try await supabase
-            .from("Styles")
-            .select()
-            .execute()
-            .value
+        do {
+            self.availableStyles = try await styleService.fetchStyles()
+        }
+        catch {
+            print("failed to fetch styles: \(error))")
+        }
+    }
+    
+    func fetchLocation(userId: UUID) async throws {
+        do {
+            let fetchedLocation: CLLocationCoordinate2D = try await preferencesService.fetchLocation(userId: userId)
+            self.location = fetchedLocation
+            setCityLocation(from: fetchedLocation)
+        }
+        catch {
+            print("failed to fetch location: \(error)")
+        }
     }
     
     func setCroppedImage(_ croppedImage: UIImage) {
@@ -122,31 +136,12 @@ class UploadOutfitViewModel: ObservableObject {
     }
     
     func setCityLocation(from location: CLLocationCoordinate2D) {
-        let geocoder = CLGeocoder()
-        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
-        
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let error = error {
-                print("geocoding error: \(error)")
-                return
-            }
-            
-            if let placemark = placemarks?.first {
-                var locationString = ""
-                
-                if let city = placemark.locality {
-                    locationString = city
-                }
-                
-                if let state = placemark.administrativeArea {
-                    locationString += locationString.isEmpty ? state : ", \(state)"
-                }
-                
-                if let country = placemark.country {
-                    locationString += locationString.isEmpty ? country : ", \(country)"
-                }
-                
+        location.getCityLocation { result in
+            switch result {
+            case .success(let locationString):
                 self.cityLocation = locationString
+            case .failure(let error):
+                print("geocoding error: \(error)")
             }
         }
     }
@@ -185,4 +180,9 @@ enum UploadOutfitError: Error {
     case alreadyLoading
     case imageUploadFailed
     case outfitSaveFailed
+}
+
+struct LocationResponse: Decodable {
+    let lat: Double
+    let long: Double
 }

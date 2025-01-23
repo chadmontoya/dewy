@@ -43,7 +43,7 @@ struct ClosetView: View {
                         uploadOutfit = false
                         navigationPath.removeAll()
                     })
-                        .toolbarRole(.editor)
+                    .toolbarRole(.editor)
                 }
             }
             .environmentObject(closetVM)

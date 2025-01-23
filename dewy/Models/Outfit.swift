@@ -1,13 +1,13 @@
 import SwiftUI
-import MapKit
+import CoreLocation
 
-struct Outfit: Codable, Identifiable, Hashable {
-    let id: Int64?
-    let createDate: Date?
-    let userId: UUID?
-    let imageURL: String?
-    let location: CLLocationCoordinate2D?
-    let isPublic: Bool?
+struct Outfit: Identifiable {
+    var id: Int64?
+    var createDate: Date?
+    var userId: UUID?
+    var imageURL: String?
+    var location: CLLocationCoordinate2D?
+    var isPublic: Bool?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -15,6 +15,8 @@ struct Outfit: Codable, Identifiable, Hashable {
         case userId = "user_id"
         case imageURL = "image_url"
         case location
+        case latitude = "lat"
+        case longitude = "long"
         case isPublic = "public"
     }
     
@@ -26,7 +28,9 @@ struct Outfit: Codable, Identifiable, Hashable {
         self.location = location
         self.isPublic = isPublic
     }
-    
+}
+
+extension Outfit: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
@@ -36,17 +40,11 @@ struct Outfit: Codable, Identifiable, Hashable {
         imageURL = try container.decodeIfPresent(String.self, forKey: .imageURL)
         isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic)
         
-        if let geoString = try container.decodeIfPresent(String.self, forKey: .location) {
-            let components = geoString
-                .trimmingCharacters(in: CharacterSet(charactersIn: "()"))
-                .split(separator: " ")
-                .map { Double($0.trimmingCharacters(in: .whitespaces)) }
-            if let latitude = components.last, let longitude = components.first, components.count == 2 {
-                location = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
-            } else {
-                location = nil
-            }
-        } else {
+        if let latitude = try container.decodeIfPresent(Double.self, forKey: .latitude),
+           let longitude = try container.decodeIfPresent(Double.self, forKey: .longitude) {
+            location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        }
+        else {
             location = nil
         }
     }
@@ -67,7 +65,9 @@ struct Outfit: Codable, Identifiable, Hashable {
         
         try container.encode(isPublic, forKey: .isPublic)
     }
-    
+}
+
+extension Outfit: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
         hasher.combine(createDate)
@@ -79,7 +79,9 @@ struct Outfit: Codable, Identifiable, Hashable {
         }
         hasher.combine(isPublic)
     }
-    
+}
+
+extension Outfit: Equatable {
     static func == (lhs: Outfit, rhs: Outfit) -> Bool {
         lhs.id == rhs.id &&
         lhs.createDate == rhs.createDate &&

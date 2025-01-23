@@ -8,22 +8,25 @@ struct OutfitDetailsView: View {
     @State private var showStyleTagSheet: Bool = false
     @State private var showLocationSheet: Bool = false
     
+    private let screenHeight = UIScreen.main.bounds.height
+    
     var onComplete: () -> Void
     
     var body: some View {
         ZStack {
+            Color.cream.ignoresSafeArea()
+            
             VStack {
                 HStack {
                     if let selectedImage = uploadOutfitVM.outfitImage {
                         Image(uiImage: selectedImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 400)
+                            .frame(height: screenHeight * 0.45)
                             .clipShape((RoundedRectangle(cornerRadius: 10)))
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.top)
                 
                 Form {
                     Section(header: Text("style").foregroundStyle(Color.coffee)) {
@@ -42,14 +45,14 @@ struct OutfitDetailsView: View {
                         }
                         .sheet(isPresented: $showStyleTagSheet) {
                             ZStack {
-                                Color.softBeige.ignoresSafeArea()
+                                Color.cream.ignoresSafeArea()
                                 StyleTagView(showStyleTagSheet: $showStyleTagSheet)
                                     .presentationDetents([.medium])
                             }
                         }
                         .sheet(isPresented: $showLocationSheet) {
                             ZStack {
-                                Color.softBeige.ignoresSafeArea()
+                                Color.cream.ignoresSafeArea()
                                 OutfitLocationView(showLocationSheet: $showLocationSheet)
                             }
                         }
@@ -75,48 +78,52 @@ struct OutfitDetailsView: View {
                             Toggle("Make Public", isOn: $uploadOutfitVM.isPublic)
                         }
                     }
+                    
+                    Button {
+                        Task {
+                            do {
+                                if let userId = authController.session?.user.id {
+                                    let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
+                                    closetVM.addOutfit(outfit: outfit)
+                                    onComplete()
+                                }
+                            }
+                            catch {
+                                print("error saving outfit: \(error)")
+                            }
+                        }
+                    } label: {
+                        Text("Add")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(.white)
+                            .background(Color.coffee)
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .cornerRadius(10)
                 }
                 .colorScheme(.light)
                 .scrollContentBackground(.hidden)
-                .scrollDisabled(true)
-                
-                Spacer()
-                
-                Button {
-                    Task {
-                        do {
-                            if let userId = authController.session?.user.id {
-                                let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
-                                closetVM.addOutfit(outfit: outfit)
-                                onComplete()
-                            }
-                        }
-                        catch {
-                            print("error saving outfit: \(error)")
-                        }
-                    }
-                } label: {
-                    Text("Add")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .foregroundStyle(.white)
-                        .background(Color.coffee)
-                }
-                .cornerRadius(10)
-                .padding()
             }
-            .background(Color.softBeige)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("new outfit")
                         .font(.headline)
-                        .foregroundStyle(Color.chocolate)
+                        .foregroundStyle(Color.coffee)
                 }
             }
             
             if uploadOutfitVM.isLoading {
                 LoadingView()
                     .transition(.opacity)
+            }
+        }
+        .onAppear {
+            Task {
+                if let userId = authController.session?.user.id {
+                    try await uploadOutfitVM.fetchLocation(userId: userId)
+                }
+                try await uploadOutfitVM.fetchStyles()
             }
         }
     }

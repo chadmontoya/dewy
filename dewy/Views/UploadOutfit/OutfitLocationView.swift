@@ -1,5 +1,4 @@
 import SwiftUI
-import MapKit
 
 struct OutfitLocationView: View {
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel

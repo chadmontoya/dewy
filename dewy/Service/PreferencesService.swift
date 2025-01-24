@@ -12,6 +12,7 @@ struct PreferencesService {
         return preferences
     }
     
+    
     func fetchLocation(userId: UUID) async throws -> CLLocationCoordinate2D {
         let location: LocationPreference = try await supabase
             .rpc("get_location_preferences")
@@ -23,18 +24,43 @@ struct PreferencesService {
         return CLLocationCoordinate2D(latitude: location.lat, longitude: location.long)
     }
     
-    func savePreferences(userId: UUID, minAge: Int, maxAge: Int, preferredGenders: [Gender.GenderType], location: CLLocationCoordinate2D?) async throws {
-        let preferences: Preferences = Preferences(
+    func addPreferences(userId: UUID, minAge: Int, maxAge: Int, preferredGenders: [Gender.GenderType], location: CLLocationCoordinate2D?) async throws -> Preferences {
+        var preferences: Preferences = try await supabase
+            .from("Preferences")
+            .insert(
+                Preferences(
+                    userId: userId,
+                    minAge: minAge,
+                    maxAge: maxAge,
+                    preferredGenders: preferredGenders,
+                    location: location
+                )
+            )
+            .select()
+            .single()
+            .execute()
+            .value
+        
+        preferences.location = location
+        preferences.selectedStyleIds = []
+        
+        return preferences
+    }
+    
+    func updatePreferences(id: Int64, userId: UUID, minAge: Int, maxAge: Int, preferredGenders: [Gender.GenderType], location: CLLocationCoordinate2D, selectedStyles: Set<Style>, allStylesPreferred: Bool) async throws {
+        let preferences = UpdatePreferencesParams(
+            preferencesId: id,
             userId: userId,
             minAge: minAge,
             maxAge: maxAge,
             preferredGenders: preferredGenders,
-            location: location
+            location: location,
+            selectedStyles: selectedStyles,
+            allStylesPreferred: allStylesPreferred
         )
         
         try await supabase
-            .from("Preferences")
-            .insert(preferences)
+            .rpc("update_preferences", params: preferences)
             .execute()
     }
 }

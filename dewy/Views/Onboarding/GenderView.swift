@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct GenderView: View {
+    @EnvironmentObject var preferencesVM: PreferencesViewModel
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
@@ -35,6 +36,7 @@ struct GenderView: View {
             NavigationLink {
                 GetStartedView()
                     .environmentObject(onboardingVM)
+                    .environmentObject(preferencesVM)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")

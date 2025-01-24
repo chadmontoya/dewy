@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct UserLocationView: View {
+    @EnvironmentObject var preferencesVM: PreferencesViewModel
+    @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     @State var locationSearchVM = LocationSearchViewModel()
-    
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
         VStack {
@@ -20,6 +20,7 @@ struct UserLocationView: View {
             NavigationLink {
                 GenderView()
                     .environmentObject(onboardingVM)
+                    .environmentObject(preferencesVM)
                     .toolbarRole(.editor)
             } label: {
                 Text("Next")

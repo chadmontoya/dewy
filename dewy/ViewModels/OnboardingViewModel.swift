@@ -29,7 +29,7 @@ class OnboardingViewModel: ObservableObject {
         self.preferencesService = preferencesService
     }
     
-    func completeOnboarding(userId: UUID) async throws {
+    func completeOnboarding(userId: UUID) async throws -> Preferences {
         isLoading = true
         
         try await profileService.saveProfile(
@@ -38,7 +38,7 @@ class OnboardingViewModel: ObservableObject {
             gender: gender
         )
         
-        try await preferencesService.savePreferences(
+        let preferences: Preferences = try await preferencesService.addPreferences(
             userId: userId,
             minAge: minAge,
             maxAge: maxAge,
@@ -48,6 +48,8 @@ class OnboardingViewModel: ObservableObject {
         
         isLoading = false
         isComplete = true
+        
+        return preferences
     }
     
     private func setAgeRange() {

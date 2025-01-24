@@ -3,12 +3,20 @@ import CoreLocation
 
 @MainActor
 class PreferencesViewModel: ObservableObject {
+    var preferencesId: Int64?
     @Published var selectedGenders: Set<Gender> = []
     @Published var allGendersSelected = false
     @Published var minAge: Int = 18
     @Published var maxAge: Int = 19
     @Published var availableStyles: [Style] = []
-    @Published var selectedStyles: [Int64: String] = [:]
+    @Published var selectedStyles: Set<Style> = []
+    @Published var allStylesSelected: Bool = false {
+        didSet {
+            if allStylesSelected {
+                selectedStyles = Set(availableStyles)
+            }
+        }
+    }
     @Published var location: CLLocationCoordinate2D? {
         didSet {
             if let location {
@@ -32,7 +40,12 @@ class PreferencesViewModel: ObservableObject {
     }
     
     var stylePreferenceText: String {
-        return ""
+        if allStylesSelected {
+            return "All"
+        }
+        else {
+            return selectedStyles.isEmpty ? "Select styles" : selectedStyles.map(\.name).sorted().joined(separator: ", ")
+        }
     }
     
     private let preferencesService: PreferencesService
@@ -47,10 +60,12 @@ class PreferencesViewModel: ObservableObject {
         }
     }
     
+    
     func fetchPreferences(userId: UUID) async throws {
         do {
             let preferences: Preferences = try await preferencesService.fetchPreferences(userId: userId)
-            updatePreferences(from: preferences)
+            
+            setPreferences(from: preferences)
         }
         catch {
             print("failed to fetch preferences: \(error)")
@@ -63,6 +78,22 @@ class PreferencesViewModel: ObservableObject {
         }
         catch {
             print("failed to fetch styles: \(error)")
+        }
+    }
+    
+    func savePreferences(userId: UUID) async throws {
+        var genderPreferences: [Gender.GenderType] = Gender.GenderType.allCases
+        if !allGendersSelected {
+            genderPreferences = selectedGenders.map(\.type)
+        }
+        
+        do {
+            if let preferencesId {
+                try await preferencesService.updatePreferences(id: preferencesId, userId: userId, minAge: minAge, maxAge: maxAge, preferredGenders: genderPreferences, location: location!, selectedStyles: selectedStyles, allStylesPreferred: allStylesSelected)
+            }
+        }
+        catch {
+            print("error saving preferences: \(error)")
         }
     }
     
@@ -92,6 +123,19 @@ class PreferencesViewModel: ObservableObject {
         }
     }
     
+    func toggleStyle(_ style: Style) {
+        if selectedStyles.contains(style) && selectedStyles.count > 1 {
+            selectedStyles.remove(style)
+            allStylesSelected = false
+        }
+        else {
+            selectedStyles.insert(style)
+            if selectedStyles.count == availableStyles.count {
+                allStylesSelected = true
+            }
+        }
+    }
+    
     func selectAllGenders() {
         allGendersSelected = true
         selectedGenders.removeAll()
@@ -108,7 +152,9 @@ class PreferencesViewModel: ObservableObject {
         }
     }
     
-    private func updatePreferences(from preferences: Preferences) {
+    func setPreferences(from preferences: Preferences) {
+        preferencesId = preferences.id
+        
         if preferences.preferredGenders.count == Gender.GenderType.allCases.count {
             allGendersSelected = true
             selectedGenders.removeAll()
@@ -121,5 +167,12 @@ class PreferencesViewModel: ObservableObject {
         minAge = preferences.minAge
         maxAge = preferences.maxAge
         location = preferences.location
+        allStylesSelected = preferences.allStylesPreferred
+        
+        setSelectedStyles(from: preferences.selectedStyleIds!)
+    }
+    
+    private func setSelectedStyles(from styleIds: [Int64]) {
+        selectedStyles = Set(availableStyles.filter { styleIds.contains($0.id) })
     }
 }

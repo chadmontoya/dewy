@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PreferencesView: View {
+    @EnvironmentObject var authController: AuthController
     @ObservedObject var preferencesVM: PreferencesViewModel
     
     @Binding var showPreferences: Bool
@@ -23,7 +24,7 @@ struct PreferencesView: View {
                         .background(
                             NavigationLink("", destination: LocationPreferenceView(preferencesVM: preferencesVM)).opacity(0)
                         )
-                    PreferenceRow(title: "Styles", value: "")
+                    PreferenceRow(title: "Outfit styles", value: preferencesVM.stylePreferenceText)
                         .background(
                             NavigationLink("", destination: StylePreferenceView(preferencesVM: preferencesVM)).opacity(0)
                         )
@@ -38,6 +39,11 @@ struct PreferencesView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
+                            Task {
+                                if let userId = authController.session?.user.id {
+                                    try await preferencesVM.savePreferences(userId: userId)
+                                }    
+                            }
                             showPreferences = false
                         } label: {
                             Image(systemName: "xmark")

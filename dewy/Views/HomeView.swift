@@ -10,6 +10,11 @@ enum TabSelection: Hashable {
 
 struct HomeView: View {
     @EnvironmentObject var authController: AuthController
+    @StateObject private var preferencesVM: PreferencesViewModel = PreferencesViewModel(
+        preferencesService: PreferencesService(),
+        styleService: StyleService()
+    )
+    
     
     @State private var currentTab: TabSelection = .home
     
@@ -27,6 +32,7 @@ struct HomeView: View {
         TabView(selection: $currentTab) {
             Tab("Home", systemImage: "house.fill", value: .home) {
                 SwipeView()
+                    .environmentObject(preferencesVM)
             }
             
             Tab("Saved", systemImage: "questionmark.circle.fill", value: .saved) {
@@ -53,6 +59,7 @@ struct HomeView: View {
         }
         .fullScreenCover(isPresented: $authController.requireOnboarding) {
             OnboardingView()
+                .environmentObject(preferencesVM)
         }
     }
 }

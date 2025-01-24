@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct GetStartedView: View {
+    @EnvironmentObject var preferencesVM: PreferencesViewModel
     @EnvironmentObject var onboardingVM: OnboardingViewModel
     @EnvironmentObject var authController: AuthController
     
@@ -20,7 +21,12 @@ struct GetStartedView: View {
             Button {
                 Task {
                     if let userId = authController.session?.user.id {
-                        try await onboardingVM.completeOnboarding(userId: userId)
+                        let preferences: Preferences = try await onboardingVM.completeOnboarding(userId: userId)
+                        if let preferencesId = preferences.id {
+                            preferencesVM.preferencesId = preferencesId
+                            preferencesVM.setPreferences(from: preferences)
+                        }
+                        
                         onboardingComplete = true
                         authController.requireOnboarding = false
                     }

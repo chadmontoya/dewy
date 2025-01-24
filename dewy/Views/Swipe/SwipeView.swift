@@ -2,9 +2,8 @@ import SwiftUI
 
 struct SwipeView: View {
     @EnvironmentObject var authController: AuthController
-    @StateObject private var preferencesVM: PreferencesViewModel = PreferencesViewModel(
-        preferencesService: PreferencesService(),
-        styleService: StyleService())
+    @EnvironmentObject var preferencesVM: PreferencesViewModel
+    
     @State private var showPreferences = false
     
     var body: some View {

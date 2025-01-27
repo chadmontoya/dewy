@@ -15,7 +15,7 @@ struct StylePreferenceView: View {
                 styleList
 
                 HStack {
-                    Button(action: { preferencesVM.allStylesSelected.toggle() }) {
+                    Button(action: { preferencesVM.selectAllStyles() }) {
                         Image(systemName: preferencesVM.allStylesSelected ? "checkmark.square" : "square")
                             .foregroundStyle(Color.black)
                             .fontWeight(.semibold)

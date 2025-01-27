@@ -10,13 +10,7 @@ class PreferencesViewModel: ObservableObject {
     @Published var maxAge: Int = 19
     @Published var availableStyles: [Style] = []
     @Published var selectedStyles: Set<Style> = []
-    @Published var allStylesSelected: Bool = false {
-        didSet {
-            if allStylesSelected {
-                selectedStyles = Set(availableStyles)
-            }
-        }
-    }
+    @Published var allStylesSelected: Bool = false
     @Published var location: CLLocationCoordinate2D? {
         didSet {
             if let location {
@@ -139,6 +133,18 @@ class PreferencesViewModel: ObservableObject {
     func selectAllGenders() {
         allGendersSelected = true
         selectedGenders.removeAll()
+    }
+    
+    func selectAllStyles() {
+        if allStylesSelected {
+            selectedStyles.removeAll()
+            selectedStyles.insert(availableStyles.first!)
+            allStylesSelected = false
+        }
+        else {
+            selectedStyles = Set(availableStyles)
+            allStylesSelected = true
+        }
     }
     
     func setCityLocation(from location: CLLocationCoordinate2D) {

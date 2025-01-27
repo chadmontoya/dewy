@@ -25,7 +25,10 @@ struct SwipeView: View {
                     }
                 }
             }
-            .fullScreenCover(isPresented: $showPreferences) {
+            .fullScreenCover(
+                isPresented: $showPreferences
+//                onDismiss: { print(preferencesVM.) }
+            ) {
                 PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
             }
         }

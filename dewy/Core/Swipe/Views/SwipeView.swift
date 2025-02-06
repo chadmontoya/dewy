@@ -6,15 +6,15 @@ struct SwipeView: View {
     
     @State private var showPreferences = false
     
-    @StateObject var swipeVM: SwipeViewModel = SwipeViewModel(outfitService: OutfitService())
+    @StateObject var cardsVM = CardsViewModel(service: CardService())
     
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.cream.ignoresSafeArea()
                 
-                ForEach(0 ..< 10) { card in
-                    CardView()
+                ForEach(cardsVM.outfitCards) { outfitCard in
+                    CardView(cardsVM: cardsVM, model: outfitCard)
                 }
             }
             .toolbar {
@@ -32,12 +32,16 @@ struct SwipeView: View {
             ) {
                 PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
             }
+            .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
+                print("DEBUG: old value count is \(oldValue.count)")
+                print("DEBUG: new value count is \(newValue.count)")
+            }
         }
         .onAppear {
             if let userId = authController.session?.user.id {
                 Task {
-                    try await preferencesVM.fetchPreferences(userId: userId)
-                    try await swipeVM.fetchOutfits(userId: userId)
+                    await preferencesVM.fetchPreferences(userId: userId)
+                    await cardsVM.fetchOutfitCards(userId: userId)
                 }
             }
         }

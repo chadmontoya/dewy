@@ -1,14 +1,15 @@
 import SwiftUI
 
 struct CardView: View {
+    @ObservedObject var cardsVM: CardsViewModel
     @State private var xOffset: CGFloat = 0
     @State private var yOffset: CGFloat = 0
     
-    let imageURL = "https://riycadlhyixpkdpvxhpx.supabase.co/storage/v1/object/public/outfits/5623D9D6-868A-42E7-8DE7-A12F81E2E333/5EAF2AB7-791D-4EEA-AADC-CB6FB56FD45D-1736462983.jpg"
+    let model: OutfitCard
     
     var body: some View {
         ZStack {
-            if let imageURL = URL(string: imageURL) {
+            if let imageURL = URL(string: outfit.imageURL!) {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .empty:
@@ -42,20 +43,42 @@ struct CardView: View {
 }
 
 private extension CardView {
+    var outfit: Outfit {
+        return model.outfit
+    }
+}
+
+private extension CardView {
     func swipeRight() {
-        xOffset = 500
+        withAnimation {
+            xOffset = 500
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
     
     func swipeUp() {
-        yOffset = 1000
+        withAnimation {
+            yOffset = 1000
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
     
     func swipeDown() {
-        yOffset = -1000
+        withAnimation {
+            yOffset = -1000
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
     
     func swipeLeft() {
-        xOffset = -500
+        withAnimation {
+            xOffset = -500
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
 }
 

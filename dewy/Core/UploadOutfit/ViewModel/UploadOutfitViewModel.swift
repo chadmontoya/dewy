@@ -110,11 +110,7 @@ class UploadOutfitViewModel: ObservableObject {
                 .execute()
                 .value
             
-            guard let outfitId = outfit.id else {
-                throw UploadOutfitError.outfitSaveFailed
-            }
-            
-            try await saveOutfitStyles(outfitId: outfitId)
+            try await saveOutfitStyles(outfitId: outfit.id)
             
             isComplete = true
             return outfit

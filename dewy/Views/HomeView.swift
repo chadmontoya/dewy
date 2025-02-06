@@ -15,7 +15,6 @@ struct HomeView: View {
         styleService: StyleService()
     )
     
-    
     @State private var currentTab: TabSelection = .home
     
     init() {

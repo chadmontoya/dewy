@@ -6,6 +6,8 @@ struct SwipeView: View {
     
     @State private var showPreferences = false
     
+    @StateObject var swipeVM: SwipeViewModel = SwipeViewModel(outfitService: OutfitService())
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,7 +29,6 @@ struct SwipeView: View {
             }
             .fullScreenCover(
                 isPresented: $showPreferences
-//                onDismiss: { print(preferencesVM.) }
             ) {
                 PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
             }
@@ -36,6 +37,7 @@ struct SwipeView: View {
             if let userId = authController.session?.user.id {
                 Task {
                     try await preferencesVM.fetchPreferences(userId: userId)
+                    try await swipeVM.fetchOutfits(userId: userId)
                 }
             }
         }

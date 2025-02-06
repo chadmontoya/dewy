@@ -50,12 +50,12 @@ class PreferencesViewModel: ObservableObject {
         self.styleService = styleService
         
         Task {
-            try await fetchStyles()
+            await fetchStyles()
         }
     }
     
     
-    func fetchPreferences(userId: UUID) async throws {
+    func fetchPreferences(userId: UUID) async {
         do {
             let preferences: Preferences = try await preferencesService.fetchPreferences(userId: userId)
             
@@ -66,7 +66,7 @@ class PreferencesViewModel: ObservableObject {
         }
     }
     
-    func fetchStyles() async throws {
+    func fetchStyles() async {
         do {
             self.availableStyles = try await styleService.fetchStyles()
         }
@@ -81,13 +81,17 @@ class PreferencesViewModel: ObservableObject {
             genderPreferences = selectedGenders.map(\.type)
         }
         
-        do {
-            if let preferencesId {
-                try await preferencesService.updatePreferences(id: preferencesId, userId: userId, minAge: minAge, maxAge: maxAge, preferredGenders: genderPreferences, location: location!, selectedStyles: selectedStyles, allStylesPreferred: allStylesSelected)
-            }
-        }
-        catch {
-            print("error saving preferences: \(error)")
+        if let preferencesId {
+            await preferencesService.updatePreferences(
+                id: preferencesId,
+                userId: userId,
+                minAge: minAge,
+                maxAge: maxAge,
+                preferredGenders: genderPreferences,
+                location: location!,
+                selectedStyles: selectedStyles,
+                allStylesPreferred: allStylesSelected
+            )
         }
     }
     

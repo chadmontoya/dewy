@@ -2,10 +2,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel(
-        profileService: ProfileService(),
-        preferencesService: PreferencesService()
-    )
+    @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel(onboardingService: OnboardingService())
     
     var body: some View {
         VStack {

@@ -1,14 +1,16 @@
 import SwiftUI
 
 struct CardView: View {
+    @ObservedObject var cardsVM: CardsViewModel
     @State private var xOffset: CGFloat = 0
     @State private var yOffset: CGFloat = 0
+    @State private var degrees: Double = 0
     
-    let imageURL = "https://riycadlhyixpkdpvxhpx.supabase.co/storage/v1/object/public/outfits/5623D9D6-868A-42E7-8DE7-A12F81E2E333/5EAF2AB7-791D-4EEA-AADC-CB6FB56FD45D-1736462983.jpg"
+    let model: OutfitCard
     
     var body: some View {
         ZStack {
-            if let imageURL = URL(string: imageURL) {
+            if let imageURL = URL(string: outfit.imageURL!) {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .empty:
@@ -31,6 +33,7 @@ struct CardView: View {
         .frame(width: cardWidth, height: cardHeight)
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .offset(x: xOffset, y: yOffset)
+        .rotationEffect(.degrees(degrees))
         .animation(.snappy, value: xOffset)
         .animation(.snappy, value: yOffset)
         .gesture(
@@ -42,20 +45,53 @@ struct CardView: View {
 }
 
 private extension CardView {
+    var outfit: Outfit {
+        return model.outfit
+    }
+}
+
+private extension CardView {
+    func animateSwipe(xOffset: CGFloat = 0, yOffset: CGFloat = 0, degrees: Double = 0) {
+        withAnimation {
+            self.xOffset = xOffset
+            self.yOffset = yOffset
+            self.degrees = degrees
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
+    }
     func swipeRight() {
-        xOffset = 500
+        withAnimation {
+            xOffset = 500
+            degrees = 12
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
     
     func swipeUp() {
-        yOffset = 1000
+        withAnimation {
+            yOffset = 1000
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
     
     func swipeDown() {
-        yOffset = -1000
+        withAnimation {
+            yOffset = -1000
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
     
     func swipeLeft() {
-        xOffset = -500
+        withAnimation {
+            xOffset = -500
+            degrees = -12
+        } completion: {
+            cardsVM.removeOutfitCard(model)
+        }
     }
 }
 
@@ -63,6 +99,7 @@ private extension CardView {
     func onDragChanged(_ value: _ChangedGesture<DragGesture>.Value) {
         xOffset = value.translation.width
         yOffset = value.translation.height
+        degrees = Double(value.translation.width / 25)
     }
     
     func onDragEnded(_ value: _ChangedGesture<DragGesture>.Value) {
@@ -71,6 +108,7 @@ private extension CardView {
         
         if abs(width) <= abs(screenCutoff) {
             xOffset = 0
+            degrees = 0
         }
         else if width >= screenCutoff {
             swipeRight()
@@ -81,6 +119,7 @@ private extension CardView {
         
         if abs(height) <= abs(screenCutoff) {
             yOffset = 0
+            degrees = 0
         }
         else if height >= screenCutoff {
             swipeUp()
@@ -93,7 +132,7 @@ private extension CardView {
 
 private extension CardView {
     var screenCutoff: CGFloat {
-        (UIScreen.main.bounds.width / 2) * 0.5
+        (UIScreen.main.bounds.width / 2) * 0.8
     }
     
     var cardWidth: CGFloat {

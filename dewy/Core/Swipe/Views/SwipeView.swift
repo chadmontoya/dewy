@@ -33,8 +33,6 @@ struct SwipeView: View {
                 PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
-                print("DEBUG: old value count is \(oldValue.count)")
-                print("DEBUG: new value count is \(newValue.count)")
             }
         }
         .onAppear {

@@ -3,7 +3,25 @@ import SwiftUI
 @MainActor
 class ClosetViewModel: ObservableObject {
     @Published var outfits: [Outfit] = []
+    @Published var availableStyles: [Style] = []
     @Published var loadedImages: [String: Image] = [:]
+    
+    private let styleService: StyleService
+    
+    init(styleService: StyleService) {
+        self.styleService = styleService
+        
+        Task { await fetchStyles() }
+    }
+    
+    func fetchStyles() async {
+        do {
+            self.availableStyles = try await styleService.fetchStyles()
+        }
+        catch {
+            print("failed to fetch styles from closet vm: \(error)")
+        }
+    }
     
     func addOutfit(outfit: Outfit) {
         outfits.append(outfit)

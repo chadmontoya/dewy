@@ -34,9 +34,11 @@ class UploadOutfitViewModel: ObservableObject {
     init(styleService: StyleService, preferencesService: PreferencesService) {
         self.styleService = styleService
         self.preferencesService = preferencesService
+        
+        Task { await fetchStyles() }
     }
     
-    func fetchStyles() async throws {
+    func fetchStyles() async {
         do {
             self.availableStyles = try await styleService.fetchStyles()
         }
@@ -45,9 +47,9 @@ class UploadOutfitViewModel: ObservableObject {
         }
     }
     
-    func fetchLocation(userId: UUID) async throws {
+    func fetchLocation(userId: UUID) async {
         do {
-            let fetchedLocation: CLLocationCoordinate2D = try await preferencesService.fetchLocation(userId: userId)
+            let fetchedLocation: CLLocationCoordinate2D = try await preferencesService.fetchProfileLocation(userId: userId)
             self.location = fetchedLocation
             setCityLocation(from: fetchedLocation)
         }
@@ -104,7 +106,15 @@ class UploadOutfitViewModel: ObservableObject {
             
             let outfit: Outfit = try await supabase
                 .from("Outfits")
-                .insert(Outfit(userId: userId, imageURL: outfitImageURL, location: location, isPublic: isPublic))
+                .insert(
+                    Outfit(
+                        userId: userId,
+                        imageURL: outfitImageURL,
+                        location: location,
+                        isPublic: isPublic,
+                        locationString: cityLocation
+                    )
+                )
                 .select()
                 .single()
                 .execute()

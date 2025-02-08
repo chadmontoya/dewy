@@ -9,6 +9,7 @@ struct Outfit: Identifiable {
     var location: CLLocationCoordinate2D?
     var isPublic: Bool?
     var styleIds: [Int64]?
+    var locationString: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -20,9 +21,12 @@ struct Outfit: Identifiable {
         case longitude = "long"
         case isPublic = "public"
         case styleIds = "style_ids"
+        case locationString = "location_string"
     }
     
-    init(userId: UUID, createDate: Date = Date(), imageURL: String? = nil, location: CLLocationCoordinate2D? = nil, isPublic: Bool? = nil, styleIds: [Int64]? = []) {
+    init(userId: UUID, createDate: Date = Date(), imageURL: String? = nil,
+         location: CLLocationCoordinate2D? = nil, isPublic: Bool? = nil, styleIds: [Int64]? = [],
+         locationString: String? = "") {
         self.id = 0
         self.createDate = createDate
         self.userId = userId
@@ -30,6 +34,7 @@ struct Outfit: Identifiable {
         self.location = location
         self.isPublic = isPublic
         self.styleIds = styleIds
+        self.locationString = locationString
     }
 }
 
@@ -52,6 +57,7 @@ extension Outfit: Codable {
         }
         
         styleIds = try container.decodeIfPresent([Int64].self, forKey: .styleIds)
+        locationString = try container.decodeIfPresent(String.self, forKey: .locationString)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -68,6 +74,7 @@ extension Outfit: Codable {
         }
         
         try container.encode(isPublic, forKey: .isPublic)
+        try container.encode(locationString, forKey: .locationString)
     }
 }
 

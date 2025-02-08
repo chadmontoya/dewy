@@ -33,7 +33,8 @@ class OnboardingViewModel: ObservableObject {
         try await onboardingService.addProfile(
             userId: userId,
             birthday: birthday,
-            gender: gender
+            gender: gender,
+            location: location
         )
         
         let preferences: Preferences = try await onboardingService.addPreferences(

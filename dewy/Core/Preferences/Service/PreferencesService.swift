@@ -18,9 +18,9 @@ struct PreferencesService {
         }
     }
     
-    func fetchLocation(userId: UUID) async throws -> CLLocationCoordinate2D {
+    func fetchProfileLocation(userId: UUID) async throws -> CLLocationCoordinate2D {
         let location: LocationPreference = try await supabase
-            .rpc("get_location_preferences")
+            .rpc("get_profile_location")
             .eq("user_id", value: userId)
             .single()
             .execute()

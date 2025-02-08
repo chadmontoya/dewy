@@ -5,7 +5,7 @@ struct ClosetView: View {
     @Namespace private var animation
     @State private var uploadOutfit: Bool = false
     @State private var navigationPath: [String] = []
-    @StateObject private var closetVM: ClosetViewModel = ClosetViewModel()
+    @StateObject private var closetVM: ClosetViewModel = ClosetViewModel(styleService: StyleService())
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     

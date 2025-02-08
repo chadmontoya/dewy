@@ -121,9 +121,8 @@ struct OutfitDetailsView: View {
         .onAppear {
             Task {
                 if let userId = authController.session?.user.id {
-                    try await uploadOutfitVM.fetchLocation(userId: userId)
+                    await uploadOutfitVM.fetchLocation(userId: userId)
                 }
-                try await uploadOutfitVM.fetchStyles()
             }
         }
     }

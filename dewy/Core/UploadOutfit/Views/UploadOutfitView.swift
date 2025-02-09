@@ -9,15 +9,24 @@ struct UploadOutfitView: View {
         preferencesService: PreferencesService()
     )
     
+    @State private var showCamera = false
+    @State private var showImagePicker = false
+    @State private var cameraError: CameraPermission.CameraError?
+    @State private var photoLibraryError: PhotoLibraryPermission.PhotoLibraryError?
+    
     var onComplete: () -> Void
-
+    
     var body: some View {
         ZStack {
             Color.cream.ignoresSafeArea()
             
             VStack(spacing: 16) {
                 Button(action: {
-                    // TODO: implement camera functionality
+                    if let error = CameraPermission.checkPermissions() {
+                        cameraError = error
+                    } else {
+                        showCamera = true
+                    }
                 }) {
                     HStack {
                         Spacer()
@@ -39,10 +48,26 @@ struct UploadOutfitView: View {
                     .background(Color.chocolate)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .alert(isPresented: .constant(cameraError != nil), error: cameraError) { _ in
+                        Button("OK") {
+                            cameraError = nil
+                        }
+                    } message: { error in
+                        Text(error.recoverySuggestion ?? "Try again later")
+                    }
+                    .sheet(isPresented: $showCamera) {
+                        UIKitCamera(uploadOutfitVM: uploadOutfitVM)
+                            .ignoresSafeArea()
+                    }
                 }
                 
                 Button(action: {
                     uploadOutfitVM.showImagePicker = true
+                    if let error = PhotoLibraryPermission.checkPermissions() {
+                        photoLibraryError = error
+                    } else {
+                        showImagePicker = true
+                    }
                 }) {
                     HStack {
                         Spacer()
@@ -64,11 +89,18 @@ struct UploadOutfitView: View {
                     .background(Color.chocolate)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .alert(isPresented: .constant(photoLibraryError != nil), error: photoLibraryError) { _ in
+                        Button("OK") {
+                            photoLibraryError = nil
+                        }
+                    } message: { error in
+                        Text(error.recoverySuggestion ?? "Try again later")
+                    }
                 }
             }
         }
         .photosPicker(isPresented: $uploadOutfitVM.showImagePicker, selection: $uploadOutfitVM.imageSelection, matching: .images)
-        .fullScreenCover(isPresented: $uploadOutfitVM.unCroppedImageSelected) {
+        .sheet(isPresented: $uploadOutfitVM.unCroppedImageSelected) {
             if let outfitImage = uploadOutfitVM.outfitImage {
                 SwiftyCropView(
                     imageToCrop: outfitImage,
@@ -103,7 +135,7 @@ let configuration = SwiftyCropConfiguration(
     ),
     colors: SwiftyCropConfiguration.Colors(
         cancelButton: Color.black,
-        interactionInstructions: Color.coffee,
+        interactionInstructions: Color.black,
         saveButton: Color.black,
         background: Color.cream
     )

@@ -5,6 +5,7 @@ import PhotosUI
 @MainActor
 class UploadOutfitViewModel: ObservableObject {
     @Published var outfitImage: UIImage? = nil
+    @Published var cameraImage: UIImage?
     @Published var selectedStyles: [Int64: String] = [:]
     @Published var availableStyles: [Style] = []
     @Published var styleTags: Set<String> = []
@@ -152,6 +153,13 @@ class UploadOutfitViewModel: ObservableObject {
         }
     }
     
+    func resetOutfitDetails() {
+        styleTags = []
+        isPublic = true
+        location = nil
+        cityLocation = ""
+    }
+    
     private func generateRandomFilename() -> String {
         let uuid = UUID().uuidString
         let timestamp = Int(Date().timeIntervalSince1970)
@@ -168,17 +176,9 @@ class UploadOutfitViewModel: ObservableObject {
                     outfitImage = uiImage
                     unCroppedImageSelected = true
                     resetOutfitDetails()
-                    return
                 }
             }
         }
-    }
-    
-    private func resetOutfitDetails() {
-        styleTags = []
-        isPublic = true
-        location = nil
-        cityLocation = ""
     }
 }
 

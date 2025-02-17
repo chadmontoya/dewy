@@ -13,5 +13,7 @@
 	</array>
 	<key>GIDClientID</key>
 	<string>876610507421-pjfpac2o5885dfj4hrmqhtsc93tlf66t.apps.googleusercontent.com</string>
+    <key>UILaunchStoryboardName</key>
+    <string>dewy launch screen</string>
 </dict>
 </plist>

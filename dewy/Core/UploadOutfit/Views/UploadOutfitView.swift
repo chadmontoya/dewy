@@ -12,7 +12,6 @@ struct UploadOutfitView: View {
     @State private var showCamera = false
     @State private var showImagePicker = false
     @State private var cameraError: CameraPermission.CameraError?
-    @State private var photoLibraryError: PhotoLibraryPermission.PhotoLibraryError?
     
     var onComplete: () -> Void
     
@@ -62,12 +61,7 @@ struct UploadOutfitView: View {
                 }
                 
                 Button(action: {
-                    uploadOutfitVM.showImagePicker = true
-                    if let error = PhotoLibraryPermission.checkPermissions() {
-                        photoLibraryError = error
-                    } else {
-                        showImagePicker = true
-                    }
+                    showImagePicker = true
                 }) {
                     HStack {
                         Spacer()
@@ -89,17 +83,10 @@ struct UploadOutfitView: View {
                     .background(Color.chocolate)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .alert(isPresented: .constant(photoLibraryError != nil), error: photoLibraryError) { _ in
-                        Button("OK") {
-                            photoLibraryError = nil
-                        }
-                    } message: { error in
-                        Text(error.recoverySuggestion ?? "Try again later")
-                    }
                 }
             }
         }
-        .photosPicker(isPresented: $uploadOutfitVM.showImagePicker, selection: $uploadOutfitVM.imageSelection, matching: .images)
+        .photosPicker(isPresented: $showImagePicker, selection: $uploadOutfitVM.imageSelection, matching: .images)
         .sheet(isPresented: $uploadOutfitVM.unCroppedImageSelected) {
             if let outfitImage = uploadOutfitVM.outfitImage {
                 SwiftyCropView(

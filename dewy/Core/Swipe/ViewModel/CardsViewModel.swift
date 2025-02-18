@@ -14,7 +14,7 @@ class CardsViewModel: ObservableObject {
         do {
             self.outfitCards = try await service.fetchOutfitCards(userId: userId)
         } catch {
-            print("failed to fetch cards: \(error)")
+            print("failed to fetch outfit cards: \(error)")
         }
     }
     

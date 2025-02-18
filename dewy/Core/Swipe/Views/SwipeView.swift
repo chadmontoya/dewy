@@ -33,6 +33,13 @@ struct SwipeView: View {
                 PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
+                if newValue.isEmpty {
+                    Task {
+                        if let userId = authController.session?.user.id {
+                            await cardsVM.fetchOutfitCards(userId: userId)
+                        }
+                    }
+                }
             }
         }
         .onAppear {

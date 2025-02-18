@@ -6,7 +6,7 @@ struct RootView: View {
     
     var body: some View {
         if authController.isLoading {
-            LoadingView()
+            SplashScreen()
         }
         else if authController.session == nil {
             AuthView()

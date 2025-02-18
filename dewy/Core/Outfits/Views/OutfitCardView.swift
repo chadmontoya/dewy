@@ -3,14 +3,14 @@ import SwiftUI
 struct OutfitCardView: View {
     var screenSize: CGSize
     var outfit: Outfit
-    @ObservedObject var closetVM: ClosetViewModel
+    @ObservedObject var outfitsVM: OutfitsViewModel
     
     var body: some View {
         GeometryReader {
             let size = $0.size
             
             if let imageURL = outfit.imageURL {
-                if let outfitImage = closetVM.loadedImages[imageURL] {
+                if let outfitImage = outfitsVM.loadedImages[imageURL] {
                     outfitImage.resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: size.width, height: size.height)
@@ -20,7 +20,7 @@ struct OutfitCardView: View {
                     ProgressView()
                         .frame(width: size.width, height: size.height)
                         .onAppear {
-                            closetVM.loadImage(from: imageURL)
+                            outfitsVM.loadImage(from: imageURL)
                         }
                 }
             }

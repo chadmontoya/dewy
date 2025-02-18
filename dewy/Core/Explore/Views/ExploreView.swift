@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SwipeView: View {
+struct ExploreView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var preferencesVM: PreferencesViewModel
     
@@ -30,7 +30,7 @@ struct SwipeView: View {
             .fullScreenCover(
                 isPresented: $showPreferences
             ) {
-                PreferencesView(preferencesVM: preferencesVM, showPreferences: $showPreferences)
+                PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM, showPreferences: $showPreferences)
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
                 if newValue.isEmpty {

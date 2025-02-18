@@ -24,11 +24,11 @@ struct Outfit: Identifiable {
         case locationString = "location_string"
     }
     
-    init(userId: UUID, createDate: Date = Date(), imageURL: String? = nil,
+    init(userId: UUID, imageURL: String? = nil,
          location: CLLocationCoordinate2D? = nil, isPublic: Bool? = nil, styleIds: [Int64]? = [],
          locationString: String? = "") {
         self.id = 0
-        self.createDate = createDate
+        self.createDate = Date()
         self.userId = userId
         self.imageURL = imageURL
         self.location = location

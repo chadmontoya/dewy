@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct ClosetView: View {
+struct OutfitsView: View {
     @EnvironmentObject var authController: AuthController
     @Namespace private var animation
     @State private var uploadOutfit: Bool = false
     @State private var navigationPath: [String] = []
-    @StateObject private var closetVM: ClosetViewModel = ClosetViewModel(styleService: StyleService())
+    @StateObject private var outfitsVM = OutfitsViewModel(styleService: StyleService())
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     
@@ -35,7 +35,7 @@ struct ClosetView: View {
                 }
                 .background(Color.cream.ignoresSafeArea())
                 .navigationDestination(for: Outfit.self) { outfit in
-                    OutfitDetailView(outfit: outfit, animation: animation, closetVM: closetVM)
+                    OutfitDetailView(outfit: outfit, animation: animation, outfitsVM: outfitsVM)
                         .toolbarVisibility(.hidden, for: .navigationBar)
                 }
                 .navigationDestination(isPresented: $uploadOutfit) {
@@ -46,12 +46,12 @@ struct ClosetView: View {
                     .toolbarRole(.editor)
                 }
             }
-            .environmentObject(closetVM)
+            .environmentObject(outfitsVM)
         }
         .onAppear {
             Task {
                 if let userId = authController.session?.user.id {
-                    try await closetVM.fetchOutfits(userId: userId)
+                    try await outfitsVM.fetchOutfits(userId: userId)
                 }
             }
         }
@@ -60,9 +60,9 @@ struct ClosetView: View {
     func OutfitList(screenSize: CGSize) -> some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(closetVM.outfits) { outfit in
+                ForEach(outfitsVM.outfits) { outfit in
                     NavigationLink(value: outfit) {
-                        OutfitCardView(screenSize: screenSize, outfit: outfit, closetVM: closetVM)
+                        OutfitCardView(screenSize: screenSize, outfit: outfit, outfitsVM: outfitsVM)
                             .frame(height: screenSize.height * 0.4)
                             .matchedTransitionSource(id: outfit.id, in: animation) {
                                 $0

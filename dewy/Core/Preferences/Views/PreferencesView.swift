@@ -3,6 +3,7 @@ import SwiftUI
 struct PreferencesView: View {
     @EnvironmentObject var authController: AuthController
     @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var cardsVM: CardsViewModel
     
     @Binding var showPreferences: Bool
     
@@ -42,7 +43,8 @@ struct PreferencesView: View {
                             Task {
                                 if let userId = authController.session?.user.id {
                                     try await preferencesVM.savePreferences(userId: userId)
-                                }    
+                                    await cardsVM.fetchOutfitCards(userId: userId)
+                                }
                             }
                             showPreferences = false
                         } label: {

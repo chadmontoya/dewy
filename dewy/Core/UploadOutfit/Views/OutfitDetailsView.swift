@@ -3,7 +3,7 @@ import SwiftUI
 struct OutfitDetailsView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
-    @EnvironmentObject var closetVM: ClosetViewModel
+    @EnvironmentObject var outfitsVM: OutfitsViewModel
     
     @State private var showStyleTagSheet: Bool = false
     @State private var showLocationSheet: Bool = false
@@ -84,7 +84,7 @@ struct OutfitDetailsView: View {
                             do {
                                 if let userId = authController.session?.user.id {
                                     let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
-                                    closetVM.addOutfit(outfit: outfit)
+                                    outfitsVM.addOutfit(outfit: outfit)
                                     onComplete()
                                 }
                             }

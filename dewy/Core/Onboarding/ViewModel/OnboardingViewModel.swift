@@ -21,23 +21,25 @@ class OnboardingViewModel: ObservableObject {
     private var minAge: Int = 18
     private var maxAge: Int = 19
     
-    private let onboardingService: OnboardingService
+    private let preferencesService: PreferencesService
+    private let profileService: ProfileService
     
-    init(onboardingService: OnboardingService) {
-        self.onboardingService = onboardingService
+    init(preferencesService: PreferencesService, profileService: ProfileService) {
+        self.preferencesService = preferencesService
+        self.profileService = profileService
     }
     
     func completeOnboarding(userId: UUID) async throws -> Preferences {
         isLoading = true
         
-        try await onboardingService.addProfile(
+        try await profileService.addProfile(
             userId: userId,
             birthday: birthday,
             gender: gender,
             location: location
         )
         
-        let preferences: Preferences = try await onboardingService.addPreferences(
+        let preferences: Preferences = try await preferencesService.addPreferences(
             userId: userId,
             minAge: minAge,
             maxAge: maxAge,

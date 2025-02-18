@@ -23,6 +23,7 @@ class AuthController: ObservableObject {
         
         defer {
             isLoading = false
+            requireOnboarding = false
         }
         
         do {

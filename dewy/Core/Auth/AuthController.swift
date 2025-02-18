@@ -20,21 +20,24 @@ class AuthController: ObservableObject {
     
     func checkUserProfile() async {
         isLoading = true
+        
+        defer {
+            isLoading = false
+        }
+        
         do {
-            try await supabase
+            let count = try await supabase
                 .from("Profiles")
-                .select()
+                .select("*", head: true, count: .exact)
                 .eq("user_id", value: session?.user.id)
-                .single()
                 .execute()
+                .count
             
-            requireOnboarding = false
+            requireOnboarding = (count == 0)
         }
         catch {
-            requireOnboarding = true
-            print("error checking profile: \(error)")
+            print("error checking if profile exists: \(error)")
         }
-        isLoading = false
     }
     
     private func setupAuthStateObserver() {

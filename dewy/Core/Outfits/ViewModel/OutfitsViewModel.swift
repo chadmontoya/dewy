@@ -1,7 +1,7 @@
 import SwiftUI
 
 @MainActor
-class ClosetViewModel: ObservableObject {
+class OutfitsViewModel: ObservableObject {
     @Published var outfits: [Outfit] = []
     @Published var availableStyles: [Style] = []
     @Published var loadedImages: [String: Image] = [:]

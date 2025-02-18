@@ -3,7 +3,7 @@ import SwiftUI
 
 enum TabSelection: Hashable {
     case home
-    case saved
+    case collections
     case closet
     case profile
 }
@@ -29,19 +29,20 @@ struct HomeView: View {
     
     var body: some View {
         TabView(selection: $currentTab) {
-            Tab("Home", systemImage: "house.fill", value: .home) {
-                SwipeView()
+            Tab("Explore", systemImage: "signpost.right.and.left.fill", value: .home) {
+                ExploreView()
                     .environmentObject(preferencesVM)
             }
             
-            Tab("Saved", systemImage: "questionmark.circle.fill", value: .saved) {
+            Tab("Collections", systemImage: "photo.stack", value: .collections) {
+                CollectionsView()
             }
             
-            Tab("Closet", systemImage: "questionmark.circle.fill", value: .closet) {
-                ClosetView()
+            Tab("Outfits", systemImage: "jacket.fill", value: .closet) {
+                OutfitsView()
             }
             
-            Tab("Profile", systemImage: "person.circle.fill", value: .profile) {
+            Tab("Profile", systemImage: "person.fill", value: .profile) {
                 ZStack {
                     Color.cream.ignoresSafeArea()
                     VStack {

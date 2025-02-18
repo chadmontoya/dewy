@@ -79,7 +79,7 @@ struct StyleTag: View {
 struct OutfitDetailView: View {
     var outfit: Outfit
     var animation: Namespace.ID
-    @ObservedObject var closetVM: ClosetViewModel
+    @ObservedObject var outfitsVM: OutfitsViewModel
     @Environment(\.dismiss) private var dismissView
     
     var body: some View {
@@ -89,17 +89,17 @@ struct OutfitDetailView: View {
                     if let imageURL = outfit.imageURL {
                         OutfitImageView(
                             imageURL: imageURL,
-                            outfitImage: closetVM.loadedImages[imageURL],
+                            outfitImage: outfitsVM.loadedImages[imageURL],
                             geometry: geometry,
                             onDismiss: { dismissView() },
-                            loadImage: closetVM.loadImage
+                            loadImage: outfitsVM.loadImage
                         )
                     }
                     
                     if let styleIds = outfit.styleIds {
                         StyleTagsSection(
                             styleIds: styleIds,
-                            availableStyles: closetVM.availableStyles
+                            availableStyles: outfitsVM.availableStyles
                         )
                     }
                     

@@ -5,6 +5,7 @@ struct ExploreView: View {
     @EnvironmentObject var preferencesVM: PreferencesViewModel
     
     @State private var showPreferences = false
+    @State private var saveToCollection = false
     
     @StateObject var cardsVM = CardsViewModel(service: CardService())
     
@@ -14,7 +15,7 @@ struct ExploreView: View {
                 Color.cream.ignoresSafeArea()
                 
                 ForEach(cardsVM.outfitCards) { outfitCard in
-                    CardView(cardsVM: cardsVM, model: outfitCard)
+                    CardView(cardsVM: cardsVM, saveToCollection: $saveToCollection, model: outfitCard)
                 }
             }
             .toolbar {
@@ -31,6 +32,9 @@ struct ExploreView: View {
                 isPresented: $showPreferences
             ) {
                 PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM, showPreferences: $showPreferences)
+            }
+            .sheet(isPresented: $saveToCollection) {
+                CollectionsList()
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
                 if newValue.isEmpty {

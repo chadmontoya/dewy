@@ -25,5 +25,12 @@ struct OutfitCardView: View {
                 }
             }
         }
+        .contextMenu {
+            Button(role: .destructive) {
+                print("deleted")
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
     }
 }

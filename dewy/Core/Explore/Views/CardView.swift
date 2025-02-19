@@ -6,6 +6,8 @@ struct CardView: View {
     @State private var yOffset: CGFloat = 0
     @State private var degrees: Double = 0
     
+    @Binding var saveToCollection: Bool
+    
     let model: OutfitCard
     
     var body: some View {
@@ -26,6 +28,19 @@ struct CardView: View {
                         Text("something went wrong")
                     @unknown default:
                         EmptyView()
+                    }
+                }
+                .contextMenu {
+                    Button {
+                        saveToCollection = true
+                    } label: {
+                        Label("Save", systemImage: "bookmark")
+                    }
+                    
+                    Button(role: .destructive) {
+                        print("reporting outfit: \(model.id)")
+                    } label: {
+                        Label("Report", systemImage: "flag")
                     }
                 }
             }

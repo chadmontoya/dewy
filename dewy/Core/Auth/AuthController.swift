@@ -23,7 +23,6 @@ class AuthController: ObservableObject {
         
         defer {
             isLoading = false
-            requireOnboarding = false
         }
         
         do {
@@ -35,6 +34,7 @@ class AuthController: ObservableObject {
                 .count
             
             requireOnboarding = (count == 0)
+            print("require onboarding: \(requireOnboarding)")
         }
         catch {
             print("error checking if profile exists: \(error)")

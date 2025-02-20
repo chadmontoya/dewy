@@ -10,7 +10,7 @@ struct BirthdayView: View {
                 .padding()
                 .font(.title)
                 .bold()
-                .foregroundStyle(Color.coffee)
+                .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             Spacer()
@@ -44,7 +44,7 @@ struct BirthdayView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(Color.coffee)
+                    .background(.black)
             }
             .cornerRadius(10)
             

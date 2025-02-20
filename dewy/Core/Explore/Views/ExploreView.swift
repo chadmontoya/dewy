@@ -24,7 +24,6 @@ struct ExploreView: View {
                         showPreferences = true
                     } label: {
                         Image(systemName: "slider.horizontal.3")
-                            .foregroundStyle(Color.coffee)
                     }
                 }
             }

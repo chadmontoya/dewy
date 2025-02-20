@@ -44,7 +44,7 @@ struct UploadOutfitView: View {
                     }
                     .frame(maxWidth: 300)
                     .padding()
-                    .background(Color.chocolate)
+                    .background(.black)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .alert(isPresented: .constant(cameraError != nil), error: cameraError) { _ in
@@ -80,7 +80,7 @@ struct UploadOutfitView: View {
                     }
                     .frame(maxWidth: 300)
                     .padding()
-                    .background(Color.chocolate)
+                    .background(.black)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }

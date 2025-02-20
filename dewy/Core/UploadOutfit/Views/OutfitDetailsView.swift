@@ -29,7 +29,7 @@ struct OutfitDetailsView: View {
                 .frame(maxWidth: .infinity)
                 
                 Form {
-                    Section(header: Text("style").foregroundStyle(Color.coffee)) {
+                    Section(header: Text("style").foregroundStyle(.black)) {
                         Button(action: {
                             showStyleTagSheet = true
                         }) {
@@ -58,7 +58,7 @@ struct OutfitDetailsView: View {
                         }
                     }
                     
-                    Section(header: Text("ratings").foregroundStyle(Color.coffee)) {
+                    Section(header: Text("ratings").foregroundStyle(.black)) {
                         Button(action: {
                             showLocationSheet = true
                         }) {
@@ -74,7 +74,7 @@ struct OutfitDetailsView: View {
                         
                         HStack {
                             Image(systemName: "eye")
-                                .foregroundStyle(Color.coffee)
+                                .foregroundStyle(.black)
                             Toggle("Make Public", isOn: $uploadOutfitVM.isPublic)
                         }
                     }
@@ -97,7 +97,7 @@ struct OutfitDetailsView: View {
                             .padding()
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.white)
-                            .background(Color.coffee)
+                            .background(.black)
                     }
                     .listRowInsets(EdgeInsets())
                     .cornerRadius(10)
@@ -109,7 +109,7 @@ struct OutfitDetailsView: View {
                 ToolbarItem(placement: .principal) {
                     Text("new outfit")
                         .font(.headline)
-                        .foregroundStyle(Color.coffee)
+                        .foregroundStyle(.black)
                 }
             }
             

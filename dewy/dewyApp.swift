@@ -11,7 +11,7 @@ struct dewyApp: App {
                     supabase.handle($0)
                 }
                 .environmentObject(authController)
-                .tint(Color.coffee)
+                .tint(.black)
         }
     }
 }

@@ -6,7 +6,7 @@ struct LoadingView: View {
             Color.cream.ignoresSafeArea()
             
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: Color.coffee))
+                .progressViewStyle(CircularProgressViewStyle(tint: .black))
         }
     }
 }

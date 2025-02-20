@@ -26,7 +26,7 @@ struct OutfitsView: View {
                     .overlay {
                         Text("outfits")
                             .font(.title3)
-                            .foregroundStyle(Color.coffee)
+                            .foregroundStyle(.black)
                     }
                     .padding(.horizontal, 15)
                     .padding(.vertical, 12)

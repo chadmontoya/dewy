@@ -37,6 +37,12 @@ struct CardView: View {
                         Label("Save", systemImage: "bookmark")
                     }
                     
+                    Button {
+                        print("skip outfit")
+                    } label: {
+                        Label("Skip", systemImage: "arrow.uturn.right")
+                    }
+                    
                     Button(role: .destructive) {
                         print("reporting outfit: \(model.id)")
                     } label: {

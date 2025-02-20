@@ -74,5 +74,6 @@ struct OutfitsView: View {
             }
             .padding()
         }
+        .scrollIndicators(.hidden)
     }
 }

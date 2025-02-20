@@ -85,5 +85,6 @@ struct CollectionsView: View {
             }
             .padding()
         }
+        .scrollIndicators(.hidden)
     }
 }

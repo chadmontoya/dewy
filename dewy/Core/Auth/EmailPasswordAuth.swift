@@ -60,7 +60,7 @@ struct EmailPasswordAuth: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(email.isEmpty ? Color.gray.opacity(0.3) : Color.mutedTaupe, lineWidth: 1)
+                    .stroke(email.isEmpty ? Color.gray.opacity(0.3) : .black, lineWidth: 1)
             )
     }
     
@@ -87,7 +87,7 @@ struct EmailPasswordAuth: View {
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(password.isEmpty ? Color.gray.opacity(0.3) : Color.mutedTaupe, lineWidth: 1)
+                .stroke(password.isEmpty ? Color.gray.opacity(0.3) : .black, lineWidth: 1)
         )
         .background(
             RoundedRectangle(cornerRadius: 10)

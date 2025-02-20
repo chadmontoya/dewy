@@ -5,7 +5,7 @@ import SwiftUI
 class AuthController: ObservableObject {
     @Published var session: Session?
     @Published var isLoading: Bool = true
-    @Published var requireOnboarding: Bool = true
+    @Published var requireOnboarding: Bool = false
     
     @ObservationIgnored
     private var observeAuthStateChangesTask: Task<Void, Never>?
@@ -19,26 +19,28 @@ class AuthController: ObservableObject {
     }
     
     func checkUserProfile() async {
-        isLoading = true
-        
-        defer {
+        guard let userId = session?.user.id else {
             isLoading = false
+            return
         }
+        
+        isLoading = true
         
         do {
             let count = try await supabase
                 .from("Profiles")
                 .select("*", head: true, count: .exact)
-                .eq("user_id", value: session?.user.id)
+                .eq("user_id", value: userId)
                 .execute()
                 .count
             
             requireOnboarding = (count == 0)
-            print("require onboarding: \(requireOnboarding)")
         }
         catch {
             print("error checking if profile exists: \(error)")
         }
+        
+        isLoading = false
     }
     
     private func setupAuthStateObserver() {

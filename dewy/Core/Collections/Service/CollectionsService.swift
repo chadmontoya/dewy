@@ -1,6 +1,19 @@
 import Foundation
 
 struct CollectionsService {
+    func addOutfitToCollection(outfitId: Int64, collectionId: Int64, imageUrl: String) async throws {
+        let collectionOutfit: CollectionOutfit = CollectionOutfit(
+            collectionId: collectionId,
+            outfitId: outfitId,
+            imageUrl: imageUrl
+        )
+        
+        try await supabase
+            .from("Collections_Outfits")
+            .insert(collectionOutfit)
+            .execute()
+    }
+    
     func createCollection(userId: UUID, name: String) async throws -> Collection {
         let collection: Collection = Collection(userId: userId, name: name)
         try await supabase
@@ -25,9 +38,5 @@ struct CollectionsService {
             .execute()
             .value
         return collections
-    }
-    
-    func saveOutfitToCollection(outfitId: Int64, collectionId: Int64) {
-        
     }
 }

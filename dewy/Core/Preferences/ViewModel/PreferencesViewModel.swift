@@ -19,6 +19,7 @@ class PreferencesViewModel: ObservableObject {
         }
     }
     @Published var cityLocation: String = ""
+    @Published var showPreferences: Bool = false
     
     var genderPreferenceText: String {
         if allGendersSelected {

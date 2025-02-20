@@ -41,7 +41,7 @@ class OnboardingViewModel: ObservableObject {
             location: location
         )
         
-        let defaultCollection: Collection = try await collectionsService.createCollection(
+        let _: Collection = try await collectionsService.createCollection(
             userId: userId, name: "default"
         )
         

@@ -2,7 +2,8 @@ import SwiftUI
 
 struct CollectionsView: View {
     @EnvironmentObject var authController: AuthController
-    @StateObject private var collectionsVM = CollectionsViewModel(collectionsService: CollectionsService())
+    
+    @ObservedObject var collectionsVM: CollectionsViewModel
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     

@@ -2,10 +2,9 @@ import SwiftUI
 
 struct ExploreView: View {
     @EnvironmentObject var authController: AuthController
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
     
-    @State private var showPreferences = false
-    @State private var saveToCollection = false
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var collectionsVM: CollectionsViewModel
     
     @StateObject var cardsVM = CardsViewModel(service: CardService())
     
@@ -15,25 +14,27 @@ struct ExploreView: View {
                 Color.cream.ignoresSafeArea()
                 
                 ForEach(cardsVM.outfitCards) { outfitCard in
-                    CardView(cardsVM: cardsVM, saveToCollection: $saveToCollection, model: outfitCard)
+                    CardView(
+                        cardsVM: cardsVM,
+                        collectionsVM: collectionsVM,
+                        model: outfitCard
+                    )
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        showPreferences = true
+                        preferencesVM.showPreferences = true
                     } label: {
                         Image(systemName: "slider.horizontal.3")
                     }
                 }
             }
-            .fullScreenCover(
-                isPresented: $showPreferences
-            ) {
-                PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM, showPreferences: $showPreferences)
+            .fullScreenCover(isPresented: $preferencesVM.showPreferences) {
+                PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM)
             }
-            .sheet(isPresented: $saveToCollection) {
-                CollectionsList()
+            .sheet(isPresented: $collectionsVM.saveToCollection) {
+                CollectionsList(collectionsVM: collectionsVM)
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
                 if newValue.isEmpty {

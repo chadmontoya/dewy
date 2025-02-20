@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct BirthdayView: View {
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
         VStack {
@@ -35,10 +35,11 @@ struct BirthdayView: View {
             
             
             NavigationLink {
-                UserLocationView()
-                    .environmentObject(onboardingVM)
-                    .environmentObject(preferencesVM)
-                    .toolbarRole(.editor)
+                UserLocationView(
+                    preferencesVM: preferencesVM,
+                    onboardingVM: onboardingVM
+                )
+                .toolbarRole(.editor)
             } label: {
                 Text("Next")
                     .padding()

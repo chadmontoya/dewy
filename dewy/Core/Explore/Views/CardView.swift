@@ -2,11 +2,11 @@ import SwiftUI
 
 struct CardView: View {
     @ObservedObject var cardsVM: CardsViewModel
+    @ObservedObject var collectionsVM: CollectionsViewModel
+    
     @State private var xOffset: CGFloat = 0
     @State private var yOffset: CGFloat = 0
     @State private var degrees: Double = 0
-    
-    @Binding var saveToCollection: Bool
     
     let model: OutfitCard
     
@@ -32,7 +32,9 @@ struct CardView: View {
                 }
                 .contextMenu {
                     Button {
-                        saveToCollection = true
+                        collectionsVM.saveToCollection = true
+                        collectionsVM.newCollectionOutfitId = model.id
+                        collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL!
                     } label: {
                         Label("Save", systemImage: "bookmark")
                     }

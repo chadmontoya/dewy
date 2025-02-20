@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct GetStartedView: View {
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
     @EnvironmentObject var authController: AuthController
+    
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var onboardingVM: OnboardingViewModel
     
     @State private var onboardingComplete = false
     

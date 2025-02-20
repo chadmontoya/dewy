@@ -5,8 +5,6 @@ struct PreferencesView: View {
     @ObservedObject var preferencesVM: PreferencesViewModel
     @ObservedObject var cardsVM: CardsViewModel
     
-    @Binding var showPreferences: Bool
-    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -46,7 +44,7 @@ struct PreferencesView: View {
                                     await cardsVM.fetchOutfitCards(userId: userId)
                                 }
                             }
-                            showPreferences = false
+                            preferencesVM.showPreferences = false
                         } label: {
                             Image(systemName: "xmark")
                                 .foregroundStyle(Color.black)

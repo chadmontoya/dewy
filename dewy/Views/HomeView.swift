@@ -14,6 +14,9 @@ struct HomeView: View {
         preferencesService: PreferencesService(),
         styleService: StyleService()
     )
+    @StateObject private var collectionsVM: CollectionsViewModel = CollectionsViewModel(
+        collectionsService: CollectionsService()
+    )
     
     @State private var currentTab: TabSelection = .home
     
@@ -30,12 +33,14 @@ struct HomeView: View {
     var body: some View {
         TabView(selection: $currentTab) {
             Tab("Explore", systemImage: "signpost.right.and.left.fill", value: .home) {
-                ExploreView()
-                    .environmentObject(preferencesVM)
+                ExploreView(
+                    preferencesVM: preferencesVM,
+                    collectionsVM: collectionsVM
+                )
             }
             
             Tab("Collections", systemImage: "photo.stack", value: .collections) {
-                CollectionsView()
+                CollectionsView(collectionsVM: collectionsVM)
             }
             
             Tab("Outfits", systemImage: "jacket.fill", value: .closet) {
@@ -58,8 +63,7 @@ struct HomeView: View {
             }
         }
         .fullScreenCover(isPresented: $authController.requireOnboarding) {
-            OnboardingView()
-                .environmentObject(preferencesVM)
+            OnboardingView(preferencesVM: preferencesVM)
         }
     }
 }

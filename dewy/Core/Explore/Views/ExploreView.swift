@@ -10,26 +10,37 @@ struct ExploreView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.cream.ignoresSafeArea()
-                
-                ForEach(cardsVM.outfitCards) { outfitCard in
-                    CardView(
-                        cardsVM: cardsVM,
-                        collectionsVM: collectionsVM,
-                        model: outfitCard
-                    )
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+            VStack {
+                HStack {
+                    Text("explore")
+                        .font(.title3)
+                        .foregroundStyle(.black)
+                    
+                    Spacer()
+                    
                     Button {
                         preferencesVM.showPreferences = true
                     } label: {
                         Image(systemName: "slider.horizontal.3")
+                            .font(.title3)
+                    }
+                }
+                .padding(.horizontal, 15)
+                .padding(.vertical, 12)
+                
+                ZStack {
+                    Color.cream.ignoresSafeArea()
+                    
+                    ForEach(cardsVM.outfitCards) { outfitCard in
+                        CardView(
+                            cardsVM: cardsVM,
+                            collectionsVM: collectionsVM,
+                            model: outfitCard
+                        )
                     }
                 }
             }
+            .background(Color.cream.ignoresSafeArea())
             .fullScreenCover(isPresented: $preferencesVM.showPreferences) {
                 PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM)
             }

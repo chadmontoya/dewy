@@ -15,11 +15,13 @@ struct CollectionsService {
     }
     
     func createCollection(userId: UUID, name: String) async throws -> Collection {
-        let collection: Collection = Collection(userId: userId, name: name)
-        try await supabase
+        let collection: Collection = try await supabase
             .from("Collections")
-            .insert(collection)
+            .insert(Collection(userId: userId, name: name))
+            .select()
+            .single()
             .execute()
+            .value
         
         return collection
     }

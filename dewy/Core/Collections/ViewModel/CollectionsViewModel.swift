@@ -10,6 +10,9 @@ class CollectionsViewModel: ObservableObject {
     @Published var newCollectionOutfitId: Int64 = 0
     @Published var newCollectionOutfitImageUrl: String = ""
     
+    @Published var showingConfirmationAlert: Bool = false
+    @Published var selectedCollection: Collection? = nil
+
     private let collectionsService: CollectionsService
     
     init(collectionsService: CollectionsService) {

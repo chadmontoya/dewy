@@ -104,7 +104,7 @@ struct UploadOutfitView: View {
             }
         }
         .navigationDestination(isPresented: $uploadOutfitVM.croppedImageSelected) {
-            OutfitDetailsView(onComplete: onComplete)
+            SaveOutfitView(onComplete: onComplete)
                 .environmentObject(uploadOutfitVM)
                 .toolbarRole(.editor)
         }

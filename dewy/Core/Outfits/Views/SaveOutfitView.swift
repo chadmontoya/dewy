@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OutfitDetailsView: View {
+struct SaveOutfitView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
     @EnvironmentObject var outfitsVM: OutfitsViewModel

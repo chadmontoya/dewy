@@ -1,60 +1,55 @@
 import SwiftUI
 
-@MainActor
 class OutfitsViewModel: ObservableObject {
     @Published var outfits: [Outfit] = []
     @Published var availableStyles: [Style] = []
     @Published var loadedImages: [String: Image] = [:]
     
+    private let imageLoader = AsyncImageLoader()
+    
+    private let outfitService: OutfitService
     private let styleService: StyleService
     
-    init(styleService: StyleService) {
+    init(outfitService: OutfitService, styleService: StyleService) {
+        self.outfitService = outfitService
         self.styleService = styleService
         
         Task { await fetchStyles() }
     }
     
     func fetchStyles() async {
-        do {
-            self.availableStyles = try await styleService.fetchStyles()
-        }
-        catch {
-            print("failed to fetch styles from closet vm: \(error)")
+        let styles: [Style] = await styleService.fetchStyles()
+        await MainActor.run {
+            self.availableStyles = styles
         }
     }
     
     func addOutfit(outfit: Outfit) {
-        outfits.append(outfit)
-        
         if let imageURL = outfit.imageURL {
             loadImage(from: imageURL)
         }
+        outfits.insert(outfit, at: 0)
     }
     
-    func fetchOutfits(userId: UUID) async throws {
-        outfits = try await supabase
-            .rpc("get_closet_outfits")
-            .eq("user_id", value: userId)
-            .execute()
-            .value
+    func fetchOutfits(userId: UUID) async {
+        let outfits: [Outfit] = await outfitService.fetchUsersOutfits(userId: userId)
+        await MainActor.run {
+            self.outfits = outfits
+        }
     }
     
     func loadImage(from urlString: String) {
         guard loadedImages[urlString] == nil else { return }
         
-        guard let url = URL(string: urlString) else { return }
-        
         Task {
             do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                if let uiImage = UIImage(data: data) {
-                    DispatchQueue.main.async {
+                if let uiImage = try await imageLoader.downloadImage(urlString: urlString) {
+                    await MainActor.run {
                         self.loadedImages[urlString] = Image(uiImage: uiImage)
                     }
                 }
-            }
-            catch {
-                print("failed to load image: \(error)")
+            } catch {
+                print("failed to load outfit image: \(error)")
             }
         }
     }

@@ -68,11 +68,9 @@ class PreferencesViewModel: ObservableObject {
     }
     
     func fetchStyles() async {
-        do {
-            self.availableStyles = try await styleService.fetchStyles()
-        }
-        catch {
-            print("failed to fetch styles: \(error)")
+        let styles: [Style] = await styleService.fetchStyles()
+        await MainActor.run {
+            self.availableStyles = styles
         }
     }
     

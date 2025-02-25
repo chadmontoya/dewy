@@ -3,7 +3,7 @@ import SwiftUI
 struct OutfitCardView: View {
     var screenSize: CGSize
     var outfit: Outfit
-    @ObservedObject var outfitsVM: OutfitsViewModel
+    @EnvironmentObject var outfitsVM: OutfitsViewModel
     
     var body: some View {
         GeometryReader {

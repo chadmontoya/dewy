@@ -41,7 +41,11 @@ struct CollectionsView: View {
     
     private var headerView: some View {
         HStack {
-            Spacer(minLength: 0)
+            Text("collections")
+                .font(.title3)
+                .foregroundStyle(.black)
+            
+            Spacer()
             
             Button {
                 collectionsVM.isCreatingCollection = true
@@ -49,11 +53,6 @@ struct CollectionsView: View {
                 Image(systemName: "plus")
                     .font(.title3)
             }
-        }
-        .overlay {
-            Text("collections")
-                .font(.title3)
-                .foregroundStyle(.black)
         }
         .padding(.horizontal, 15)
         .padding(.vertical, 12)

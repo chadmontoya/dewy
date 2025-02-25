@@ -14,7 +14,7 @@ struct SaveOutfitView: View {
     
     var body: some View {
         ZStack {
-            Color.cream.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             VStack {
                 HStack {
@@ -45,14 +45,14 @@ struct SaveOutfitView: View {
                         }
                         .sheet(isPresented: $showStyleTagSheet) {
                             ZStack {
-                                Color.cream.ignoresSafeArea()
+                                Color.primaryBackground.ignoresSafeArea()
                                 StyleTagView(showStyleTagSheet: $showStyleTagSheet)
                                     .presentationDetents([.medium])
                             }
                         }
                         .sheet(isPresented: $showLocationSheet) {
                             ZStack {
-                                Color.cream.ignoresSafeArea()
+                                Color.primaryBackground.ignoresSafeArea()
                                 OutfitLocationView(showLocationSheet: $showLocationSheet)
                             }
                         }

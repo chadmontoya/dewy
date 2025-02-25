@@ -31,7 +31,7 @@ struct ExploreView: View {
                 .padding(.vertical, 12)
                 
                 ZStack {
-                    Color.cream.ignoresSafeArea()
+                    Color.primaryBackground.ignoresSafeArea()
                     
                     ForEach(cardsVM.outfitCards) { outfitCard in
                         CardView(
@@ -46,7 +46,7 @@ struct ExploreView: View {
                 
                 Spacer()
             }
-            .background(Color.cream.ignoresSafeArea())
+            .background(Color.primaryBackground.ignoresSafeArea())
             .fullScreenCover(isPresented: $preferencesVM.showPreferences) {
                 PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM)
             }

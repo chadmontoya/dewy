@@ -7,7 +7,7 @@ struct AgePreferenceView: View {
     
     var body: some View {
         ZStack {
-            Color.softBeige.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             VStack {
                 AgeRangeSlider(

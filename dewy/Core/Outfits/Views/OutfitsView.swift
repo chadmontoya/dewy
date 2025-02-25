@@ -35,7 +35,7 @@ struct OutfitsView: View {
                     
                     OutfitList(screenSize: UIScreen.main.bounds.size)
                 }
-                .background(Color.cream.ignoresSafeArea())
+                .background(Color.primaryBackground.ignoresSafeArea())
                 .navigationDestination(for: Outfit.self) { outfit in
                     OutfitDetailView(outfit: outfit, animation: animation)
                         .toolbarVisibility(.hidden, for: .navigationBar)

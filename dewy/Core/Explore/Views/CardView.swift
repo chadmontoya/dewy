@@ -182,6 +182,6 @@ private extension CardView {
     }
     
     var cardHeight: CGFloat {
-        UIScreen.main.bounds.height / 1.45
+        UIScreen.main.bounds.height / 1.60
     }
 }

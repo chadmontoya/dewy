@@ -33,6 +33,6 @@ struct UserLocationView: View {
             
             Spacer()
         }
-        .background(Color.cream.ignoresSafeArea())
+        .background(Color.primaryBackground.ignoresSafeArea())
     }
 }

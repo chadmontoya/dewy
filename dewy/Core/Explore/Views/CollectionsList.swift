@@ -29,10 +29,10 @@ struct CollectionsList: View {
                 }
             }
             .listStyle(.plain)
-            .background(Color.softBeige)
+            .background(Color.primaryBackground)
             .scrollContentBackground(.hidden)
         }
-        .background(Color.softBeige.ignoresSafeArea())
+        .background(Color.primaryBackground.ignoresSafeArea())
         .confirmationDialog("Save to Collection", isPresented: $collectionsVM.showingConfirmationAlert, titleVisibility: .hidden) {
             Button("Confirm") {
                 Task {
@@ -99,7 +99,7 @@ private struct CollectionListItem: View {
         }
         .buttonStyle(PressableButtonStyle())
         .listRowSeparator(.hidden)
-        .listRowBackground(Color.softBeige)
+        .listRowBackground(Color.primaryBackground)
     }
 }
 

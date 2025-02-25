@@ -120,7 +120,7 @@ struct OutfitDetailView: View {
             .scrollIndicators(.hidden)
         }
         .padding()
-        .background(Color.cream)
+        .background(Color.primaryBackground)
         .navigationTransition(.zoom(sourceID: outfit.id, in: animation))
     }
 }

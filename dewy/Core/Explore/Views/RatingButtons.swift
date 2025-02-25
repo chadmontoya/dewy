@@ -7,7 +7,7 @@ struct RatingButtons: View {
     
     var body: some View {
         HStack(spacing: 30) {
-            RatingButton(number: 1, color: Color(.systemRed).opacity(0.7)) {
+            RatingButton(number: 1, color: Color(.systemRed).opacity(0.5)) {
                 if let card = currentCard {
                     cardsVM.removeOutfitCard(card)
                     Task {
@@ -16,7 +16,7 @@ struct RatingButtons: View {
                 }
             }
             
-            RatingButton(number: 2, color: Color(.systemOrange).opacity(0.7)) {
+            RatingButton(number: 2, color: Color(.systemOrange).opacity(0.45)) {
                 if let card = currentCard {
                     cardsVM.removeOutfitCard(card)
                     Task {
@@ -25,7 +25,7 @@ struct RatingButtons: View {
                 }
             }
             
-            RatingButton(number: 3, color: Color(.systemGreen).opacity(0.7)) {
+            RatingButton(number: 3, color: Color(.systemGreen).opacity(0.45)) {
                 if let card = currentCard {
                     cardsVM.removeOutfitCard(card)
                     Task {
@@ -34,7 +34,7 @@ struct RatingButtons: View {
                 }
             }
             
-            RatingButton(number: 4, color: Color(.systemBlue).opacity(0.7)) {
+            RatingButton(number: 4, color: Color(.systemBlue).opacity(0.45)) {
                 if let card = currentCard {
                     cardsVM.removeOutfitCard(card)
                     Task {

@@ -13,7 +13,7 @@ struct CollectionsView: View {
                 headerView
                 collectionGrid
             }
-            .background(Color.cream.ignoresSafeArea())
+            .background(Color.primaryBackground.ignoresSafeArea())
             .alert("new collection", isPresented: $collectionsVM.isCreatingCollection) {
                 TextField("collection name", text: $collectionsVM.newCollectionName)
                 Button("Cancel", role: .cancel) {

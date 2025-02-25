@@ -14,7 +14,7 @@ struct AuthView: View {
     
     var body: some View {
         ZStack {
-            Color.cream
+            Color.primaryBackground
                 .ignoresSafeArea()
                 .onTapGesture {
                     self.hideKeyboard()

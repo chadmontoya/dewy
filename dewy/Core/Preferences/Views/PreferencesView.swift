@@ -8,7 +8,7 @@ struct PreferencesView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.softBeige.ignoresSafeArea()
+                Color.primaryBackground.ignoresSafeArea()
                 
                 List {
                     PreferenceRow(title: "I'm interested in outfits from", value: preferencesVM.genderPreferenceText)
@@ -77,7 +77,7 @@ struct PreferenceRow: View {
                 .frame(width: 7)
                 .foregroundStyle(.black)
         }
-        .listRowBackground(Color.softBeige)
+        .listRowBackground(Color.primaryBackground)
         .listRowSeparatorTint(Color.black)
         .listSectionSeparator(.hidden, edges: .top)
     }

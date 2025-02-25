@@ -18,6 +18,10 @@ class CardsViewModel: ObservableObject {
         }
     }
     
+    func rateOutfit(userId: UUID, outfitId: Int64, rating: Int) async {
+        
+    }
+    
     func removeOutfitCard(_ card: OutfitCard) {
         guard let index = outfitCards.firstIndex(where: {$0.id == card.id }) else { return }
         outfitCards.remove(at: index)

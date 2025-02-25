@@ -10,4 +10,8 @@ struct CardService {
         
         return outfits.map({ OutfitCard(outfit: $0) })
     }
+    
+    func rateOutfit(userId: UUID, outfitId: Int64, rating: Int) async throws {
+        
+    }
 }

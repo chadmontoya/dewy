@@ -32,9 +32,9 @@ struct CardView: View {
                 }
                 .contextMenu {
                     Button {
-                        collectionsVM.saveToCollection = true
                         collectionsVM.newCollectionOutfitId = model.id
                         collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL!
+                        collectionsVM.saveToCollection = true
                     } label: {
                         Label("Save", systemImage: "bookmark")
                     }

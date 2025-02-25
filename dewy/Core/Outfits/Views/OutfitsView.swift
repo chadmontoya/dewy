@@ -5,7 +5,10 @@ struct OutfitsView: View {
     @Namespace private var animation
     @State private var uploadOutfit: Bool = false
     @State private var navigationPath: [String] = []
-    @StateObject private var outfitsVM = OutfitsViewModel(styleService: StyleService())
+    @StateObject private var outfitsVM = OutfitsViewModel(
+        outfitService: OutfitService(),
+        styleService: StyleService()
+    )
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     
@@ -14,7 +17,11 @@ struct OutfitsView: View {
             NavigationStack {
                 VStack {
                     HStack {
-                        Spacer(minLength: 0)
+                        Text("outfits")
+                            .font(.title3)
+                            .foregroundStyle(.black)
+                        
+                        Spacer()
                         
                         Button {
                             uploadOutfit = true
@@ -23,11 +30,6 @@ struct OutfitsView: View {
                                 .font(.title3)
                         }
                     }
-                    .overlay {
-                        Text("outfits")
-                            .font(.title3)
-                            .foregroundStyle(.black)
-                    }
                     .padding(.horizontal, 15)
                     .padding(.vertical, 12)
                     
@@ -35,7 +37,7 @@ struct OutfitsView: View {
                 }
                 .background(Color.cream.ignoresSafeArea())
                 .navigationDestination(for: Outfit.self) { outfit in
-                    OutfitDetailView(outfit: outfit, animation: animation, outfitsVM: outfitsVM)
+                    OutfitDetailView(outfit: outfit, animation: animation)
                         .toolbarVisibility(.hidden, for: .navigationBar)
                 }
                 .navigationDestination(isPresented: $uploadOutfit) {
@@ -51,7 +53,7 @@ struct OutfitsView: View {
         .onAppear {
             Task {
                 if let userId = authController.session?.user.id {
-                    try await outfitsVM.fetchOutfits(userId: userId)
+                    await outfitsVM.fetchOutfits(userId: userId)
                 }
             }
         }
@@ -62,7 +64,7 @@ struct OutfitsView: View {
             LazyVGrid(columns: columns, spacing: 10) {
                 ForEach(outfitsVM.outfits) { outfit in
                     NavigationLink(value: outfit) {
-                        OutfitCardView(screenSize: screenSize, outfit: outfit, outfitsVM: outfitsVM)
+                        OutfitCardView(screenSize: screenSize, outfit: outfit)
                             .frame(height: screenSize.height * 0.4)
                             .matchedTransitionSource(id: outfit.id, in: animation) {
                                 $0

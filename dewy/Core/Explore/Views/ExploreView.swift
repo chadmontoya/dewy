@@ -39,6 +39,8 @@ struct ExploreView: View {
                         )
                     }
                 }
+                
+                Spacer()
             }
             .background(Color.cream.ignoresSafeArea())
             .fullScreenCover(isPresented: $preferencesVM.showPreferences) {
@@ -62,6 +64,7 @@ struct ExploreView: View {
                 Task {
                     await preferencesVM.fetchPreferences(userId: userId)
                     await cardsVM.fetchOutfitCards(userId: userId)
+                    await collectionsVM.fetchCollections(userId: userId)
                 }
             }
         }

@@ -79,7 +79,7 @@ struct StyleTag: View {
 struct OutfitDetailView: View {
     var outfit: Outfit
     var animation: Namespace.ID
-    @ObservedObject var outfitsVM: OutfitsViewModel
+    @EnvironmentObject var outfitsVM: OutfitsViewModel
     @Environment(\.dismiss) private var dismissView
     
     var body: some View {

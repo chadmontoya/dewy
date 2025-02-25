@@ -5,6 +5,7 @@ struct UploadOutfitView: View {
     @EnvironmentObject var authController: AuthController
     
     @StateObject var uploadOutfitVM: UploadOutfitViewModel = UploadOutfitViewModel(
+        outfitService: OutfitService(),
         styleService: StyleService(),
         preferencesService: PreferencesService()
     )

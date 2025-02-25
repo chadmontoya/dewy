@@ -35,7 +35,7 @@ struct OutfitDetailsView: View {
                         }) {
                             HStack {
                                 Image(systemName: "tag")
-                                Text(uploadOutfitVM.selectedStyles.isEmpty ? "Select Tags" : uploadOutfitVM.selectedStyles.values.joined(separator: ", "))
+                                Text(uploadOutfitVM.selectedStyles.isEmpty ? "Select Tags" : uploadOutfitVM.selectedStyles.map { $0.name }.joined(separator: ", "))
                                     .multilineTextAlignment(.leading)
                                     .foregroundStyle(.black)
                                 Spacer()

@@ -42,6 +42,7 @@ struct ExploreView: View {
                         )
                     }
                 }
+                RatingButtons(userId: userId, currentCard: cardsVM.outfitCards.last, cardsVM: cardsVM)
                 
                 Spacer()
             }

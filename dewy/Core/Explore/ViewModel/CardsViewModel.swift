@@ -19,7 +19,11 @@ class CardsViewModel: ObservableObject {
     }
     
     func rateOutfit(userId: UUID, outfitId: Int64, rating: Int) async {
-        
+        do {
+            try await service.rateOutfit(userId: userId, outfitId: outfitId, rating: rating)
+        } catch {
+            print("failed to rate outfit: \(error)")
+        }
     }
     
     func removeOutfitCard(_ card: OutfitCard) {

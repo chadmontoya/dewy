@@ -1,7 +1,7 @@
 import Foundation
 
 struct OutfitRating: Codable {
-    var id: Int64
+    var id: Int64?
     var createDate: Date?
     var outfitId: Int64
     var rating: Int
@@ -16,7 +16,7 @@ struct OutfitRating: Codable {
     }
     
     init(outfitId: Int64, rating: Int, userId: UUID) {
-        self.id = 0
+        self.id = nil
         self.createDate = Date()
         self.outfitId = outfitId
         self.rating = rating

@@ -8,6 +8,7 @@ struct CardView: View {
     @State private var yOffset: CGFloat = 0
     @State private var degrees: Double = 0
     
+    let userId: UUID
     let model: OutfitCard
     
     var body: some View {
@@ -25,7 +26,10 @@ struct CardView: View {
                             .frame(width: cardWidth, height: cardHeight)
                             .clipShape(RoundedRectangle(cornerRadius: 15))
                     case .failure:
-                        Text("something went wrong")
+                        Color.clear
+                            .onAppear {
+                                cardsVM.removeOutfitCard(model)
+                            }
                     @unknown default:
                         EmptyView()
                     }
@@ -40,7 +44,10 @@ struct CardView: View {
                     }
                     
                     Button {
-                        print("skip outfit")
+                        cardsVM.removeOutfitCard(model)
+                        Task {
+                            await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 0)
+                        }
                     } label: {
                         Label("Skip", systemImage: "arrow.uturn.right")
                     }
@@ -89,6 +96,9 @@ private extension CardView {
             degrees = 12
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 3)
+            }
         }
     }
     
@@ -97,6 +107,9 @@ private extension CardView {
             yOffset = 1000
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 1)
+            }
         }
     }
     
@@ -105,6 +118,9 @@ private extension CardView {
             yOffset = -1000
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 4)
+            }
         }
     }
     
@@ -114,6 +130,9 @@ private extension CardView {
             degrees = -12
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 2)
+            }
         }
     }
 }

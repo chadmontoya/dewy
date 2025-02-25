@@ -32,11 +32,14 @@ struct HomeView: View {
     
     var body: some View {
         TabView(selection: $currentTab) {
-            Tab("Explore", systemImage: "signpost.right.and.left.fill", value: .home) {
-                ExploreView(
-                    preferencesVM: preferencesVM,
-                    collectionsVM: collectionsVM
-                )
+            if let userId = authController.session?.user.id {
+                Tab("Explore", systemImage: "signpost.right.and.left.fill", value: .home) {
+                    ExploreView(
+                        preferencesVM: preferencesVM,
+                        collectionsVM: collectionsVM,
+                        userId: userId
+                    )
+                }
             }
             
             Tab("Collections", systemImage: "photo.stack", value: .collections) {

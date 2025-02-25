@@ -8,6 +8,8 @@ struct ExploreView: View {
     
     @StateObject var cardsVM = CardsViewModel(service: CardService())
     
+    let userId: UUID
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -35,6 +37,7 @@ struct ExploreView: View {
                         CardView(
                             cardsVM: cardsVM,
                             collectionsVM: collectionsVM,
+                            userId: userId,
                             model: outfitCard
                         )
                     }

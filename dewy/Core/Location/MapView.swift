@@ -123,7 +123,13 @@ struct MapView: View {
             .cornerRadius(10)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.white)
+                            .overlay(RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray.opacity(0.8), lineWidth: 1)
+                            )
+                    )
             )
             .overlay(
                 HStack {

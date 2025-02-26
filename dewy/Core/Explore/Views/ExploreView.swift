@@ -42,9 +42,6 @@ struct ExploreView: View {
                         )
                     }
                 }
-                RatingButtons(userId: userId, currentCard: cardsVM.outfitCards.last, cardsVM: cardsVM)
-                
-                Spacer()
             }
             .background(Color.primaryBackground.ignoresSafeArea())
             .fullScreenCover(isPresented: $preferencesVM.showPreferences) {

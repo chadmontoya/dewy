@@ -43,7 +43,7 @@ struct RatingButtons: View {
                 }
             }
         }
-        .padding(.vertical, 20)
+        .padding(.vertical, 15)
     }
 }
 
@@ -53,7 +53,11 @@ struct RatingButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button {
+            let impactMed = UIImpactFeedbackGenerator(style: .medium)
+            impactMed.impactOccurred()
+            action()
+        } label: {
             Text("\(number)")
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(.white)

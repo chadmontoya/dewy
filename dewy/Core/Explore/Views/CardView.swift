@@ -58,6 +58,8 @@ struct CardView: View {
                         Label("Report", systemImage: "flag")
                     }
                 }
+                
+                RatingActionIndicator(xOffset: $xOffset, yOffset: $yOffset, screenCutoff: screenCutoff)
             }
         }
         .frame(width: cardWidth, height: cardHeight)

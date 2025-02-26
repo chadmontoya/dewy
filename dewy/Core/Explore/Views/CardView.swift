@@ -66,8 +66,7 @@ struct CardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .offset(x: xOffset, y: yOffset)
         .rotationEffect(.degrees(degrees))
-        .animation(.snappy, value: xOffset)
-        .animation(.snappy, value: yOffset)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8, blendDuration: 0.5), value: [xOffset, yOffset])
         .gesture(
             DragGesture()
                 .onChanged(onDragChanged)
@@ -95,6 +94,7 @@ private extension CardView {
     func swipeRight() {
         withAnimation {
             xOffset = 500
+            yOffset = 0
             degrees = 12
         } completion: {
             cardsVM.removeOutfitCard(model)
@@ -107,6 +107,8 @@ private extension CardView {
     func swipeUp() {
         withAnimation {
             yOffset = 1000
+            xOffset = 0
+            degrees = 0
         } completion: {
             cardsVM.removeOutfitCard(model)
             Task {
@@ -118,6 +120,8 @@ private extension CardView {
     func swipeDown() {
         withAnimation {
             yOffset = -1000
+            xOffset = 0
+            degrees = 0
         } completion: {
             cardsVM.removeOutfitCard(model)
             Task {
@@ -129,6 +133,7 @@ private extension CardView {
     func swipeLeft() {
         withAnimation {
             xOffset = -500
+            yOffset = 0
             degrees = -12
         } completion: {
             cardsVM.removeOutfitCard(model)
@@ -150,26 +155,27 @@ private extension CardView {
         let width = value.translation.width
         let height = value.translation.height
         
-        if abs(width) <= abs(screenCutoff) {
-            xOffset = 0
-            degrees = 0
-        }
-        else if width >= screenCutoff {
-            swipeRight()
-        }
-        else if width < screenCutoff {
-            swipeLeft()
+        if abs(width) <= abs(screenCutoff) && abs(height) <= abs(screenCutoff) {
+            withAnimation(.easeInOut) {
+                xOffset = 0
+                yOffset = 0
+                degrees = 0
+            }
+            return
         }
         
-        if abs(height) <= abs(screenCutoff) {
-            yOffset = 0
-            degrees = 0
-        }
-        else if height >= screenCutoff {
-            swipeUp()
-        }
-        else if height < screenCutoff {
-            swipeDown()
+        if abs(width) > abs(height) {
+            if width > 0 {
+                swipeRight()
+            } else {
+                swipeLeft()
+            }
+        } else {
+            if height > 0 {
+                swipeUp()
+            } else {
+                swipeDown()
+            }
         }
     }
 }
@@ -180,10 +186,10 @@ private extension CardView {
     }
     
     var cardWidth: CGFloat {
-        UIScreen.main.bounds.width - 20
+        UIScreen.main.bounds.width - 15
     }
     
     var cardHeight: CGFloat {
-        UIScreen.main.bounds.height / 1.60
+        UIScreen.main.bounds.height / 1.50
     }
 }

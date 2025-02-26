@@ -42,6 +42,8 @@ struct ExploreView: View {
                         )
                     }
                 }
+                
+                Spacer()
             }
             .background(Color.primaryBackground.ignoresSafeArea())
             .fullScreenCover(isPresented: $preferencesVM.showPreferences) {

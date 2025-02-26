@@ -40,7 +40,7 @@ struct RatingStamp: View {
         Text("\(number)")
             .font(.system(size: 24, weight: .semibold))
             .foregroundStyle(.white)
-            .frame(width: 60, height: 60)
+            .frame(width: 75, height: 75)
             .background(color)
             .clipShape(Circle())
     }

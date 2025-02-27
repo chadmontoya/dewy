@@ -6,6 +6,7 @@ class OutfitsViewModel: ObservableObject {
     @Published var loadedImages: [String: Image] = [:]
     @Published var showOutfitDeletedToast: Bool = false
     @Published var showOutfitAddedToast: Bool = false
+    @Published var uploadOutfit: Bool = false
     
     private let imageCache: ImageCache = .shared
     private let outfitService: OutfitService

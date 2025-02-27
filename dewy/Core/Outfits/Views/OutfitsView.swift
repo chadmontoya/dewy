@@ -4,7 +4,6 @@ import SimpleToast
 struct OutfitsView: View {
     @EnvironmentObject var authController: AuthController
     @Namespace private var animation
-    @State private var uploadOutfit: Bool = false
     @State private var navigationPath: [String] = []
     @StateObject private var outfitsVM = OutfitsViewModel(
         outfitService: OutfitService(),
@@ -32,7 +31,7 @@ struct OutfitsView: View {
                         Spacer()
                         
                         Button {
-                            uploadOutfit = true
+                            outfitsVM.uploadOutfit = true
                         } label: {
                             Image(systemName: "plus")
                                 .font(.title3)
@@ -48,9 +47,8 @@ struct OutfitsView: View {
                     OutfitDetailView(outfit: outfit, animation: animation)
                         .toolbarVisibility(.hidden, for: .navigationBar)
                 }
-                .navigationDestination(isPresented: $uploadOutfit) {
+                .navigationDestination(isPresented: $outfitsVM.uploadOutfit) {
                     UploadOutfitView(onComplete: {
-                        uploadOutfit = false
                         navigationPath.removeAll()
                     })
                     .toolbarRole(.editor)
@@ -59,7 +57,7 @@ struct OutfitsView: View {
                     ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
                 }
                 .simpleToast(isPresented: $outfitsVM.showOutfitAddedToast, options: toastOptions) {
-                    ToastMessage(iconName: "checkmark.circle", message: "Successfully added outfit")
+                    ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
                 }
             }
             .environmentObject(outfitsVM)

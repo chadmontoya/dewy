@@ -86,6 +86,7 @@ struct SaveOutfitView: View {
                                     let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
                                     outfitsVM.addOutfit(outfit: outfit)
                                     outfitsVM.showOutfitAddedToast = true
+                                    outfitsVM.uploadOutfit = false
                                     onComplete()
                                 }
                             }

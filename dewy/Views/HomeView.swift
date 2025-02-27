@@ -23,7 +23,7 @@ struct HomeView: View {
     init() {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = UIColor(Color.cream)
+        appearance.backgroundColor = UIColor(Color.primaryBackground)
         
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
@@ -32,11 +32,14 @@ struct HomeView: View {
     
     var body: some View {
         TabView(selection: $currentTab) {
-            Tab("Explore", systemImage: "signpost.right.and.left.fill", value: .home) {
-                ExploreView(
-                    preferencesVM: preferencesVM,
-                    collectionsVM: collectionsVM
-                )
+            if let userId = authController.session?.user.id {
+                Tab("Explore", systemImage: "signpost.right.and.left.fill", value: .home) {
+                    ExploreView(
+                        preferencesVM: preferencesVM,
+                        collectionsVM: collectionsVM,
+                        userId: userId
+                    )
+                }
             }
             
             Tab("Collections", systemImage: "photo.stack", value: .collections) {
@@ -49,7 +52,7 @@ struct HomeView: View {
             
             Tab("Profile", systemImage: "person.fill", value: .profile) {
                 ZStack {
-                    Color.cream.ignoresSafeArea()
+                    Color.primaryBackground.ignoresSafeArea()
                     VStack {
                         Text("hello, \(authController.session?.user.email ?? "no email")").foregroundStyle(.black)
                         

@@ -1,4 +1,5 @@
 import SwiftUI
+import SimpleToast
 
 struct CollectionsView: View {
     @EnvironmentObject var authController: AuthController
@@ -7,15 +8,22 @@ struct CollectionsView: View {
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 4,
+        animation: .easeInOut,
+        modifierType: .slide
+    )
+    
     var body: some View {
         NavigationStack {
             VStack {
                 headerView
                 collectionGrid
             }
-            .background(Color.cream.ignoresSafeArea())
-            .alert("new collection", isPresented: $collectionsVM.isCreatingCollection) {
-                TextField("collection name", text: $collectionsVM.newCollectionName)
+            .background(Color.primaryBackground.ignoresSafeArea())
+            .alert("New Collection", isPresented: $collectionsVM.isCreatingCollection) {
+                TextField("Name", text: $collectionsVM.newCollectionName)
                 Button("Cancel", role: .cancel) {
                     collectionsVM.newCollectionName = ""
                 }
@@ -27,7 +35,10 @@ struct CollectionsView: View {
                     }
                 }
             } message: {
-                Text("enter a name")
+                Text("Enter a name")
+            }
+            .simpleToast(isPresented: $collectionsVM.showCollectionAddedToast, options: toastOptions) {
+                ToastMessage(iconName: "checkmark.circle", message: "Successfully created a new collection")
             }
         }
         .onAppear {

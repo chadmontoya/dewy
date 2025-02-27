@@ -1,4 +1,5 @@
 import SwiftUI
+import SimpleToast
 
 struct ExploreView: View {
     @EnvironmentObject var authController: AuthController
@@ -7,6 +8,15 @@ struct ExploreView: View {
     @ObservedObject var collectionsVM: CollectionsViewModel
     
     @StateObject var cardsVM = CardsViewModel(service: CardService())
+    
+    let userId: UUID
+    
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 2,
+        animation: .easeInOut,
+        modifierType: .slide
+    )
     
     var body: some View {
         NavigationStack {
@@ -29,25 +39,33 @@ struct ExploreView: View {
                 .padding(.vertical, 12)
                 
                 ZStack {
-                    Color.cream.ignoresSafeArea()
+                    Color.primaryBackground.ignoresSafeArea()
                     
-                    ForEach(cardsVM.outfitCards) { outfitCard in
-                        CardView(
-                            cardsVM: cardsVM,
-                            collectionsVM: collectionsVM,
-                            model: outfitCard
-                        )
+                    if cardsVM.isLoading {
+                        ProgressView()
+                    } else {
+                        ForEach(cardsVM.outfitCards) { outfitCard in
+                            CardView(
+                                cardsVM: cardsVM,
+                                collectionsVM: collectionsVM,
+                                userId: userId,
+                                model: outfitCard
+                            )
+                        }
                     }
                 }
                 
                 Spacer()
             }
-            .background(Color.cream.ignoresSafeArea())
+            .background(Color.primaryBackground.ignoresSafeArea())
             .fullScreenCover(isPresented: $preferencesVM.showPreferences) {
                 PreferencesView(preferencesVM: preferencesVM, cardsVM: cardsVM)
             }
             .sheet(isPresented: $collectionsVM.saveToCollection) {
                 CollectionsList(collectionsVM: collectionsVM)
+            }
+            .simpleToast(isPresented: $collectionsVM.showOutfitAddedToast, options: toastOptions) {
+                ToastMessage(iconName: "checkmark.circle", message: "Successfully added outfit to collection")
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
                 if newValue.isEmpty {
@@ -63,8 +81,10 @@ struct ExploreView: View {
             if let userId = authController.session?.user.id {
                 Task {
                     await preferencesVM.fetchPreferences(userId: userId)
-                    await cardsVM.fetchOutfitCards(userId: userId)
                     await collectionsVM.fetchCollections(userId: userId)
+                    if cardsVM.outfitCards.isEmpty {
+                        await cardsVM.fetchOutfitCards(userId: userId)
+                    }
                 }
             }
         }

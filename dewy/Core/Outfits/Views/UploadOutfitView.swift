@@ -18,7 +18,7 @@ struct UploadOutfitView: View {
     
     var body: some View {
         ZStack {
-            Color.cream.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             VStack(spacing: 16) {
                 Button(action: {
@@ -104,7 +104,7 @@ struct UploadOutfitView: View {
             }
         }
         .navigationDestination(isPresented: $uploadOutfitVM.croppedImageSelected) {
-            OutfitDetailsView(onComplete: onComplete)
+            SaveOutfitView(onComplete: onComplete)
                 .environmentObject(uploadOutfitVM)
                 .toolbarRole(.editor)
         }
@@ -125,6 +125,6 @@ let configuration = SwiftyCropConfiguration(
         cancelButton: Color.black,
         interactionInstructions: Color.black,
         saveButton: Color.black,
-        background: Color.cream
+        background: Color.primaryBackground
     )
 )

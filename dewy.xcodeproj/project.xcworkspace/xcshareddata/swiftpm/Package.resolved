@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "originHash" : "c04f06b96783596eaaa3cf9d582ec2ef62df7a666554f854c2c22e27ce5759de",
+=======
+  "originHash" : "333b346fdaee57f4f8ab91c1d5b218b85cd0b7142291bed5a71228636e07fcee",
+>>>>>>> swipe-updates
   "pins" : [
     {
       "identity" : "app-check",

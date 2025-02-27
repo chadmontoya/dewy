@@ -5,6 +5,7 @@ class CollectionsViewModel: ObservableObject {
     @Published var collections: [Collection] = []
     @Published var isCreatingCollection: Bool = false
     @Published var newCollectionName: String = ""
+    @Published var showCollectionAddedToast: Bool = false
     
     @Published var saveToCollection: Bool = false
     @Published var newCollectionOutfitId: Int64 = 0
@@ -12,6 +13,7 @@ class CollectionsViewModel: ObservableObject {
     
     @Published var showingConfirmationAlert: Bool = false
     @Published var selectedCollection: Collection? = nil
+    @Published var showOutfitAddedToast: Bool = false
 
     private let collectionsService: CollectionsService
     
@@ -26,6 +28,7 @@ class CollectionsViewModel: ObservableObject {
                 collectionId: collectionId,
                 imageUrl: imageUrl
             )
+            showOutfitAddedToast = true
         }
         catch {
             print("failed to add outfit to collection: \(error)")
@@ -46,7 +49,8 @@ class CollectionsViewModel: ObservableObject {
         
         do {
             let newCollection = try await collectionsService.createCollection(userId: userId, name: newCollectionName)
-            collections.append(newCollection)
+            collections.insert(newCollection, at: 0)
+            showCollectionAddedToast = true
             newCollectionName = ""
             isCreatingCollection = false
         } catch {

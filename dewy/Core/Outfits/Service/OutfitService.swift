@@ -25,6 +25,14 @@ struct OutfitService {
         }
     }
     
+    func deleteOutfit(outfitId: Int64) async throws {
+        try await supabase
+            .from("Outfits")
+            .delete()
+            .eq("id", value: String(outfitId))
+            .execute()
+    }
+    
     func fetchUsersOutfits(userId: UUID) async -> [Outfit] {
         do {
             let outfits: [Outfit] = try await supabase

@@ -1,9 +1,9 @@
 import SwiftUI
+import SimpleToast
 
 struct OutfitsView: View {
     @EnvironmentObject var authController: AuthController
     @Namespace private var animation
-    @State private var uploadOutfit: Bool = false
     @State private var navigationPath: [String] = []
     @StateObject private var outfitsVM = OutfitsViewModel(
         outfitService: OutfitService(),
@@ -11,6 +11,13 @@ struct OutfitsView: View {
     )
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
+    
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 4,
+        animation: .easeInOut,
+        modifierType: .slide
+    )
     
     var body: some View {
         Group {
@@ -24,7 +31,7 @@ struct OutfitsView: View {
                         Spacer()
                         
                         Button {
-                            uploadOutfit = true
+                            outfitsVM.uploadOutfit = true
                         } label: {
                             Image(systemName: "plus")
                                 .font(.title3)
@@ -35,17 +42,22 @@ struct OutfitsView: View {
                     
                     OutfitList(screenSize: UIScreen.main.bounds.size)
                 }
-                .background(Color.cream.ignoresSafeArea())
+                .background(Color.primaryBackground.ignoresSafeArea())
                 .navigationDestination(for: Outfit.self) { outfit in
                     OutfitDetailView(outfit: outfit, animation: animation)
                         .toolbarVisibility(.hidden, for: .navigationBar)
                 }
-                .navigationDestination(isPresented: $uploadOutfit) {
+                .navigationDestination(isPresented: $outfitsVM.uploadOutfit) {
                     UploadOutfitView(onComplete: {
-                        uploadOutfit = false
                         navigationPath.removeAll()
                     })
                     .toolbarRole(.editor)
+                }
+                .simpleToast(isPresented: $outfitsVM.showOutfitDeletedToast, options: toastOptions) {
+                    ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
+                }
+                .simpleToast(isPresented: $outfitsVM.showOutfitAddedToast, options: toastOptions) {
+                    ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
                 }
             }
             .environmentObject(outfitsVM)

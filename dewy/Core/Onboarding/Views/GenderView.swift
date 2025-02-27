@@ -62,6 +62,6 @@ struct GenderView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.cream)
+        .background(Color.primaryBackground)
     }
 }

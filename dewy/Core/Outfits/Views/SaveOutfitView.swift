@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OutfitDetailsView: View {
+struct SaveOutfitView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
     @EnvironmentObject var outfitsVM: OutfitsViewModel
@@ -14,7 +14,7 @@ struct OutfitDetailsView: View {
     
     var body: some View {
         ZStack {
-            Color.cream.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             VStack {
                 HStack {
@@ -45,14 +45,14 @@ struct OutfitDetailsView: View {
                         }
                         .sheet(isPresented: $showStyleTagSheet) {
                             ZStack {
-                                Color.cream.ignoresSafeArea()
+                                Color.primaryBackground.ignoresSafeArea()
                                 StyleTagView(showStyleTagSheet: $showStyleTagSheet)
                                     .presentationDetents([.medium])
                             }
                         }
                         .sheet(isPresented: $showLocationSheet) {
                             ZStack {
-                                Color.cream.ignoresSafeArea()
+                                Color.primaryBackground.ignoresSafeArea()
                                 OutfitLocationView(showLocationSheet: $showLocationSheet)
                             }
                         }
@@ -85,6 +85,8 @@ struct OutfitDetailsView: View {
                                 if let userId = authController.session?.user.id {
                                     let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
                                     outfitsVM.addOutfit(outfit: outfit)
+                                    outfitsVM.showOutfitAddedToast = true
+                                    outfitsVM.uploadOutfit = false
                                     onComplete()
                                 }
                             }

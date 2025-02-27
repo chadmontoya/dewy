@@ -1,4 +1,5 @@
 import SwiftUI
+import SimpleToast
 
 struct OutfitsView: View {
     @EnvironmentObject var authController: AuthController
@@ -11,6 +12,13 @@ struct OutfitsView: View {
     )
     
     let columns = Array(repeating: GridItem(spacing: 10), count: 2)
+    
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 4,
+        animation: .easeInOut,
+        modifierType: .slide
+    )
     
     var body: some View {
         Group {
@@ -46,6 +54,12 @@ struct OutfitsView: View {
                         navigationPath.removeAll()
                     })
                     .toolbarRole(.editor)
+                }
+                .simpleToast(isPresented: $outfitsVM.showOutfitDeletedToast, options: toastOptions) {
+                    ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
+                }
+                .simpleToast(isPresented: $outfitsVM.showOutfitAddedToast, options: toastOptions) {
+                    ToastMessage(iconName: "checkmark.circle", message: "Successfully added outfit")
                 }
             }
             .environmentObject(outfitsVM)

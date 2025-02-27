@@ -41,13 +41,17 @@ struct ExploreView: View {
                 ZStack {
                     Color.primaryBackground.ignoresSafeArea()
                     
-                    ForEach(cardsVM.outfitCards) { outfitCard in
-                        CardView(
-                            cardsVM: cardsVM,
-                            collectionsVM: collectionsVM,
-                            userId: userId,
-                            model: outfitCard
-                        )
+                    if cardsVM.isLoading {
+                        ProgressView()
+                    } else {
+                        ForEach(cardsVM.outfitCards) { outfitCard in
+                            CardView(
+                                cardsVM: cardsVM,
+                                collectionsVM: collectionsVM,
+                                userId: userId,
+                                model: outfitCard
+                            )
+                        }
                     }
                 }
                 
@@ -77,8 +81,10 @@ struct ExploreView: View {
             if let userId = authController.session?.user.id {
                 Task {
                     await preferencesVM.fetchPreferences(userId: userId)
-                    await cardsVM.fetchOutfitCards(userId: userId)
                     await collectionsVM.fetchCollections(userId: userId)
+                    if cardsVM.outfitCards.isEmpty {
+                        await cardsVM.fetchOutfitCards(userId: userId)
+                    }
                 }
             }
         }

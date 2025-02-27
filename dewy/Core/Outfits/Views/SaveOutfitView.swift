@@ -85,6 +85,7 @@ struct SaveOutfitView: View {
                                 if let userId = authController.session?.user.id {
                                     let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
                                     outfitsVM.addOutfit(outfit: outfit)
+                                    outfitsVM.showOutfitAddedToast = true
                                     onComplete()
                                 }
                             }

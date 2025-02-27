@@ -13,53 +13,43 @@ struct CardView: View {
     
     var body: some View {
         ZStack {
-            if let imageURL = URL(string: outfit.imageURL!) {
-                AsyncImage(url: imageURL) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: cardWidth, height: cardHeight)
-                    case.success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: cardWidth, height: cardHeight)
-                            .clipShape(RoundedRectangle(cornerRadius: 15))
-                    case .failure:
-                        Color.clear
-                            .onAppear {
-                                cardsVM.removeOutfitCard(model)
-                            }
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
-                .contextMenu {
-                    Button {
-                        collectionsVM.newCollectionOutfitId = model.id
-                        collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL!
-                        collectionsVM.saveToCollection = true
-                    } label: {
-                        Label("Save", systemImage: "bookmark")
-                    }
-                    
-                    Button {
-                        cardsVM.removeOutfitCard(model)
-                        Task {
-                            await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 0)
+            if let imageURL = model.outfit.imageURL,
+               let preloadedImage = cardsVM.preloadedImages[imageURL] {
+                Image(uiImage: preloadedImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: cardWidth, height: cardHeight)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .contextMenu {
+                        Button {
+                            collectionsVM.newCollectionOutfitId = model.id
+                            collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL!
+                            collectionsVM.saveToCollection = true
+                        } label: {
+                            Label("Save", systemImage: "bookmark")
                         }
-                    } label: {
-                        Label("Skip", systemImage: "arrow.uturn.right")
+                        
+                        Button {
+                            cardsVM.removeOutfitCard(model)
+                            Task {
+                                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 0)
+                            }
+                        } label: {
+                            Label("Skip", systemImage: "arrow.uturn.right")
+                        }
+                        
+                        Button(role: .destructive) {
+                            print("reporting outfit: \(model.id)")
+                        } label: {
+                            Label("Report", systemImage: "flag")
+                        }
                     }
-                    
-                    Button(role: .destructive) {
-                        print("reporting outfit: \(model.id)")
-                    } label: {
-                        Label("Report", systemImage: "flag")
-                    }
-                }
-                
                 RatingActionIndicator(xOffset: $xOffset, yOffset: $yOffset, screenCutoff: screenCutoff)
+            } else {
+                Color.clear
+                    .onAppear {
+                        cardsVM.removeOutfitCard(model)
+                    }
             }
         }
         .frame(width: cardWidth, height: cardHeight)

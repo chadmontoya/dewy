@@ -11,6 +11,7 @@
 		6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6903F2892CE3FED60058630B /* GoogleSignIn */; };
 		690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 690991172D0E3B2400419383 /* GoogleSignInSwift */; };
 		6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = 690991192D0E3B2400419383 /* SwiftyCrop */; };
+		69BF98642D6FCF0200CF2660 /* SimpleToast in Frameworks */ = {isa = PBXBuildFile; productRef = 69BF98632D6FCF0200CF2660 /* SimpleToast */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 				690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */,
 				6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */,
 				690188772CF8FE37006A0CA6 /* Supabase in Frameworks */,
+				69BF98642D6FCF0200CF2660 /* SimpleToast in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +150,7 @@
 				690188762CF8FE37006A0CA6 /* Supabase */,
 				690991172D0E3B2400419383 /* GoogleSignInSwift */,
 				690991192D0E3B2400419383 /* SwiftyCrop */,
+				69BF98632D6FCF0200CF2660 /* SimpleToast */,
 			);
 			productName = dewy;
 			productReference = 6903F23E2CE2A2790058630B /* dewy.app */;
@@ -235,6 +238,7 @@
 				6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				690188752CF8FE37006A0CA6 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
+				693B81942D6FCD1A000E3498 /* XCRemoteSwiftPackageReference "SimpleToast" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6903F23F2CE2A2790058630B /* Products */;
@@ -631,6 +635,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		693B81942D6FCD1A000E3498 /* XCRemoteSwiftPackageReference "SimpleToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sanzaru/SimpleToast";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.1;
+			};
+		};
 		6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/benedom/SwiftyCrop";
@@ -661,6 +673,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */;
 			productName = SwiftyCrop;
+		};
+		69BF98632D6FCF0200CF2660 /* SimpleToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 693B81942D6FCD1A000E3498 /* XCRemoteSwiftPackageReference "SimpleToast" */;
+			productName = SimpleToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

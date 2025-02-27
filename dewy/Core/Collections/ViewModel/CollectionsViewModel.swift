@@ -12,6 +12,7 @@ class CollectionsViewModel: ObservableObject {
     
     @Published var showingConfirmationAlert: Bool = false
     @Published var selectedCollection: Collection? = nil
+    @Published var showOutfitAddedToast: Bool = false
 
     private let collectionsService: CollectionsService
     
@@ -26,6 +27,7 @@ class CollectionsViewModel: ObservableObject {
                 collectionId: collectionId,
                 imageUrl: imageUrl
             )
+            showOutfitAddedToast = true
         }
         catch {
             print("failed to add outfit to collection: \(error)")

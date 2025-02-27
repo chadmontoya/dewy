@@ -1,4 +1,5 @@
 import SwiftUI
+import SimpleToast
 
 struct ExploreView: View {
     @EnvironmentObject var authController: AuthController
@@ -9,6 +10,13 @@ struct ExploreView: View {
     @StateObject var cardsVM = CardsViewModel(service: CardService())
     
     let userId: UUID
+    
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 3,
+        animation: .snappy,
+        modifierType: .slide
+    )
     
     var body: some View {
         NavigationStack {
@@ -51,6 +59,16 @@ struct ExploreView: View {
             }
             .sheet(isPresented: $collectionsVM.saveToCollection) {
                 CollectionsList(collectionsVM: collectionsVM)
+            }
+            .simpleToast(isPresented: $collectionsVM.showOutfitAddedToast, options: toastOptions) {
+                HStack {
+                    Image(systemName: "checkmark.circle")
+                    Text("Outfit successfully added to collection")
+                }
+                .padding()
+                .background(Color.black)
+                .foregroundStyle(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
                 if newValue.isEmpty {

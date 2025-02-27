@@ -7,7 +7,7 @@ struct LocationPreferenceView: View {
     
     var body: some View {
         ZStack {
-            Color.softBeige.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             MapView(location: $preferencesVM.location)
         }

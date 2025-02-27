@@ -10,4 +10,18 @@ struct CardService {
         
         return outfits.map({ OutfitCard(outfit: $0) })
     }
+    
+    func rateOutfit(userId: UUID, outfitId: Int64, rating: Int) async throws {
+//        try await supabase
+//            .from("Outfit_Ratings")
+//            .insert(
+//                OutfitRating(
+//                    outfitId: outfitId,
+//                    rating: rating,
+//                    userId: userId
+//                )
+//            )
+//            .execute()
+//            .value
+    }
 }

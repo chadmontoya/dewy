@@ -5,12 +5,10 @@ struct PreferencesView: View {
     @ObservedObject var preferencesVM: PreferencesViewModel
     @ObservedObject var cardsVM: CardsViewModel
     
-    @Binding var showPreferences: Bool
-    
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.softBeige.ignoresSafeArea()
+                Color.primaryBackground.ignoresSafeArea()
                 
                 List {
                     PreferenceRow(title: "I'm interested in outfits from", value: preferencesVM.genderPreferenceText)
@@ -46,7 +44,7 @@ struct PreferencesView: View {
                                     await cardsVM.fetchOutfitCards(userId: userId)
                                 }
                             }
-                            showPreferences = false
+                            preferencesVM.showPreferences = false
                         } label: {
                             Image(systemName: "xmark")
                                 .foregroundStyle(Color.black)
@@ -79,7 +77,7 @@ struct PreferenceRow: View {
                 .frame(width: 7)
                 .foregroundStyle(.black)
         }
-        .listRowBackground(Color.softBeige)
+        .listRowBackground(Color.primaryBackground)
         .listRowSeparatorTint(Color.black)
         .listSectionSeparator(.hidden, edges: .top)
     }

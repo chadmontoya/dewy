@@ -14,7 +14,7 @@ struct AuthView: View {
     
     var body: some View {
         ZStack {
-            Color.cream
+            Color.primaryBackground
                 .ignoresSafeArea()
                 .onTapGesture {
                     self.hideKeyboard()
@@ -45,7 +45,7 @@ struct AuthView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             if case .inFlight = authState {
-                LoadingView()
+                SplashScreen()
                     .onAppear {
                         hideKeyboard()
                     }

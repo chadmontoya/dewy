@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct BirthdayView: View {
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
         VStack {
@@ -10,7 +10,7 @@ struct BirthdayView: View {
                 .padding()
                 .font(.title)
                 .bold()
-                .foregroundStyle(Color.coffee)
+                .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             Spacer()
@@ -35,16 +35,17 @@ struct BirthdayView: View {
             
             
             NavigationLink {
-                UserLocationView()
-                    .environmentObject(onboardingVM)
-                    .environmentObject(preferencesVM)
-                    .toolbarRole(.editor)
+                UserLocationView(
+                    preferencesVM: preferencesVM,
+                    onboardingVM: onboardingVM
+                )
+                .toolbarRole(.editor)
             } label: {
                 Text("Next")
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(Color.coffee)
+                    .background(.black)
             }
             .cornerRadius(10)
             
@@ -60,6 +61,6 @@ struct BirthdayView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.cream)
+        .background(Color.primaryBackground)
     }
 }

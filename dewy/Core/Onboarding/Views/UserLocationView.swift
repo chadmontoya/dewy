@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct UserLocationView: View {
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
-    
-    @State var locationSearchVM = LocationSearchViewModel()
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
         VStack {
@@ -12,28 +10,29 @@ struct UserLocationView: View {
                 .padding()
                 .font(.title)
                 .bold()
-                .foregroundStyle(Color.coffee)
+                .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             MapView(location: $onboardingVM.location)
             
             NavigationLink {
-                GenderView()
-                    .environmentObject(onboardingVM)
-                    .environmentObject(preferencesVM)
-                    .toolbarRole(.editor)
+                GenderView(
+                    preferencesVM: preferencesVM,
+                    onboardingVM: onboardingVM
+                )
+                .toolbarRole(.editor)
             } label: {
                 Text("Next")
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(Color.coffee)
+                    .background(.black)
             }
             .cornerRadius(10)
             .padding()
             
             Spacer()
         }
-        .background(Color.cream.ignoresSafeArea())
+        .background(Color.primaryBackground.ignoresSafeArea())
     }
 }

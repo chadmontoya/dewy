@@ -55,7 +55,7 @@ struct Preferences {
 
 struct UpdatePreferencesParams: Encodable, Sendable {
     let p_preferences_id: Int64
-    let p_user_id: String
+    let p_user_id: UUID
     let p_min_age: Int
     let p_max_age: Int
     let p_preferred_genders: [String]
@@ -74,7 +74,7 @@ struct UpdatePreferencesParams: Encodable, Sendable {
         allStylesPreferred: Bool
     ) {
         self.p_preferences_id = preferencesId
-        self.p_user_id = userId.uuidString
+        self.p_user_id = userId
         self.p_min_age = minAge
         self.p_max_age = maxAge
         self.p_preferred_genders = preferredGenders.map { $0.rawValue }

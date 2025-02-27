@@ -7,7 +7,7 @@ struct GenderPreferenceView: View {
     
     var body: some View {
         ZStack {
-            Color.softBeige.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             List {
                 Button(action: { preferencesVM.selectAllGenders() }) {
@@ -27,7 +27,7 @@ struct GenderPreferenceView: View {
                         }
                     }
                 }
-                .listRowBackground(Color.softBeige)
+                .listRowBackground(Color.primaryBackground)
                 
                 ForEach(Gender.GenderType.allCases, id: \.self) { genderType in
                     Button(action: { preferencesVM.toggleGender(genderType) }) {
@@ -47,7 +47,7 @@ struct GenderPreferenceView: View {
                             }
                         }
                     }
-                    .listRowBackground(Color.softBeige)
+                    .listRowBackground(Color.primaryBackground)
                 }
             }
             .scrollDisabled(true)

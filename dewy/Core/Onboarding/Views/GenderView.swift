@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct GenderView: View {
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var onboardingVM: OnboardingViewModel
     
     var body: some View {
         VStack {
@@ -10,7 +10,7 @@ struct GenderView: View {
                 .padding()
                 .font(.title)
                 .bold()
-                .foregroundStyle(Color.coffee)
+                .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             Spacer()
@@ -34,16 +34,17 @@ struct GenderView: View {
             .padding(.bottom)
             
             NavigationLink {
-                GetStartedView()
-                    .environmentObject(onboardingVM)
-                    .environmentObject(preferencesVM)
-                    .toolbarRole(.editor)
+                GetStartedView(
+                    preferencesVM: preferencesVM,
+                    onboardingVM: onboardingVM
+                )
+                .toolbarRole(.editor)
             } label: {
                 Text("Next")
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(Color.coffee)
+                    .background(.black)
             }
             .cornerRadius(10)
             
@@ -61,6 +62,6 @@ struct GenderView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.cream)
+        .background(Color.primaryBackground)
     }
 }

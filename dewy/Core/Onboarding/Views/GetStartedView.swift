@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct GetStartedView: View {
-    @EnvironmentObject var preferencesVM: PreferencesViewModel
-    @EnvironmentObject var onboardingVM: OnboardingViewModel
     @EnvironmentObject var authController: AuthController
+    
+    @ObservedObject var preferencesVM: PreferencesViewModel
+    @ObservedObject var onboardingVM: OnboardingViewModel
     
     @State private var onboardingComplete = false
     
@@ -13,7 +14,7 @@ struct GetStartedView: View {
                 .padding()
                 .font(.title)
                 .bold()
-                .foregroundStyle(Color.coffee)
+                .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             Spacer()
@@ -36,7 +37,7 @@ struct GetStartedView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(Color.coffee)
+                    .background(.black)
             }
             .cornerRadius(10)
             
@@ -44,6 +45,6 @@ struct GetStartedView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.cream)
+        .background(Color.primaryBackground)
     }
 }

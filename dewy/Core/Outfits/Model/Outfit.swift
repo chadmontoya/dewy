@@ -38,6 +38,24 @@ struct Outfit: Identifiable {
     }
 }
 
+struct CreateOutfitParams: Encodable, Sendable {
+    let p_user_id: UUID
+    let p_image_url: String
+    let p_location: String
+    let p_location_string: String
+    let p_public: Bool
+    let p_style_ids: [Int64]
+    
+    init(userId: UUID, imageUrl: String, location: CLLocationCoordinate2D, locationString: String, isPublic: Bool, selectedStyles: Set<Style>) {
+        self.p_user_id = userId
+        self.p_image_url = imageUrl
+        self.p_location = "POINT(\(location.longitude) \(location.latitude))"
+        self.p_location_string = locationString
+        self.p_public = isPublic
+        self.p_style_ids = selectedStyles.map(\.id)
+    }
+}
+
 extension Outfit: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

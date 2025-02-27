@@ -2,40 +2,61 @@ import SwiftUI
 
 struct CardView: View {
     @ObservedObject var cardsVM: CardsViewModel
+    @ObservedObject var collectionsVM: CollectionsViewModel
+    
     @State private var xOffset: CGFloat = 0
     @State private var yOffset: CGFloat = 0
     @State private var degrees: Double = 0
     
+    let userId: UUID
     let model: OutfitCard
     
     var body: some View {
         ZStack {
-            if let imageURL = URL(string: outfit.imageURL!) {
-                AsyncImage(url: imageURL) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: cardWidth, height: cardHeight)
-                    case.success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: cardWidth, height: cardHeight)
-                            .clipShape(RoundedRectangle(cornerRadius: 15))
-                    case .failure:
-                        Text("something went wrong")
-                    @unknown default:
-                        EmptyView()
+            if let imageURL = model.outfit.imageURL,
+               let preloadedImage = cardsVM.preloadedImages[imageURL] {
+                Image(uiImage: preloadedImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: cardWidth, height: cardHeight)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .contextMenu {
+                        Button {
+                            collectionsVM.newCollectionOutfitId = model.id
+                            collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL!
+                            collectionsVM.saveToCollection = true
+                        } label: {
+                            Label("Save", systemImage: "bookmark")
+                        }
+                        
+                        Button {
+                            cardsVM.removeOutfitCard(model)
+                            Task {
+                                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 0)
+                            }
+                        } label: {
+                            Label("Skip", systemImage: "arrow.uturn.right")
+                        }
+                        
+                        Button(role: .destructive) {
+                            print("reporting outfit: \(model.id)")
+                        } label: {
+                            Label("Report", systemImage: "flag")
+                        }
                     }
-                }
+                RatingActionIndicator(xOffset: $xOffset, yOffset: $yOffset, screenCutoff: screenCutoff)
+            } else {
+                Color.clear
+                    .onAppear {
+                        cardsVM.removeOutfitCard(model)
+                    }
             }
         }
         .frame(width: cardWidth, height: cardHeight)
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .offset(x: xOffset, y: yOffset)
         .rotationEffect(.degrees(degrees))
-        .animation(.snappy, value: xOffset)
-        .animation(.snappy, value: yOffset)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8, blendDuration: 0.5), value: [xOffset, yOffset])
         .gesture(
             DragGesture()
                 .onChanged(onDragChanged)
@@ -63,34 +84,52 @@ private extension CardView {
     func swipeRight() {
         withAnimation {
             xOffset = 500
+            yOffset = 0
             degrees = 12
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 3)
+            }
         }
     }
     
     func swipeUp() {
         withAnimation {
             yOffset = 1000
+            xOffset = 0
+            degrees = 0
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 1)
+            }
         }
     }
     
     func swipeDown() {
         withAnimation {
             yOffset = -1000
+            xOffset = 0
+            degrees = 0
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 4)
+            }
         }
     }
     
     func swipeLeft() {
         withAnimation {
             xOffset = -500
+            yOffset = 0
             degrees = -12
         } completion: {
             cardsVM.removeOutfitCard(model)
+            Task {
+                await cardsVM.rateOutfit(userId: userId, outfitId: model.outfit.id, rating: 2)
+            }
         }
     }
 }
@@ -106,26 +145,27 @@ private extension CardView {
         let width = value.translation.width
         let height = value.translation.height
         
-        if abs(width) <= abs(screenCutoff) {
-            xOffset = 0
-            degrees = 0
-        }
-        else if width >= screenCutoff {
-            swipeRight()
-        }
-        else if width < screenCutoff {
-            swipeLeft()
+        if abs(width) <= abs(screenCutoff) && abs(height) <= abs(screenCutoff) {
+            withAnimation(.easeInOut) {
+                xOffset = 0
+                yOffset = 0
+                degrees = 0
+            }
+            return
         }
         
-        if abs(height) <= abs(screenCutoff) {
-            yOffset = 0
-            degrees = 0
-        }
-        else if height >= screenCutoff {
-            swipeUp()
-        }
-        else if height < screenCutoff {
-            swipeDown()
+        if abs(width) > abs(height) {
+            if width > 0 {
+                swipeRight()
+            } else {
+                swipeLeft()
+            }
+        } else {
+            if height > 0 {
+                swipeUp()
+            } else {
+                swipeDown()
+            }
         }
     }
 }
@@ -136,10 +176,10 @@ private extension CardView {
     }
     
     var cardWidth: CGFloat {
-        UIScreen.main.bounds.width - 20
+        UIScreen.main.bounds.width - 15
     }
     
     var cardHeight: CGFloat {
-        UIScreen.main.bounds.height / 1.45
+        UIScreen.main.bounds.height / 1.50
     }
 }

@@ -79,7 +79,7 @@ struct StyleTag: View {
 struct OutfitDetailView: View {
     var outfit: Outfit
     var animation: Namespace.ID
-    @ObservedObject var outfitsVM: OutfitsViewModel
+    @EnvironmentObject var outfitsVM: OutfitsViewModel
     @Environment(\.dismiss) private var dismissView
     
     var body: some View {
@@ -117,25 +117,10 @@ struct OutfitDetailView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
         }
         .padding()
-        .background(Color.cream)
+        .background(Color.primaryBackground)
         .navigationTransition(.zoom(sourceID: outfit.id, in: animation))
     }
 }
-
-//#Preview {
-//    @Namespace var animationNamespace
-//
-//    let outfit = Outfit(
-//        userId: UUID(),
-//        imageURL: "https://riycadlhyixpkdpvxhpx.supabase.co/storage/v1/object/public/outfits/4CAE8595-C34E-4B70-930F-29656C347B57/FA32632A-5958-4D05-87CF-E76D094CD8A4-1738877456.jpg",
-//        styleIds: [1, 2, 3]
-//    )
-//
-//    return OutfitDetailView(
-//        outfit: outfit,
-//        animation: animationNamespace,
-//        closetVM: ClosetViewModel(styleService: StyleService())
-//    )
-//}

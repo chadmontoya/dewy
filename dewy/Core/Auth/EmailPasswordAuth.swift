@@ -41,7 +41,7 @@ struct EmailPasswordAuth: View {
             Text(mode == .signIn ? "Sign In" : "Sign Up")
                 .font(.title)
                 .fontWeight(.bold)
-                .foregroundColor(Color.coffee)
+                .foregroundColor(.black)
         }
     }
     
@@ -60,7 +60,7 @@ struct EmailPasswordAuth: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(email.isEmpty ? Color.gray.opacity(0.3) : Color.mutedTaupe, lineWidth: 1)
+                    .stroke(email.isEmpty ? Color.gray.opacity(0.3) : .black, lineWidth: 1)
             )
     }
     
@@ -87,7 +87,7 @@ struct EmailPasswordAuth: View {
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(password.isEmpty ? Color.gray.opacity(0.3) : Color.mutedTaupe, lineWidth: 1)
+                .stroke(password.isEmpty ? Color.gray.opacity(0.3) : .black, lineWidth: 1)
         )
         .background(
             RoundedRectangle(cornerRadius: 10)
@@ -106,7 +106,7 @@ struct EmailPasswordAuth: View {
             .frame(maxWidth: .infinity)
             .padding()
             .background(
-                isActionEnabled ? Color.coffee: Color.coffee.opacity(0.5)
+                isActionEnabled ? .black: .black.opacity(0.5)
             )
             .cornerRadius(10)
         }
@@ -173,7 +173,7 @@ struct EmailPasswordAuth: View {
     
     @MainActor
     private func signUp() async throws {
-       try await supabase.auth.signUp(email: email, password: password)
+        try await supabase.auth.signUp(email: email, password: password)
     }
     
     private func toggleMode() {

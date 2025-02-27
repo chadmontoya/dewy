@@ -20,7 +20,7 @@ struct StyleTagView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(Color.coffee)
+                    .background(.black)
             }
             .cornerRadius(10)
             .padding()
@@ -33,14 +33,14 @@ struct StyleTagView: View {
                 HStack {
                     Text(style.name)
                         .padding()
-                        .background(uploadOutfitVM.selectedStyles.keys.contains(style.id) ? Color.chocolate : .gray)
+                        .background(uploadOutfitVM.selectedStyles.contains(style) ? Color.black : .gray)
                         .clipShape(RoundedRectangle(cornerRadius: 30))
                         .onTapGesture {
-                            if uploadOutfitVM.selectedStyles.keys.contains(style.id) {
-                                uploadOutfitVM.selectedStyles.removeValue(forKey: style.id)
+                            if uploadOutfitVM.selectedStyles.contains(style) {
+                                uploadOutfitVM.selectedStyles.remove(style)
                             }
                             else {
-                                uploadOutfitVM.selectedStyles[style.id] = style.name
+                                uploadOutfitVM.selectedStyles.insert(style)
                             }
                         }
                 }

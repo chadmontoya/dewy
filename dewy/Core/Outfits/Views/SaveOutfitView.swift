@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OutfitDetailsView: View {
+struct SaveOutfitView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var uploadOutfitVM: UploadOutfitViewModel
     @EnvironmentObject var outfitsVM: OutfitsViewModel
@@ -14,7 +14,7 @@ struct OutfitDetailsView: View {
     
     var body: some View {
         ZStack {
-            Color.cream.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             VStack {
                 HStack {
@@ -29,13 +29,13 @@ struct OutfitDetailsView: View {
                 .frame(maxWidth: .infinity)
                 
                 Form {
-                    Section(header: Text("style").foregroundStyle(Color.coffee)) {
+                    Section(header: Text("style").foregroundStyle(.black)) {
                         Button(action: {
                             showStyleTagSheet = true
                         }) {
                             HStack {
                                 Image(systemName: "tag")
-                                Text(uploadOutfitVM.selectedStyles.isEmpty ? "Select Tags" : uploadOutfitVM.selectedStyles.values.joined(separator: ", "))
+                                Text(uploadOutfitVM.selectedStyles.isEmpty ? "Select Tags" : uploadOutfitVM.selectedStyles.map { $0.name }.joined(separator: ", "))
                                     .multilineTextAlignment(.leading)
                                     .foregroundStyle(.black)
                                 Spacer()
@@ -45,20 +45,20 @@ struct OutfitDetailsView: View {
                         }
                         .sheet(isPresented: $showStyleTagSheet) {
                             ZStack {
-                                Color.cream.ignoresSafeArea()
+                                Color.primaryBackground.ignoresSafeArea()
                                 StyleTagView(showStyleTagSheet: $showStyleTagSheet)
                                     .presentationDetents([.medium])
                             }
                         }
                         .sheet(isPresented: $showLocationSheet) {
                             ZStack {
-                                Color.cream.ignoresSafeArea()
+                                Color.primaryBackground.ignoresSafeArea()
                                 OutfitLocationView(showLocationSheet: $showLocationSheet)
                             }
                         }
                     }
                     
-                    Section(header: Text("ratings").foregroundStyle(Color.coffee)) {
+                    Section(header: Text("ratings").foregroundStyle(.black)) {
                         Button(action: {
                             showLocationSheet = true
                         }) {
@@ -74,7 +74,7 @@ struct OutfitDetailsView: View {
                         
                         HStack {
                             Image(systemName: "eye")
-                                .foregroundStyle(Color.coffee)
+                                .foregroundStyle(.black)
                             Toggle("Make Public", isOn: $uploadOutfitVM.isPublic)
                         }
                     }
@@ -85,6 +85,8 @@ struct OutfitDetailsView: View {
                                 if let userId = authController.session?.user.id {
                                     let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
                                     outfitsVM.addOutfit(outfit: outfit)
+                                    outfitsVM.showOutfitAddedToast = true
+                                    outfitsVM.uploadOutfit = false
                                     onComplete()
                                 }
                             }
@@ -97,7 +99,7 @@ struct OutfitDetailsView: View {
                             .padding()
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.white)
-                            .background(Color.coffee)
+                            .background(.black)
                     }
                     .listRowInsets(EdgeInsets())
                     .cornerRadius(10)
@@ -109,7 +111,7 @@ struct OutfitDetailsView: View {
                 ToolbarItem(placement: .principal) {
                     Text("new outfit")
                         .font(.headline)
-                        .foregroundStyle(Color.coffee)
+                        .foregroundStyle(.black)
                 }
             }
             

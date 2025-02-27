@@ -5,6 +5,7 @@ struct UploadOutfitView: View {
     @EnvironmentObject var authController: AuthController
     
     @StateObject var uploadOutfitVM: UploadOutfitViewModel = UploadOutfitViewModel(
+        outfitService: OutfitService(),
         styleService: StyleService(),
         preferencesService: PreferencesService()
     )
@@ -17,7 +18,7 @@ struct UploadOutfitView: View {
     
     var body: some View {
         ZStack {
-            Color.cream.ignoresSafeArea()
+            Color.primaryBackground.ignoresSafeArea()
             
             VStack(spacing: 16) {
                 Button(action: {
@@ -44,7 +45,7 @@ struct UploadOutfitView: View {
                     }
                     .frame(maxWidth: 300)
                     .padding()
-                    .background(Color.chocolate)
+                    .background(.black)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .alert(isPresented: .constant(cameraError != nil), error: cameraError) { _ in
@@ -80,7 +81,7 @@ struct UploadOutfitView: View {
                     }
                     .frame(maxWidth: 300)
                     .padding()
-                    .background(Color.chocolate)
+                    .background(.black)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
@@ -103,7 +104,7 @@ struct UploadOutfitView: View {
             }
         }
         .navigationDestination(isPresented: $uploadOutfitVM.croppedImageSelected) {
-            OutfitDetailsView(onComplete: onComplete)
+            SaveOutfitView(onComplete: onComplete)
                 .environmentObject(uploadOutfitVM)
                 .toolbarRole(.editor)
         }
@@ -124,6 +125,6 @@ let configuration = SwiftyCropConfiguration(
         cancelButton: Color.black,
         interactionInstructions: Color.black,
         saveButton: Color.black,
-        background: Color.cream
+        background: Color.primaryBackground
     )
 )

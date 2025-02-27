@@ -13,8 +13,8 @@ struct ExploreView: View {
     
     private let toastOptions = SimpleToastOptions(
         alignment: .top,
-        hideAfter: 3,
-        animation: .snappy,
+        hideAfter: 2,
+        animation: .easeInOut,
         modifierType: .slide
     )
     
@@ -61,14 +61,7 @@ struct ExploreView: View {
                 CollectionsList(collectionsVM: collectionsVM)
             }
             .simpleToast(isPresented: $collectionsVM.showOutfitAddedToast, options: toastOptions) {
-                HStack {
-                    Image(systemName: "checkmark.circle")
-                    Text("Outfit successfully added to collection")
-                }
-                .padding()
-                .background(Color.black)
-                .foregroundStyle(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                ToastMessage(iconName: "checkmark.circle", message: "Successfully added outfit to collection")
             }
             .onChange(of: cardsVM.outfitCards) { oldValue, newValue in
                 if newValue.isEmpty {

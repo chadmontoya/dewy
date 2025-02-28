@@ -6,15 +6,15 @@ class CollectionsViewModel: ObservableObject {
     @Published var isCreatingCollection: Bool = false
     @Published var newCollectionName: String = ""
     @Published var showCollectionAddedToast: Bool = false
-    
     @Published var saveToCollection: Bool = false
     @Published var newCollectionOutfitId: Int64 = 0
     @Published var newCollectionOutfitImageUrl: String = ""
-    
     @Published var showingConfirmationAlert: Bool = false
     @Published var selectedCollection: Collection? = nil
     @Published var showOutfitAddedToast: Bool = false
-
+    @Published var loadedImages: [String: Image] = [:]
+    
+    private let imageCache: ImageCache = .shared
     private let collectionsService: CollectionsService
     
     init(collectionsService: CollectionsService) {
@@ -35,15 +35,6 @@ class CollectionsViewModel: ObservableObject {
         }
     }
     
-    func fetchCollections(userId: UUID) async {
-        do {
-            self.collections = try await collectionsService.fetchCollections(userId: userId)
-        }
-        catch {
-            print("failed to fetch collections: \(error)")
-        }
-    }
-    
     func createCollection(userId: UUID) async {
         guard !newCollectionName.isEmpty else { return }
         
@@ -55,6 +46,41 @@ class CollectionsViewModel: ObservableObject {
             isCreatingCollection = false
         } catch {
             print("failed to create collection: \(error))")
+        }
+    }
+    
+    func fetchCollections(userId: UUID) async {
+        do {
+            self.collections = try await collectionsService.fetchCollections(userId: userId)
+        }
+        catch {
+            print("failed to fetch collections: \(error)")
+        }
+    }
+    
+    func fetchCollectionOutfits(collectionId: Int64) async -> [CollectionOutfit] {
+        var collectionOutfits: [CollectionOutfit] = []
+        do {
+            collectionOutfits = try await collectionsService.fetchCollectionOutfits(collectionId: collectionId)
+        } catch {
+            print("failed to fetch collection outfits: \(error)")
+        }
+        return collectionOutfits
+    }
+    
+    func loadImage(from urlString: String) {
+        guard loadedImages[urlString] == nil else { return }
+        
+        Task {
+            do {
+                if let uiImage = try await imageCache.loadImage(from: urlString) {
+                    await MainActor.run {
+                        self.loadedImages[urlString] = Image(uiImage: uiImage)
+                    }
+                }
+            } catch {
+                print("failed to load outfit image: \(error)")
+            }
         }
     }
 }

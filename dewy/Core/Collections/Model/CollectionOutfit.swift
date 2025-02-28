@@ -3,7 +3,7 @@ import Foundation
 struct CollectionOutfit: Codable, Identifiable {
     let id: Int64?
     let collectionId: Int64
-    let outfitId: Int64
+    let outfitId: Int64?
     let imageUrl: String
     
     enum CodingKeys: String, CodingKey {

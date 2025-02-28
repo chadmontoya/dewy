@@ -15,7 +15,8 @@ struct OutfitCardView: View {
             
             if let imageURL = outfit.imageURL {
                 if let outfitImage = outfitsVM.loadedImages[imageURL] {
-                    outfitImage.resizable()
+                    outfitImage
+                        .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: size.width, height: size.height)
                         .clipShape(RoundedRectangle(cornerRadius: 15))

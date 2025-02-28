@@ -1,6 +1,6 @@
 import Foundation
 
-struct Collection: Identifiable {
+struct Collection: Identifiable, Hashable {
     var id: Int64?
     var userId: UUID
     var name: String

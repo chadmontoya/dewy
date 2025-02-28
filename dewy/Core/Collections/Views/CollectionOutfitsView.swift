@@ -41,7 +41,7 @@ struct CollectionOutfitsView: View {
         }
         .background(Color.primaryBackground.ignoresSafeArea())
         .navigationTransition(.zoom(sourceID: collection.id, in: animation))
-        .navigationAllowDismissalGestures(.none)
+        .navigationAllowDismissalGestures(.edgePanGesturesOnly)
     }
     
     func CollectionOutfitList(screenSize: CGSize) -> some View {

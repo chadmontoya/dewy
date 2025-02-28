@@ -57,7 +57,7 @@ struct OutfitsView: View {
                     ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
                 }
                 .simpleToast(isPresented: $outfitsVM.showOutfitAddedToast, options: toastOptions) {
-                    ToastMessage(iconName: "checkmark.circle", message: "Successfully deleted outfit")
+                    ToastMessage(iconName: "checkmark.circle", message: "Successfully added outfit")
                 }
             }
             .environmentObject(outfitsVM)

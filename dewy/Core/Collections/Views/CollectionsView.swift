@@ -26,7 +26,6 @@ struct CollectionsView: View {
             .navigationDestination(for: Collection.self) { collection in
                 CollectionOutfitsView(collection: collection, animation: animation)
                     .toolbarVisibility(.hidden, for: .navigationBar)
-                    .navigationBarBackButtonHidden(true)
             }
             .alert("New Collection", isPresented: $collectionsVM.isCreatingCollection) {
                 TextField("Name", text: $collectionsVM.newCollectionName)

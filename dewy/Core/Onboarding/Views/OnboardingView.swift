@@ -6,7 +6,7 @@ struct OnboardingView: View {
     @StateObject var onboardingVM: OnboardingViewModel = OnboardingViewModel(
         preferencesService: PreferencesService(),
         profileService: ProfileService(),
-        collectionsService: CollectionsService()
+        collectionService: CollectionService()
     )
     
     var body: some View {

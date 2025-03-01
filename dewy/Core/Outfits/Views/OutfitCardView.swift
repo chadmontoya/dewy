@@ -43,7 +43,6 @@ struct OutfitCardView: View {
             Button("Delete", role: .destructive) {
                 Task {
                     await outfitsVM.deleteOutfit(outfitId: outfit.id)
-                    outfitsVM.showOutfitDeletedToast = true
                 }
             }
             Button("Cancel", role: .cancel) {}

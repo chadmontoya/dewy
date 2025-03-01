@@ -1,6 +1,6 @@
 import Foundation
 
-struct CollectionsService {
+struct CollectionService {
     func addOutfitToCollection(outfitId: Int64, collectionId: Int64, imageUrl: String) async throws {
         let collectionOutfit: CollectionOutfit = CollectionOutfit(
             collectionId: collectionId,
@@ -27,6 +27,14 @@ struct CollectionsService {
     }
     
     func deleteCollection(collectionId: Int64) async throws {
+    }
+    
+    func deleteCollectionOutfit(collectionOutfitId: Int64) async throws {
+        try await supabase
+            .from("Collections_Outfits")
+            .delete()
+            .eq("id", value: String(collectionOutfitId))
+            .execute()
     }
     
     func fetchCollectionOutfits(collectionId: Int64) async throws -> [CollectionOutfit] {

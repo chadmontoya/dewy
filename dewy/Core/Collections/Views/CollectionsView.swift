@@ -47,11 +47,10 @@ struct CollectionsView: View {
             }
         }
         .environmentObject(collectionsVM)
-        .onAppear {
-            if let userId = authController.session?.user.id {
-                Task {
-                    await collectionsVM.fetchCollections(userId: userId)
-                }
+        .task {
+            if let userId = authController.session?.user.id,
+               collectionsVM.collections.isEmpty {
+                await collectionsVM.fetchCollections(userId: userId)
             }
         }
     }

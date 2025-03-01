@@ -23,12 +23,12 @@ class OnboardingViewModel: ObservableObject {
     
     private let preferencesService: PreferencesService
     private let profileService: ProfileService
-    private let collectionsService: CollectionsService
+    private let collectionService: CollectionService
     
-    init(preferencesService: PreferencesService, profileService: ProfileService, collectionsService: CollectionsService) {
+    init(preferencesService: PreferencesService, profileService: ProfileService, collectionService: CollectionService) {
         self.preferencesService = preferencesService
         self.profileService = profileService
-        self.collectionsService = collectionsService
+        self.collectionService = collectionService
     }
     
     func completeOnboarding(userId: UUID) async throws -> Preferences {
@@ -41,7 +41,7 @@ class OnboardingViewModel: ObservableObject {
             location: location
         )
         
-        let _: Collection = try await collectionsService.createCollection(
+        let _: Collection = try await collectionService.createCollection(
             userId: userId, name: "default"
         )
         

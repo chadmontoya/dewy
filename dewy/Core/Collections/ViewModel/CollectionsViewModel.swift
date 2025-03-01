@@ -6,6 +6,7 @@ class CollectionsViewModel: ObservableObject {
     @Published var isCreatingCollection: Bool = false
     @Published var newCollectionName: String = ""
     @Published var showCollectionAddedToast: Bool = false
+    @Published var showCollectionDeleteToast: Bool = false
     @Published var saveToCollection: Bool = false
     @Published var newCollectionOutfitId: Int64 = 0
     @Published var newCollectionOutfitImageUrl: String = ""
@@ -15,19 +16,20 @@ class CollectionsViewModel: ObservableObject {
     @Published var loadedImages: [String: Image] = [:]
     
     private let imageCache: ImageCache = .shared
-    private let collectionsService: CollectionsService
+    private let collectionService: CollectionService
     
-    init(collectionsService: CollectionsService) {
-        self.collectionsService = collectionsService
+    init(collectionService: CollectionService) {
+        self.collectionService = collectionService
     }
     
     func addOutfitToCollection(outfitId: Int64, collectionId: Int64, imageUrl: String) async {
         do {
-            try await collectionsService.addOutfitToCollection(
+            try await collectionService.addOutfitToCollection(
                 outfitId: outfitId,
                 collectionId: collectionId,
                 imageUrl: imageUrl
             )
+            handleAddCollectionOutfit(collectionId: collectionId, thumbnailURL: imageUrl)
             showOutfitAddedToast = true
         }
         catch {
@@ -39,7 +41,7 @@ class CollectionsViewModel: ObservableObject {
         guard !newCollectionName.isEmpty else { return }
         
         do {
-            let newCollection = try await collectionsService.createCollection(userId: userId, name: newCollectionName)
+            let newCollection = try await collectionService.createCollection(userId: userId, name: newCollectionName)
             collections.insert(newCollection, at: 0)
             showCollectionAddedToast = true
             newCollectionName = ""
@@ -51,21 +53,34 @@ class CollectionsViewModel: ObservableObject {
     
     func fetchCollections(userId: UUID) async {
         do {
-            self.collections = try await collectionsService.fetchCollections(userId: userId)
+            self.collections = try await collectionService.fetchCollections(userId: userId)
         }
         catch {
             print("failed to fetch collections: \(error)")
         }
     }
     
-    func fetchCollectionOutfits(collectionId: Int64) async -> [CollectionOutfit] {
-        var collectionOutfits: [CollectionOutfit] = []
-        do {
-            collectionOutfits = try await collectionsService.fetchCollectionOutfits(collectionId: collectionId)
-        } catch {
-            print("failed to fetch collection outfits: \(error)")
+    func handleAddCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailURL: String) {
+        if let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) {
+            collections[collectionIndex].itemCount! += amount
+            
+            if let thumbnailUrls = collections[collectionIndex].thumbnailUrls,
+               thumbnailUrls.count < 3,
+               !thumbnailUrls.contains(thumbnailURL) {
+                print("not enough thumbnails, adding url")
+                collections[collectionIndex].thumbnailUrls?.append(thumbnailURL)
+            }
         }
-        return collectionOutfits
+    }
+    
+    func handleRemoveCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailURL: String) {
+        if let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) {
+            collections[collectionIndex].itemCount! -= amount
+            
+            if let thumbnailIndex = collections[collectionIndex].thumbnailUrls?.firstIndex(of: thumbnailURL) {
+                collections[collectionIndex].thumbnailUrls?.remove(at: thumbnailIndex)
+            }
+        }
     }
     
     func loadImage(from urlString: String) {

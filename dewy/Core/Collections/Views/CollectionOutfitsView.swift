@@ -1,15 +1,23 @@
 import SwiftUI
+import SimpleToast
 
 struct CollectionOutfitsView: View {
-    @State private var collectionOutfits: [CollectionOutfit] = []
+    @Environment(\.dismiss) private var dismissView
+    
+    @StateObject private var collectionOutfitsVM = CollectionOutfitsViewModel(
+        collectionService: CollectionService()
+    )
+    
+    private let columns = Array(repeating: GridItem(spacing: 10), count: 2)
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 4,
+        animation: .easeInOut,
+        modifierType: .slide
+    )
     
     var collection: Collection
     var animation: Namespace.ID
-    
-    @EnvironmentObject var collectionsVM: CollectionsViewModel
-    @Environment(\.dismiss) private var dismissView
-    
-    let columns = Array(repeating: GridItem(spacing: 10), count: 2)
     
     var body: some View {
         VStack {
@@ -32,23 +40,27 @@ struct CollectionOutfitsView: View {
             
             CollectionOutfitList(screenSize: UIScreen.main.bounds.size)
         }
+        .environmentObject(collectionOutfitsVM)
         .task {
-            if collectionOutfits.isEmpty {
+            if collectionOutfitsVM.collectionOutfits.isEmpty {
                 if let collectionId = collection.id {
-                    collectionOutfits = await collectionsVM.fetchCollectionOutfits(collectionId: collectionId)
+                    await collectionOutfitsVM.fetchCollectionOutfits(collectionId: collectionId)
                 }
             }
         }
         .background(Color.primaryBackground.ignoresSafeArea())
         .navigationTransition(.zoom(sourceID: collection.id, in: animation))
         .navigationAllowDismissalGestures(.edgePanGesturesOnly)
+        .simpleToast(isPresented: $collectionOutfitsVM.showCollectionOutfitDeleted, options: toastOptions) {
+            ToastMessage(iconName: "checkmark.circle", message: "Successfully removed outfit from \(collection.name)")
+        }
     }
     
     func CollectionOutfitList(screenSize: CGSize) -> some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(collectionOutfits) { collectionOutfit in
-                    CollectionOutfitCard(imageURL: collectionOutfit.imageUrl)
+                ForEach(collectionOutfitsVM.collectionOutfits) { collectionOutfit in
+                    CollectionOutfitCard(collectionOutfit: collectionOutfit, collectionName: collection.name)
                         .frame(height: screenSize.height * 0.4)
                 }
             }
@@ -58,13 +70,17 @@ struct CollectionOutfitsView: View {
 }
 
 struct CollectionOutfitCard: View {
+    @EnvironmentObject var collectionOuftitsVM: CollectionOutfitsViewModel
     @EnvironmentObject var collectionsVM: CollectionsViewModel
     
-    var imageURL: String?
+    @State private var showRemoveConfirmation: Bool = false
+    
+    var collectionOutfit: CollectionOutfit
+    var collectionName: String
     
     var body: some View {
         GeometryReader { geometry in
-            if let imageURL = imageURL {
+            if let imageURL = collectionOutfit.imageUrl {
                 if let outfitImage = collectionsVM.loadedImages[imageURL] {
                     outfitImage
                         .resizable()
@@ -80,6 +96,30 @@ struct CollectionOutfitCard: View {
                         }
                 }
             }
+        }
+        .contextMenu {
+            Button(role: .destructive) {
+                Task {
+                    showRemoveConfirmation = true
+                }
+            } label: {
+                Label("Remove", systemImage: "trash")
+            }
+        }
+        .confirmationDialog("Remove Outfit Collection", isPresented: $showRemoveConfirmation) {
+            Button("Remove", role: .destructive) {
+                Task {
+                    if let collectionOutfitId = collectionOutfit.id,
+                       let collectionId = collectionOutfit.collectionId,
+                       let imageURL = collectionOutfit.imageUrl {
+                        await collectionOuftitsVM.deleteCollectionOutfit(collectionOutfitId: collectionOutfitId)
+                        collectionsVM.handleRemoveCollectionOutfit(collectionId: collectionId, thumbnailURL: imageURL)
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to remove this outfit from \(collectionName)")
         }
     }
 }

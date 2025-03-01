@@ -1,6 +1,9 @@
 import SwiftUI
+import Shimmer
 
 struct CollectionCard: View {
+    @EnvironmentObject var collectionsVM: CollectionsViewModel
+    
     var screenSize: CGSize
     var collection: Collection
     
@@ -9,24 +12,37 @@ struct CollectionCard: View {
             let size = geometry.size
             
             HStack(spacing: 4) {
-                if let firstImage = collection.thumbnailUrls?.first {
-                    AsyncImage(url: URL(string: firstImage)) { image in
-                        image
+                if let firstImageURL = collection.thumbnailUrls?.first {
+                    if let firstImage = collectionsVM.loadedImages[firstImageURL] {
+                        firstImage
                             .resizable()
                             .scaledToFill()
-                    } placeholder: {
+                            .frame(width: size.width * 0.5, height: size.height)
+                            .clipShape(
+                                .rect(
+                                    topLeadingRadius: 12,
+                                    bottomLeadingRadius: 12,
+                                    bottomTrailingRadius: 0,
+                                    topTrailingRadius: 0
+                                )
+                            )
+                    } else {
                         Rectangle()
                             .fill(.gray.opacity(0.3))
+                            .frame(width: size.width * 0.5, height: size.height)
+                            .clipShape(
+                                .rect(
+                                    topLeadingRadius: 12,
+                                    bottomLeadingRadius: 12,
+                                    bottomTrailingRadius: 0,
+                                    topTrailingRadius: 0
+                                )
+                            )
+                            .shimmering()
+                            .onAppear {
+                                collectionsVM.loadImage(from: firstImageURL)
+                            }
                     }
-                    .frame(width: size.width * 0.5, height: size.height)
-                    .clipShape(
-                        .rect(
-                            topLeadingRadius: 12,
-                            bottomLeadingRadius: 12,
-                            bottomTrailingRadius: 0,
-                            topTrailingRadius: 0
-                        )
-                    )
                 }
                 else {
                     Rectangle()
@@ -43,24 +59,37 @@ struct CollectionCard: View {
                 }
                 
                 VStack(spacing: 4) {
-                    if let secondImage = collection.thumbnailUrls?.dropFirst().first {
-                        AsyncImage(url: URL(string: secondImage)) { image in
-                            image
+                    if let secondImageURL = collection.thumbnailUrls?.dropFirst().first {
+                        if let secondImage = collectionsVM.loadedImages[secondImageURL] {
+                            secondImage
                                 .resizable()
                                 .scaledToFill()
-                        } placeholder: {
+                                .frame(height: (size.height - 4) / 2)
+                                .clipShape(
+                                    .rect(
+                                        topLeadingRadius: 0,
+                                        bottomLeadingRadius: 0,
+                                        bottomTrailingRadius: 0,
+                                        topTrailingRadius: 12
+                                    )
+                                )
+                        } else {
                             Rectangle()
                                 .fill(.gray.opacity(0.3))
+                                .frame(height: (size.height - 4) / 2)
+                                .clipShape(
+                                    .rect(
+                                        topLeadingRadius: 0,
+                                        bottomLeadingRadius: 0,
+                                        bottomTrailingRadius: 0,
+                                        topTrailingRadius: 12
+                                    )
+                                )
+                                .shimmering()
+                                .onAppear {
+                                    collectionsVM.loadImage(from: secondImageURL)
+                                }
                         }
-                        .frame(height: (size.height - 4) / 2)
-                        .clipShape(
-                            .rect(
-                                topLeadingRadius: 0,
-                                bottomLeadingRadius: 0,
-                                bottomTrailingRadius: 0,
-                                topTrailingRadius: 12
-                            )
-                        )
                     } else {
                         Rectangle()
                             .fill(.gray.opacity(0.3))
@@ -75,24 +104,37 @@ struct CollectionCard: View {
                             )
                     }
                     
-                    if let thirdImage = collection.thumbnailUrls?.dropFirst(2).first {
-                        AsyncImage(url: URL(string: thirdImage)) { image in
-                            image
+                    if let thirdImageURL = collection.thumbnailUrls?.dropFirst(2).first {
+                        if let thirdImage = collectionsVM.loadedImages[thirdImageURL] {
+                            thirdImage
                                 .resizable()
                                 .scaledToFill()
-                        } placeholder: {
+                                .frame(height: (size.height - 4) / 2)
+                                .clipShape(
+                                    .rect(
+                                        topLeadingRadius: 0,
+                                        bottomLeadingRadius: 0,
+                                        bottomTrailingRadius: 12,
+                                        topTrailingRadius: 0
+                                    )
+                                )
+                        } else {
                             Rectangle()
                                 .fill(.gray.opacity(0.3))
+                                .frame(height: (size.height - 4) / 2)
+                                .clipShape(
+                                    .rect(
+                                        topLeadingRadius: 0,
+                                        bottomLeadingRadius: 0,
+                                        bottomTrailingRadius: 12,
+                                        topTrailingRadius: 0
+                                    )
+                                )
+                                .shimmering()
+                                .onAppear {
+                                    collectionsVM.loadImage(from: thirdImageURL)
+                                }
                         }
-                        .frame(height: (size.height - 4) / 2)
-                        .clipShape(
-                            .rect(
-                                topLeadingRadius: 0,
-                                bottomLeadingRadius: 0,
-                                bottomTrailingRadius: 12,
-                                topTrailingRadius: 0
-                            )
-                        )
                     } else {
                         Rectangle()
                             .fill(.gray.opacity(0.3))

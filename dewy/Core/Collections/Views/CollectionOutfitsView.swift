@@ -1,5 +1,6 @@
 import SwiftUI
 import SimpleToast
+import Shimmer
 
 struct CollectionOutfitsView: View {
     @Environment(\.dismiss) private var dismissView
@@ -80,21 +81,27 @@ struct CollectionOutfitCard: View {
     
     var body: some View {
         GeometryReader { geometry in
-            if let imageURL = collectionOutfit.imageUrl {
-                if let outfitImage = collectionsVM.loadedImages[imageURL] {
-                    outfitImage
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
-                }
-                else {
-                    ProgressView()
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .onAppear {
+            if let imageURL = collectionOutfit.imageUrl,
+               let outfitImage = collectionsVM.loadedImages[imageURL] {
+                outfitImage
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+            } else {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .shimmering(
+                        animation: .easeInOut(duration: 1)
+                            .repeatForever(autoreverses: false)
+                    )
+                    .onAppear {
+                        if let imageURL = collectionOutfit.imageUrl {
                             collectionsVM.loadImage(from: imageURL)
                         }
-                }
+                    }
             }
         }
         .contextMenu {

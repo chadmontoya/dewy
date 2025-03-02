@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 
 struct OutfitCardView: View {
     @EnvironmentObject var outfitsVM: OutfitsViewModel

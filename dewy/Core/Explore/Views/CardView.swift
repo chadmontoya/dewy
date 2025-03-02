@@ -65,6 +65,21 @@ struct CardView: View {
     }
 }
 
+struct ShimmerCardView: View {
+    var body: some View {
+        RoundedRectangle(cornerRadius: 15)
+            .fill(.gray.opacity(0.4))
+            .frame(
+                width: UIScreen.main.bounds.width - 15,
+                height: UIScreen.main.bounds.height / 1.50
+            )
+            .shimmering(
+                animation: .easeInOut(duration: 1)
+                    .repeatForever(autoreverses: false)
+            )
+    }
+}
+
 private extension CardView {
     var outfit: Outfit {
         return model.outfit

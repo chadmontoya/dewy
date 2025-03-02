@@ -38,9 +38,12 @@ struct CollectionCard: View {
                                     topTrailingRadius: 0
                                 )
                             )
-                            .shimmering()
+                            .shimmering(
+                                animation: .easeInOut(duration: 1)
+                                    .repeatForever(autoreverses: false)
+                            )
                             .onAppear {
-                                collectionsVM.loadImage(from: firstImageURL)
+                                //                                collectionsVM.loadImage(from: firstImageURL)
                             }
                     }
                 }
@@ -85,9 +88,12 @@ struct CollectionCard: View {
                                         topTrailingRadius: 12
                                     )
                                 )
-                                .shimmering()
+                                .shimmering(
+                                    animation: .easeInOut(duration: 1)
+                                        .repeatForever(autoreverses: false)
+                                )
                                 .onAppear {
-                                    collectionsVM.loadImage(from: secondImageURL)
+                                    //                                    collectionsVM.loadImage(from: secondImageURL)
                                 }
                         }
                     } else {
@@ -130,9 +136,12 @@ struct CollectionCard: View {
                                         topTrailingRadius: 0
                                     )
                                 )
-                                .shimmering()
+                                .shimmering(
+                                    animation: .easeInOut(duration: 1)
+                                        .repeatForever(autoreverses: false)
+                                )
                                 .onAppear {
-                                    collectionsVM.loadImage(from: thirdImageURL)
+                                    //                                    collectionsVM.loadImage(from: thirdImageURL)
                                 }
                         }
                     } else {

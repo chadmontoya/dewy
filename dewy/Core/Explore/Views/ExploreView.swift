@@ -1,5 +1,6 @@
 import SwiftUI
 import SimpleToast
+import Shimmer
 
 struct ExploreView: View {
     @EnvironmentObject var authController: AuthController
@@ -42,7 +43,9 @@ struct ExploreView: View {
                     Color.primaryBackground.ignoresSafeArea()
                     
                     if cardsVM.isLoading {
-                        ProgressView()
+                        ZStack {
+                            ShimmerCardView()
+                        }
                     } else {
                         ForEach(cardsVM.outfitCards) { outfitCard in
                             CardView(

@@ -119,8 +119,7 @@ struct CollectionOutfitCard: View {
                 Task {
                     if let collectionOutfitId = collectionOutfit.id,
                        let collectionId = collectionOutfit.collectionId,
-                       let imageUrl = collectionOutfit.imageUrl,
-                       let userId = authController.session?.user.id {
+                       let imageUrl = collectionOutfit.imageUrl {
                         await collectionOuftitsVM.deleteCollectionOutfit(collectionOutfitId: collectionOutfitId)
                         await collectionsVM.handleRemoveCollectionOutfit(collectionId: collectionId, thumbnailUrl: imageUrl)
                     }

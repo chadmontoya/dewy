@@ -6,7 +6,7 @@ class CollectionsViewModel: ObservableObject {
     @Published var isCreatingCollection: Bool = false
     @Published var newCollectionName: String = ""
     @Published var showCollectionAddedToast: Bool = false
-    @Published var showCollectionDeleteToast: Bool = false
+    @Published var showCollectionDeletedToast: Bool = false
     @Published var saveToCollection: Bool = false
     @Published var newCollectionOutfitId: Int64 = 0
     @Published var newCollectionOutfitImageUrl: String = ""
@@ -48,6 +48,18 @@ class CollectionsViewModel: ObservableObject {
             isCreatingCollection = false
         } catch {
             print("failed to create collection: \(error))")
+        }
+    }
+    
+    func deleteCollection(collectionId: Int64) async {
+        do {
+            try await collectionService.deleteCollection(collectionId: collectionId)
+            if let index = collections.firstIndex(where: { $0.id == collectionId }) {
+                collections.remove(at: index)
+                showCollectionDeletedToast = true
+            }
+        } catch {
+            print("error deleting collection: \(error)")
         }
     }
     

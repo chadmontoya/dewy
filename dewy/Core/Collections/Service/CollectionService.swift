@@ -27,6 +27,11 @@ struct CollectionService {
     }
     
     func deleteCollection(collectionId: Int64) async throws {
+        try await supabase
+            .from("Collections")
+            .delete()
+            .eq("id", value: String(collectionId))
+            .execute()
     }
     
     func deleteCollectionOutfit(collectionOutfitId: Int64) async throws {

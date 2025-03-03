@@ -114,28 +114,33 @@ private struct CollectionItem: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            if let imageURL = collection.thumbnailUrls?.first,
-               let thumbnailImage = collectionsVM.loadedImages[imageURL] {
-                thumbnailImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            if let imageURL = collection.thumbnailUrls?.first {
+                if let thumbnailImage = collectionsVM.loadedImages[imageURL] {
+                    thumbnailImage
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .shimmering(
+                            animation: .easeInOut(duration: 1)
+                                .repeatForever(autoreverses: false)
+                        )
+                        .onAppear {
+                            if let imageURL = collection.thumbnailUrls?.first {
+                                collectionsVM.loadImage(from: imageURL)
+                            }
+                        }
+                }
             } else {
                 Rectangle()
                     .fill(Color.gray.opacity(0.3))
                     .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .shimmering(
-                        animation: .easeInOut(duration: 1)
-                            .repeatForever(autoreverses: false)
-                    )
-                    .onAppear {
-                        if let imageURL = collection.thumbnailUrls?.first {
-                            collectionsVM.loadImage(from: imageURL)
-                        }
-                    }
-                
             }
             
             Text(collection.name)

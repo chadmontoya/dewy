@@ -84,7 +84,9 @@ struct ExploreView: View {
             if let userId = authController.session?.user.id {
                 Task {
                     await preferencesVM.fetchPreferences(userId: userId)
-                    await collectionsVM.fetchCollections(userId: userId)
+                    if collectionsVM.collections.isEmpty {
+                        await collectionsVM.fetchCollections(userId: userId)
+                    }
                     if cardsVM.outfitCards.isEmpty {
                         await cardsVM.fetchOutfitCards(userId: userId)
                     }

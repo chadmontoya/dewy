@@ -71,6 +71,7 @@ struct CollectionOutfitsView: View {
 }
 
 struct CollectionOutfitCard: View {
+    @EnvironmentObject var authController: AuthController
     @EnvironmentObject var collectionOuftitsVM: CollectionOutfitsViewModel
     @EnvironmentObject var collectionsVM: CollectionsViewModel
     
@@ -118,9 +119,10 @@ struct CollectionOutfitCard: View {
                 Task {
                     if let collectionOutfitId = collectionOutfit.id,
                        let collectionId = collectionOutfit.collectionId,
-                       let imageURL = collectionOutfit.imageUrl {
+                       let imageUrl = collectionOutfit.imageUrl,
+                       let userId = authController.session?.user.id {
                         await collectionOuftitsVM.deleteCollectionOutfit(collectionOutfitId: collectionOutfitId)
-                        collectionsVM.handleRemoveCollectionOutfit(collectionId: collectionId, thumbnailURL: imageURL)
+                        await collectionsVM.handleRemoveCollectionOutfit(collectionId: collectionId, thumbnailUrl: imageUrl)
                     }
                 }
             }

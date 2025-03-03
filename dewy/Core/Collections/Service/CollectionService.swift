@@ -56,4 +56,17 @@ struct CollectionService {
             .value
         return collections
     }
+    
+    func fetchCollectionThumbnailUrls(collectionId: Int64) async -> [String] {
+        do {
+            let thumbnailUrls: [String] = try await supabase
+                .rpc("get_collection_thumbnails", params: ["p_collection_id": collectionId])
+                .execute()
+                .value
+            return thumbnailUrls
+        } catch {
+            print("failed to fetch collection thumbnail urls: \(error)")
+            return []
+        }
+    }
 }

@@ -60,6 +60,12 @@ class CollectionsViewModel: ObservableObject {
         }
     }
     
+    func fetchThumbnailUrls(for collectionId: Int64) async {
+        if let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) {
+            collections[collectionIndex].thumbnailUrls = await collectionService.fetchCollectionThumbnailUrls(collectionId: collectionId)
+        }
+    }
+    
     func handleAddCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailURL: String) {
         if let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) {
             collections[collectionIndex].itemCount! += amount
@@ -67,19 +73,21 @@ class CollectionsViewModel: ObservableObject {
             if let thumbnailUrls = collections[collectionIndex].thumbnailUrls,
                thumbnailUrls.count < 3,
                !thumbnailUrls.contains(thumbnailURL) {
-                print("not enough thumbnails, adding url")
                 collections[collectionIndex].thumbnailUrls?.append(thumbnailURL)
             }
         }
     }
     
-    func handleRemoveCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailURL: String) {
-        if let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) {
-            collections[collectionIndex].itemCount! -= amount
-            
-            if let thumbnailIndex = collections[collectionIndex].thumbnailUrls?.firstIndex(of: thumbnailURL) {
-                collections[collectionIndex].thumbnailUrls?.remove(at: thumbnailIndex)
-            }
+    func handleRemoveCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailUrl: String) async {
+        guard let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }),
+              let itemCount = collections[collectionIndex].itemCount else { return }
+        
+        collections[collectionIndex].itemCount = itemCount - amount
+        
+        if let thumbnailUrls = collections[collectionIndex].thumbnailUrls,
+           thumbnailUrls.contains(thumbnailUrl) {
+            collections[collectionIndex].thumbnailUrls?.removeAll(where: { $0 == thumbnailUrl })
+            await fetchThumbnailUrls(for: collectionId)
         }
     }
     

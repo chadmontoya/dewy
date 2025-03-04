@@ -42,6 +42,7 @@ struct SaveOutfitView: View {
                         .foregroundStyle(.black)
                 }
             }
+            .toolbar(uploadOutfitVM.isLoading ? .hidden : .visible)
             .onAppear {
                 Task {
                     if let userId = authController.session?.user.id {

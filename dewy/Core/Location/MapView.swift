@@ -3,15 +3,11 @@ import MapKit
 
 struct MapView: View {
     @Binding var location: CLLocationCoordinate2D?
-    
     @State private var cameraPosition: MapCameraPosition = .automatic
-    @State private var currentCity: String = ""
     @State private var searchCity: String = ""
     @State private var isMapInitialized: Bool = false
     @FocusState var isSearchFocused: Bool
-    
     @State var locationSearchVM = LocationSearchViewModel()
-    
     @StateObject var locationManager = LocationManager.shared
     
     var body: some View {
@@ -51,41 +47,45 @@ struct MapView: View {
         ZStack {
             Map(position: $cameraPosition)
                 .onAppear {
-                    if !isMapInitialized {
-                        let mapLocation = location
-                        getCityName(from: mapLocation!)
+                    if !isMapInitialized,
+                       let mapCoordinate = location {
+                        let mapLocation = CLLocation(latitude: mapCoordinate.latitude, longitude: mapCoordinate.longitude)
                         let mapLocationRegion = MKCoordinateRegion(
-                            center: mapLocation!,
+                            center: mapCoordinate,
                             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
                         )
                         cameraPosition = .region(mapLocationRegion)
+                        locationManager.updateLocationInfo(from: mapLocation)
                         isMapInitialized = true
                     }
                 }
                 .onMapCameraChange(frequency: .onEnd) { context in
                     guard isMapInitialized else { return }
-                    let mapLocation = context.region.center
-                    getCityName(from: mapLocation)
+                    let mapCoordinate = context.region.center
+                    let mapLocation = CLLocation(latitude: mapCoordinate.latitude, longitude: mapCoordinate.longitude)
                     let mapLocationRegion = MKCoordinateRegion(
-                        center: mapLocation,
+                        center: mapCoordinate,
                         span: context.region.span
                     )
                     cameraPosition = .region(mapLocationRegion)
-                    location = mapLocation
+                    location = mapCoordinate
+                    locationManager.updateLocationInfo(from: mapLocation)
                 }
                 .onChange(of: locationManager.userLocation) {
                     location = locationManager.userLocation.coordinate
-                    getCityName(from: location!)
-                    let locationRegion = MKCoordinateRegion(
-                        center: location!,
-                        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                    )
-                    cameraPosition = .region(locationRegion)
+                    if let mapCoordinate = location {
+                        cameraPosition = .region(
+                            MKCoordinateRegion(
+                                center: mapCoordinate,
+                                span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                            )
+                        )
+                    }
                 }
                 .toolbarBackgroundVisibility(.hidden)
                 .colorScheme(.light)
             
-            Text(currentCity)
+            Text(locationManager.currentCity)
                 .padding(8)
                 .background(Color.white.opacity(0.8))
                 .cornerRadius(8)
@@ -93,25 +93,6 @@ struct MapView: View {
                 .colorScheme(.light)
         }
         .frame(height: 400)
-    }
-    
-    private func getCityName(from location: CLLocationCoordinate2D) {
-        let geocoder = CLGeocoder()
-        let location = CLLocation(latitude: location.latitude, longitude: location.longitude)
-        
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let error = error {
-                print("geocoding error: \(error)")
-                return
-            }
-            
-            if let city = placemarks?.first?.locality {
-                currentCity = city
-            }
-            else {
-                currentCity = "Unknown Location"
-            }
-        }
     }
     
     private var locationSearchBar: some View {
@@ -166,6 +147,7 @@ struct MapView: View {
                             
                             if let location = placemarks?.first?.location {
                                 let newCoordinate = location.coordinate
+                                locationManager.updateLocationInfo(from: location)
                                 let newRegion = MKCoordinateRegion(
                                     center: newCoordinate,
                                     span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)

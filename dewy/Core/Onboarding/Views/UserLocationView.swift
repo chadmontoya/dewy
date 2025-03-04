@@ -3,6 +3,14 @@ import SwiftUI
 struct UserLocationView: View {
     @ObservedObject var preferencesVM: PreferencesViewModel
     @ObservedObject var onboardingVM: OnboardingViewModel
+    @StateObject var locationManager: LocationManager = .shared
+    
+    private var isLocationValid: Bool {
+        if case .valid = locationManager.locationStatus {
+            return true
+        }
+        return false
+    }
     
     var body: some View {
         VStack {
@@ -26,8 +34,9 @@ struct UserLocationView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
-                    .background(.black)
+                    .background(isLocationValid ? .black : .gray)
             }
+            .disabled(!isLocationValid)
             .cornerRadius(10)
             .padding()
             

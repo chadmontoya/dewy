@@ -28,84 +28,12 @@ struct SaveOutfitView: View {
                 }
                 .frame(maxWidth: .infinity)
                 
-                Form {
-                    Section(header: Text("style").foregroundStyle(.black)) {
-                        Button(action: {
-                            showStyleTagSheet = true
-                        }) {
-                            HStack {
-                                Image(systemName: "tag")
-                                Text(uploadOutfitVM.selectedStyles.isEmpty ? "Select Tags" : uploadOutfitVM.selectedStyles.map { $0.name }.joined(separator: ", "))
-                                    .multilineTextAlignment(.leading)
-                                    .foregroundStyle(.black)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        .sheet(isPresented: $showStyleTagSheet) {
-                            ZStack {
-                                Color.primaryBackground.ignoresSafeArea()
-                                StyleTagView(showStyleTagSheet: $showStyleTagSheet)
-                                    .presentationDetents([.medium])
-                            }
-                        }
-                        .sheet(isPresented: $showLocationSheet) {
-                            ZStack {
-                                Color.primaryBackground.ignoresSafeArea()
-                                OutfitLocationView(showLocationSheet: $showLocationSheet)
-                            }
-                        }
-                    }
-                    
-                    Section(header: Text("ratings").foregroundStyle(.black)) {
-                        Button(action: {
-                            showLocationSheet = true
-                        }) {
-                            HStack {
-                                Image(systemName: "mappin.and.ellipse")
-                                Text(uploadOutfitVM.cityLocation.isEmpty ? "Set Location" : uploadOutfitVM.cityLocation)
-                                    .foregroundStyle(.black)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        
-                        HStack {
-                            Image(systemName: "eye")
-                                .foregroundStyle(.black)
-                            Toggle("Make Public", isOn: $uploadOutfitVM.isPublic)
-                        }
-                    }
-                    
-                    Button {
-                        Task {
-                            do {
-                                if let userId = authController.session?.user.id {
-                                    let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
-                                    outfitsVM.addOutfit(outfit: outfit)
-                                    outfitsVM.showOutfitAddedToast = true
-                                    outfitsVM.uploadOutfit = false
-                                    onComplete()
-                                }
-                            }
-                            catch {
-                                print("error saving outfit: \(error)")
-                            }
-                        }
-                    } label: {
-                        Text("Add")
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(.white)
-                            .background(.black)
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .cornerRadius(10)
-                }
-                .colorScheme(.light)
-                .scrollContentBackground(.hidden)
+                OutfitDetailsForm(
+                    showStyleTagSheet: $showStyleTagSheet,
+                    showLocationSheet: $showLocationSheet,
+                    uploadOutfitVM: uploadOutfitVM,
+                    onSave: saveOutfit
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -114,17 +42,103 @@ struct SaveOutfitView: View {
                         .foregroundStyle(.black)
                 }
             }
+            .onAppear {
+                Task {
+                    if let userId = authController.session?.user.id {
+                        await uploadOutfitVM.fetchLocation(userId: userId)
+                    }
+                }
+            }
             
             if uploadOutfitVM.isLoading {
                 LoadingView()
                     .transition(.opacity)
             }
         }
-        .onAppear {
-            Task {
+    }
+    
+    private func saveOutfit() {
+        Task {
+            do {
                 if let userId = authController.session?.user.id {
-                    await uploadOutfitVM.fetchLocation(userId: userId)
+                    let outfit = try await uploadOutfitVM.saveOutfit(userId: userId)
+                    outfitsVM.addOutfit(outfit: outfit)
+                    uploadOutfitVM.isLoading = true
+                    outfitsVM.showOutfitAddedToast = true
+                    outfitsVM.uploadOutfit = false
+                    onComplete()
                 }
+            } catch {
+                print("error saving outfit: \(error)")
+            }
+        }
+    }
+}
+
+struct OutfitDetailsForm: View {
+    @Binding var showStyleTagSheet: Bool
+    @Binding var showLocationSheet: Bool
+    @ObservedObject var uploadOutfitVM: UploadOutfitViewModel
+    let onSave: () -> Void
+    
+    var body: some View {
+        Form {
+            Section(header: Text("style").foregroundStyle(.black)) {
+                Button(action: { showStyleTagSheet = true }) {
+                    HStack {
+                        Image(systemName: "tag")
+                        Text(uploadOutfitVM.selectedStyles.isEmpty ? "Select Tags" : uploadOutfitVM.selectedStyles.map { $0.name }.joined(separator: ", "))
+                            .multilineTextAlignment(.leading)
+                            .foregroundStyle(.black)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.gray)
+                    }
+                }
+            }
+            
+            Section(header: Text("ratings").foregroundStyle(.black)) {
+                Button(action: { showLocationSheet = true }) {
+                    HStack {
+                        Image(systemName: "mappin.and.ellipse")
+                        Text(uploadOutfitVM.cityLocation.isEmpty ? "Set Location" : uploadOutfitVM.cityLocation)
+                            .foregroundStyle(.black)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.gray)
+                    }
+                }
+                
+                HStack {
+                    Image(systemName: "eye")
+                        .foregroundStyle(.black)
+                    Toggle("Make Public", isOn: $uploadOutfitVM.isPublic)
+                }
+            }
+            
+            Button(action: onSave) {
+                Text("Add")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(.black)
+            }
+            .listRowInsets(EdgeInsets())
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .colorScheme(.light)
+        .scrollContentBackground(.hidden)
+        .sheet(isPresented: $showStyleTagSheet) {
+            ZStack {
+                Color.primaryBackground.ignoresSafeArea()
+                StyleTagView(showStyleTagSheet: $showStyleTagSheet)
+                    .presentationDetents([.medium])
+            }
+        }
+        .sheet(isPresented: $showLocationSheet) {
+            ZStack {
+                Color.primaryBackground.ignoresSafeArea()
+                OutfitLocationView(showLocationSheet: $showLocationSheet)
             }
         }
     }

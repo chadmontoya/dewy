@@ -28,6 +28,7 @@ class UploadOutfitViewModel: ObservableObject {
     @Published var croppedImageSelected: Bool = false
     @Published var isLoading: Bool = false
     @Published var isComplete: Bool = false
+    @Published var isNSFWContent: Bool = false
     
     private let outfitService: OutfitService
     private let styleService: StyleService
@@ -72,14 +73,22 @@ class UploadOutfitViewModel: ObservableObject {
     }
     
     func saveOutfit(userId: UUID) async throws -> Outfit {
+        guard let image = outfitImage else {
+            throw UploadOutfitError.imageUploadFailed
+        }
+        
         isLoading = true
         defer {
             isLoading = false
         }
-        guard let image = outfitImage else {
-            throw UploadOutfitError.imageUploadFailed
-        }
+        
         do {
+            let analysis = try await ImageAnalysisService.shared.analyzeImage(image)
+            print(analysis.isNsfw)
+            if analysis.isNsfw {
+                isNSFWContent = true
+                throw ImageAnalysisError.nsfwContentDetected
+            }
             let filePath = storageService.generateFilePath(userId: userId)
             let outfitImageUrl = try await storageService.uploadImage(image, path: filePath)
             

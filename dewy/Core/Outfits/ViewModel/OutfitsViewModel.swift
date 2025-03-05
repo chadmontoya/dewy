@@ -35,6 +35,7 @@ class OutfitsViewModel: ObservableObject {
                     imageCache.removeImage(for: imageURL)
                     loadedImages.removeValue(forKey: imageURL)
                     outfits.remove(at: index)
+                    showOutfitDeletedToast = true
                 }
             }
         } catch {

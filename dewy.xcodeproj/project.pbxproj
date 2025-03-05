@@ -12,6 +12,8 @@
 		690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 690991172D0E3B2400419383 /* GoogleSignInSwift */; };
 		6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = 690991192D0E3B2400419383 /* SwiftyCrop */; };
 		69BF98642D6FCF0200CF2660 /* SimpleToast in Frameworks */ = {isa = PBXBuildFile; productRef = 69BF98632D6FCF0200CF2660 /* SimpleToast */; };
+		69CA52D62D72F1230091FDF7 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 69CA52D52D72F1230091FDF7 /* Shimmer */; };
+		69CA55142D77AFF70091FDF7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 69CA55132D77AFF70091FDF7 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +75,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69CA52D62D72F1230091FDF7 /* Shimmer in Frameworks */,
+				69CA55142D77AFF70091FDF7 /* Alamofire in Frameworks */,
 				6909911A2D0E3B2400419383 /* SwiftyCrop in Frameworks */,
 				690991182D0E3B2400419383 /* GoogleSignInSwift in Frameworks */,
 				6903F28A2CE3FED60058630B /* GoogleSignIn in Frameworks */,
@@ -151,6 +155,8 @@
 				690991172D0E3B2400419383 /* GoogleSignInSwift */,
 				690991192D0E3B2400419383 /* SwiftyCrop */,
 				69BF98632D6FCF0200CF2660 /* SimpleToast */,
+				69CA52D52D72F1230091FDF7 /* Shimmer */,
+				69CA55132D77AFF70091FDF7 /* Alamofire */,
 			);
 			productName = dewy;
 			productReference = 6903F23E2CE2A2790058630B /* dewy.app */;
@@ -239,6 +245,8 @@
 				690188752CF8FE37006A0CA6 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				6971BD9D2D0E3A640063F2FC /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
 				693B81942D6FCD1A000E3498 /* XCRemoteSwiftPackageReference "SimpleToast" */,
+				6901F9F22D72EE40008DECF3 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				69CA55122D77AFE90091FDF7 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6903F23F2CE2A2790058630B /* Products */;
@@ -627,6 +635,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		6901F9F22D72EE40008DECF3 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
 		6903F2882CE3FED60058630B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -649,6 +665,14 @@
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		69CA55122D77AFE90091FDF7 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -678,6 +702,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 693B81942D6FCD1A000E3498 /* XCRemoteSwiftPackageReference "SimpleToast" */;
 			productName = SimpleToast;
+		};
+		69CA52D52D72F1230091FDF7 /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6901F9F22D72EE40008DECF3 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
+		69CA55132D77AFF70091FDF7 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 69CA55122D77AFE90091FDF7 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

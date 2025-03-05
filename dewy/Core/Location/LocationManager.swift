@@ -1,8 +1,16 @@
 import CoreLocation
 
 class LocationManager: NSObject, ObservableObject {
-    @Published var manager = CLLocationManager()
+    @Published private(set) var manager = CLLocationManager()
+    @Published private(set) var currentCity: String = ""
+    @Published var locationStatus: LocationStatus = .unknown
     @Published var userLocation: CLLocation = CLLocation(latitude: 34.0549, longitude: -118.2426)
+
+    enum LocationStatus {
+        case unknown
+        case valid(city: String)
+        case error(String)
+    }
     
     static let shared = LocationManager()
     
@@ -14,6 +22,30 @@ class LocationManager: NSObject, ObservableObject {
     
     func requestLocation() {
         manager.requestWhenInUseAuthorization()
+    }
+    
+    func updateLocationInfo(from location: CLLocation) {
+        Task {
+            do {
+                let geocoder = CLGeocoder()
+                let placemarks = try await geocoder.reverseGeocodeLocation(location)
+                
+                await MainActor.run {
+                    if let city = placemarks.first?.locality {
+                        self.currentCity = city
+                        self.locationStatus = .valid(city: city)
+                    } else {
+                        self.currentCity = "Unknown Location"
+                        self.locationStatus = .unknown
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    self.currentCity = "Unknown Location"
+                    self.locationStatus = .error(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 
@@ -36,6 +68,7 @@ extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         self.userLocation = location
+        updateLocationInfo(from: location)
         manager.stopUpdatingLocation()
     }
     

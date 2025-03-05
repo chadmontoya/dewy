@@ -15,7 +15,7 @@ struct HomeView: View {
         styleService: StyleService()
     )
     @StateObject private var collectionsVM: CollectionsViewModel = CollectionsViewModel(
-        collectionsService: CollectionsService()
+        collectionService: CollectionService()
     )
     
     @State private var currentTab: TabSelection = .home

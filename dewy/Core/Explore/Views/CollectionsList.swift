@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 
 struct CollectionsList: View {
     @EnvironmentObject var authController: AuthController
@@ -16,6 +17,7 @@ struct CollectionsList: View {
             List {
                 ForEach(collectionsVM.collections) { collection in
                     CollectionListItem(
+                        collectionsVM: collectionsVM,
                         collection: collection,
                         pressedCollectionId: pressedCollectionId,
                         onTap: {
@@ -83,6 +85,8 @@ private struct CollectionsHeader: View {
 }
 
 private struct CollectionListItem: View {
+    @ObservedObject var collectionsVM: CollectionsViewModel
+    
     let collection: Collection
     let pressedCollectionId: Int64?
     let onTap: () async -> Void
@@ -93,7 +97,7 @@ private struct CollectionListItem: View {
                 await onTap()
             }
         } label: {
-            CollectionItem(collection: collection)
+            CollectionItem(collectionsVM: collectionsVM, collection: collection)
                 .scaleEffect(pressedCollectionId == collection.id ? 0.95 : 1.0)
                 .opacity(pressedCollectionId == collection.id ? 0.7 : 1.0)
         }
@@ -104,29 +108,35 @@ private struct CollectionListItem: View {
 }
 
 private struct CollectionItem: View {
+    @ObservedObject var collectionsVM: CollectionsViewModel
+    
     let collection: Collection
     
     var body: some View {
         HStack(spacing: 12) {
-            if let firstThumbnail = collection.thumbnailUrls?.first {
-                AsyncImage(url: URL(string: firstThumbnail)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    case .failure, .empty:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                    @unknown default:
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                    }
+            if let imageURL = collection.thumbnailUrls.first {
+                if let thumbnailImage = collectionsVM.loadedImages[imageURL] {
+                    thumbnailImage
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .shimmering(
+                            animation: .easeInOut(duration: 1)
+                                .repeatForever(autoreverses: false)
+                        )
+                        .onAppear {
+                            if let imageURL = collection.thumbnailUrls.first {
+                                collectionsVM.loadImage(from: imageURL)
+                            }
+                        }
                 }
-                .frame(width: 60, height: 60)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-            else {
+            } else {
                 Rectangle()
                     .fill(Color.gray.opacity(0.3))
                     .frame(width: 60, height: 60)

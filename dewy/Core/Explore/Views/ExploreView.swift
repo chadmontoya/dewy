@@ -1,5 +1,6 @@
 import SwiftUI
 import SimpleToast
+import Shimmer
 
 struct ExploreView: View {
     @EnvironmentObject var authController: AuthController
@@ -42,7 +43,9 @@ struct ExploreView: View {
                     Color.primaryBackground.ignoresSafeArea()
                     
                     if cardsVM.isLoading {
-                        ProgressView()
+                        ZStack {
+                            ShimmerCardView()
+                        }
                     } else {
                         ForEach(cardsVM.outfitCards) { outfitCard in
                             CardView(
@@ -81,7 +84,9 @@ struct ExploreView: View {
             if let userId = authController.session?.user.id {
                 Task {
                     await preferencesVM.fetchPreferences(userId: userId)
-                    await collectionsVM.fetchCollections(userId: userId)
+                    if collectionsVM.collections.isEmpty {
+                        await collectionsVM.fetchCollections(userId: userId)
+                    }
                     if cardsVM.outfitCards.isEmpty {
                         await cardsVM.fetchOutfitCards(userId: userId)
                     }

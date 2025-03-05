@@ -50,6 +50,18 @@ struct SaveOutfitView: View {
                     }
                 }
             }
+            .alert(
+                "Inappropriate Content",
+                isPresented: $uploadOutfitVM.isNSFWContent,
+                actions: {
+                    Button("OK", role: .cancel) {
+                        uploadOutfitVM.isNSFWContent = false
+                    }
+                },
+                message: {
+                    Text("this image contains inappropriate content and cannot be uploaded")
+                }
+            )
             
             if uploadOutfitVM.isLoading {
                 LoadingView()

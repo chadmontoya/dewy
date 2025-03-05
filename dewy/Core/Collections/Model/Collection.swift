@@ -5,16 +5,14 @@ struct Collection: Identifiable, Hashable {
     var userId: UUID
     var name: String
     var createDate: Date?
-    var thumbnailUrls: [String]?
-    var itemCount: Int?
+    var thumbnailUrls: [String] = []
+    var itemCount: Int = 0
     
     init(userId: UUID, name: String) {
         self.id = nil
         self.userId = userId
         self.name = name
         self.createDate = Date()
-        self.thumbnailUrls = nil
-        self.itemCount = nil
     }
 }
 
@@ -35,8 +33,8 @@ extension Collection: Codable {
         name = try container.decode(String.self, forKey: .name)
         userId = try container.decode(UUID.self, forKey: .userId)
         createDate = try container.decodeIfPresent(Date.self, forKey: .createDate)
-        thumbnailUrls = try container.decodeIfPresent([String].self, forKey: .thumbnailUrls)
-        itemCount = try container.decodeIfPresent(Int.self, forKey: .itemCount)
+        thumbnailUrls = try container.decodeIfPresent([String].self, forKey: .thumbnailUrls) ?? []
+        itemCount = try container.decodeIfPresent(Int.self, forKey: .itemCount) ?? 0
     }
     
     func encode(to encoder: Encoder) throws {
@@ -46,12 +44,5 @@ extension Collection: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(userId, forKey: .userId)
         try container.encodeIfPresent(createDate, forKey: .createDate)
-        
-        if let thumbnailUrls = thumbnailUrls {
-            try container.encode(thumbnailUrls, forKey: .thumbnailUrls)
-        }
-        if let itemCount = itemCount {
-            try container.encode(itemCount, forKey: .itemCount)
-        }
     }
 }

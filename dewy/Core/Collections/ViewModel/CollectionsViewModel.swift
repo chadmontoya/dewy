@@ -80,25 +80,23 @@ class CollectionsViewModel: ObservableObject {
     
     func handleAddCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailURL: String) {
         if let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) {
-            collections[collectionIndex].itemCount! += amount
+            collections[collectionIndex].itemCount += amount
             
-            if let thumbnailUrls = collections[collectionIndex].thumbnailUrls,
-               thumbnailUrls.count < 3,
-               !thumbnailUrls.contains(thumbnailURL) {
-                collections[collectionIndex].thumbnailUrls?.append(thumbnailURL)
+            if collections[collectionIndex].thumbnailUrls.count < 3,
+               !collections[collectionIndex].thumbnailUrls.contains(thumbnailURL) {
+                
+                collections[collectionIndex].thumbnailUrls.append(thumbnailURL)
             }
         }
     }
     
     func handleRemoveCollectionOutfit(collectionId: Int64, amount: Int = 1, thumbnailUrl: String) async {
-        guard let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }),
-              let itemCount = collections[collectionIndex].itemCount else { return }
+        guard let collectionIndex = collections.firstIndex(where: { $0.id == collectionId }) else { return }
         
-        collections[collectionIndex].itemCount = itemCount - amount
+        collections[collectionIndex].itemCount -= amount
         
-        if let thumbnailUrls = collections[collectionIndex].thumbnailUrls,
-           thumbnailUrls.contains(thumbnailUrl) {
-            collections[collectionIndex].thumbnailUrls?.removeAll(where: { $0 == thumbnailUrl })
+        if collections[collectionIndex].thumbnailUrls.contains(thumbnailUrl) {
+            collections[collectionIndex].thumbnailUrls.removeAll(where: { $0 == thumbnailUrl })
             await fetchThumbnailUrls(for: collectionId)
         }
     }

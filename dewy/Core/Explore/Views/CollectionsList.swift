@@ -114,7 +114,7 @@ private struct CollectionItem: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            if let imageURL = collection.thumbnailUrls?.first {
+            if let imageURL = collection.thumbnailUrls.first {
                 if let thumbnailImage = collectionsVM.loadedImages[imageURL] {
                     thumbnailImage
                         .resizable()
@@ -131,7 +131,7 @@ private struct CollectionItem: View {
                                 .repeatForever(autoreverses: false)
                         )
                         .onAppear {
-                            if let imageURL = collection.thumbnailUrls?.first {
+                            if let imageURL = collection.thumbnailUrls.first {
                                 collectionsVM.loadImage(from: imageURL)
                             }
                         }

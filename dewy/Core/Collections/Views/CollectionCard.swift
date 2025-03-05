@@ -8,8 +8,7 @@ struct CollectionCard: View {
     var collection: Collection
     
     private var isLoading: Bool {
-        guard let urls = collection.thumbnailUrls else { return false }
-        return !urls.allSatisfy { collectionsVM.loadedImages[$0] != nil }
+        return !collection.thumbnailUrls.allSatisfy { collectionsVM.loadedImages[$0] != nil }
     }
     
     var body: some View {
@@ -30,14 +29,14 @@ struct CollectionCard: View {
                     )
                     .overlay {
                         if !isLoading,
-                           let firstImageURL = collection.thumbnailUrls?.first,
+                           let firstImageURL = collection.thumbnailUrls.first,
                            let firstImage = collectionsVM.loadedImages[firstImageURL] {
                             firstImage
                                 .resizable()
                                 .scaledToFill()
                         } else {
                             Color.clear.onAppear {
-                                if let url = collection.thumbnailUrls?.first {
+                                if let url = collection.thumbnailUrls.first {
                                     collectionsVM.loadImage(from: url)
                                 }
                             }
@@ -59,14 +58,14 @@ struct CollectionCard: View {
                         )
                         .overlay {
                             if !isLoading,
-                               let secondImageURL = collection.thumbnailUrls?.dropFirst().first,
+                               let secondImageURL = collection.thumbnailUrls.dropFirst().first,
                                let secondImage = collectionsVM.loadedImages[secondImageURL] {
                                 secondImage
                                     .resizable()
                                     .scaledToFill()
                             } else {
                                 Color.clear.onAppear {
-                                    if let url = collection.thumbnailUrls?.dropFirst().first {
+                                    if let url = collection.thumbnailUrls.dropFirst().first {
                                         collectionsVM.loadImage(from: url)
                                     }
                                 }
@@ -87,14 +86,14 @@ struct CollectionCard: View {
                         )
                         .overlay {
                             if !isLoading,
-                               let thirdImageURL = collection.thumbnailUrls?.dropFirst(2).first,
+                               let thirdImageURL = collection.thumbnailUrls.dropFirst(2).first,
                                let thirdImage = collectionsVM.loadedImages[thirdImageURL] {
                                 thirdImage
                                     .resizable()
                                     .scaledToFill()
                             } else {
                                 Color.clear.onAppear {
-                                    if let url = collection.thumbnailUrls?.dropFirst(2).first {
+                                    if let url = collection.thumbnailUrls.dropFirst(2).first {
                                         collectionsVM.loadImage(from: url)
                                     }
                                 }

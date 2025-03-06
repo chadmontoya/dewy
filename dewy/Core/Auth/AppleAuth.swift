@@ -30,17 +30,5 @@ struct AppleAuth: View {
         }
         .signInWithAppleButtonStyle(.black)
         .frame(width: 250, height: 45, alignment: .center)
-        
-        switch authViewModel.authState{
-        case .idle, .result(.success):
-            EmptyView()
-        case .inFlight:
-            ProgressView()
-        case let .result(.failure(error)):
-            Text(error.localizedDescription)
-                .foregroundColor(.red)
-                .font(.footnote)
-                .padding(.horizontal)
-        }
     }
 }

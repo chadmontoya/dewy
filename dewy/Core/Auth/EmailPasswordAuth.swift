@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EmailPasswordAuth: View {
     @ObservedObject var authViewModel: AuthViewModel
+    @FocusState private var isPasswordFieldFocused: Bool
     
     var body: some View {
         VStack() {
@@ -10,6 +11,11 @@ struct EmailPasswordAuth: View {
             VStack(spacing: 16) {
                 emailField
                 passwordField
+                if authViewModel.mode == .signUp &&
+                    !authViewModel.password.isEmpty &&
+                    isPasswordFieldFocused {
+                    passwordValidationList
+                }
                 primaryActionButton
                 errorMessageView
             }
@@ -52,8 +58,10 @@ struct EmailPasswordAuth: View {
             Group {
                 if authViewModel.isPasswordVisible {
                     TextField("", text: $authViewModel.password, prompt: Text("Password").foregroundStyle(.gray))
+                        .focused($isPasswordFieldFocused)
                 } else {
                     SecureField("", text: $authViewModel.password, prompt: Text("Password").foregroundStyle(.gray))
+                        .focused($isPasswordFieldFocused)
                 }
             }
             .textContentType(.password)
@@ -92,11 +100,11 @@ struct EmailPasswordAuth: View {
             .frame(maxWidth: .infinity)
             .padding()
             .background(
-                authViewModel.isActionEnabled ? .black: .black.opacity(0.5)
+                authViewModel.isFormButtonEnabled ? .black: .black.opacity(0.5)
             )
             .cornerRadius(10)
         }
-        .disabled(!authViewModel.isActionEnabled)
+        .disabled(!authViewModel.isFormButtonEnabled)
     }
     
     private var errorMessageView: some View {
@@ -125,5 +133,23 @@ struct EmailPasswordAuth: View {
             .font(.subheadline)
         }
         .padding(.bottom, 40)
+    }
+    
+    private var passwordValidationList: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            ForEach(authViewModel.passwordValidationStatus, id: \.requirement) { status in
+                HStack(spacing: 4) {
+                    Image(systemName: status.isSatisfied ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(status.isSatisfied ? .green : .gray)
+                        .font(.caption2)
+                    Text(status.requirement)
+                        .font(.caption)
+                        .foregroundStyle(status.isSatisfied ? .green : .gray)
+                }
+                .animation(.easeInOut, value: status.isSatisfied)
+            }
+        }
+        .padding(.horizontal, 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

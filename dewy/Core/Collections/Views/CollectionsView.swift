@@ -165,7 +165,7 @@ struct CollectionItemInfo: View {
                 .fontWeight(.medium)
                 .foregroundStyle(.black)
             
-            Text("\(String(collection.itemCount ?? 0)) items")
+            Text("\(String(collection.itemCount)) items")
                 .font(.caption)
                 .foregroundStyle(.black.opacity(0.8))
         }

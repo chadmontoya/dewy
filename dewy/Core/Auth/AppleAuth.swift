@@ -2,7 +2,7 @@ import AuthenticationServices
 import SwiftUI
 
 struct AppleAuth: View {
-    @State private var actionState = ActionState<Void, Error>.idle
+    @ObservedObject var authViewModel: AuthViewModel
     
     var body: some View {
         SignInWithAppleButton(.continue) { request in
@@ -24,14 +24,14 @@ struct AppleAuth: View {
                 }
                 
                 Task {
-                    await handleSignIn(using: identityToken)
+                    await authViewModel.handleAppleSignIn(using: identityToken)
                 }
             }
         }
         .signInWithAppleButtonStyle(.black)
         .frame(width: 250, height: 45, alignment: .center)
         
-        switch actionState {
+        switch authViewModel.authState{
         case .idle, .result(.success):
             EmptyView()
         case .inFlight:
@@ -42,13 +42,5 @@ struct AppleAuth: View {
                 .font(.footnote)
                 .padding(.horizontal)
         }
-    }
-    
-    private func handleSignIn(using idToken: String) async {
-        actionState = .inFlight
-        let result = await Result {
-            _ = try await supabase.auth.signInWithIdToken(credentials: .init(provider: .apple, idToken: idToken))
-        }
-        actionState = .result(result)
     }
 }

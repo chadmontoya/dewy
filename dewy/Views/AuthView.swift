@@ -1,16 +1,8 @@
 import SwiftUI
 import GoogleSignInSwift
 
-struct Line: View {
-    var body: some View {
-        Rectangle()
-            .fill(Color.gray.opacity(0.3))
-            .frame(width: 125, height: 1)
-    }
-}
-
 struct AuthView: View {
-    @State private var authState: ActionState<Void, Error> = .idle
+    @StateObject private var authViewModel = AuthViewModel()
     
     var body: some View {
         ZStack {
@@ -23,28 +15,33 @@ struct AuthView: View {
             VStack {
                 Spacer()
                 
-                EmailPasswordAuth(authState: $authState)
+                EmailPasswordAuth(authViewModel: authViewModel)
                 
                 HStack {
-                    Line()
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 125, height: 1)
+                    
                     Text("or")
                         .foregroundColor(.gray)
                         .font(.subheadline)
-                    Line()
+                    
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 125, height: 1)
                 }
                 .padding(.horizontal)
                 
                 VStack {
-                    GoogleAuth(authState: $authState)
-                    
-                    AppleAuth()
+                    GoogleAuth(authViewModel: authViewModel)
+                    AppleAuth(authViewModel: authViewModel)
                 }
                 
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            if case .inFlight = authState {
+            if case .inFlight = authViewModel.authState {
                 SplashScreen()
                     .onAppear {
                         hideKeyboard()

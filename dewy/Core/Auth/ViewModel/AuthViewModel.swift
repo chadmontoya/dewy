@@ -12,6 +12,11 @@ class AuthViewModel: ObservableObject {
     @Published var isPasswordVisible: Bool = false
     @Published var isEditingPassword: Bool = false
     
+    @Published var phoneNumber: String = ""
+    @Published var verificationCode: String = ""
+    @Published var verficationId: String = ""
+    @Published var phoneAuthState: PhoneAuthState = .idle
+    
     private let emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
     
     private let minLength = 8
@@ -19,6 +24,18 @@ class AuthViewModel: ObservableObject {
     private let lowercaseRegex = ".*[a-z]+.*"
     private let numberRegex = ".*[0-9]+.*"
     private let specialCharRegex = ".*[^A-Za-z0-9].*"
+    
+    enum PhoneAuthState {
+        case idle
+        case verificationSent
+        case verified
+        case error(String)
+    }
+    
+    enum AuthMode {
+        case signIn
+        case signUp
+    }
     
     var isEmailValid: Bool {
         guard let regex = try? NSRegularExpression(pattern: emailRegex) else { return false }
@@ -48,11 +65,6 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    enum AuthMode {
-        case signIn
-        case signUp
-    }
-    
     func emailPasswordSignIn() async throws {
         authState = .inFlight
         do {
@@ -71,6 +83,14 @@ class AuthViewModel: ObservableObject {
         } catch {
             authState = .result(.failure(error))
             print(error)
+        }
+    }
+    
+    func sendPhoneVerification() async {
+        do {
+            try await supabase.auth.signInWithOTP(phone: phoneNumber)
+        } catch {
+            print("error signing in with otp: \(error)")
         }
     }
     

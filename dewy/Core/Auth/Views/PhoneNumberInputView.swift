@@ -2,9 +2,6 @@ import SwiftUI
 
 struct PhoneNumberInputView: View {
     @ObservedObject var authViewModel: AuthViewModel
-    @State private var countryExtension: String = "+1"
-    @State private var countryCode: String = "US"
-    @State private var isCountryCodeSheetPresented: Bool = false
     @FocusState private var showKeyboard: Bool
     
     var body: some View {
@@ -18,9 +15,9 @@ struct PhoneNumberInputView: View {
             
             HStack(spacing: 10) {
                 Button(action: {
-                    isCountryCodeSheetPresented = true
+                    authViewModel.isCountryCodeSheetPresented = true
                 }) {
-                    TextField("", text: .constant("\(countryCode) \(countryExtension)"))
+                    TextField("", text: .constant("\(authViewModel.countryCode) \(authViewModel.phoneNumberExtension)"))
                         .disabled(true)
                         .foregroundStyle(.black)
                         .multilineTextAlignment(.leading)
@@ -40,7 +37,7 @@ struct PhoneNumberInputView: View {
                         )
                         .frame(width: 100)
                 }
-                .sheet(isPresented: $isCountryCodeSheetPresented) {
+                .sheet(isPresented: $authViewModel.isCountryCodeSheetPresented) {
                     Text("hello world")
                 }
                 

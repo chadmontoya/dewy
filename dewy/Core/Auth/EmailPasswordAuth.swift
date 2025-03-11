@@ -109,7 +109,7 @@ struct EmailPasswordAuth: View {
     
     private var errorMessageView: some View {
         Group {
-            if case .result(.failure(let error)) = authViewModel.authState {
+            if case .failed(let error) = authViewModel.authState {
                 Text(error.localizedDescription)
                     .foregroundStyle(.red)
                     .font(.footnote)

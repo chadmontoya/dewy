@@ -50,7 +50,7 @@ struct AuthView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
-                if case .inFlight = authViewModel.authState {
+                if case .authenticating = authViewModel.authState {
                     SplashScreen()
                         .onAppear {
                             hideKeyboard()

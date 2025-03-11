@@ -17,13 +17,15 @@ struct VerifyCodeView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 20)
             
-            OTPTextField(numberOfDigits: 6)
+            OTPTextField(code: $authViewModel.verificationCode, numberOfDigits: 6)
             
             Spacer()
             
-            Button {
-                
-            } label: {
+            Button(action: {
+                Task {
+                    await authViewModel.verifyOTP()
+                }
+            }) {
                 Text("Verify")
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
@@ -31,6 +33,7 @@ struct VerifyCodeView: View {
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+            .disabled(authViewModel.verificationCode.count < 6)
         }
         .padding()
         .background(Color.primaryBackground.ignoresSafeArea())
@@ -39,20 +42,22 @@ struct VerifyCodeView: View {
 }
 
 struct OTPTextField: View {
-    @State var valueList: [String]
+    @Binding var code: String
+    @State var digits: [String]
     @FocusState private var focusedField: Int?
     
     let numberOfDigits: Int
     
-    init(numberOfDigits: Int) {
+    init(code: Binding<String>, numberOfDigits: Int) {
+        self._code = code
         self.numberOfDigits = numberOfDigits
-        self.valueList = Array(repeating: "", count: numberOfDigits)
+        self.digits = Array(repeating: "", count: numberOfDigits)
     }
     
     var body: some View {
         HStack {
             ForEach(0..<numberOfDigits, id: \.self) { index in
-                TextField("", text: $valueList[index])
+                TextField("", text: $digits[index])
                     .keyboardType(.numberPad)
                     .foregroundStyle(.black)
                     .frame(width: 48, height: 48)
@@ -67,14 +72,14 @@ struct OTPTextField: View {
                     .multilineTextAlignment(.center)
                     .focused($focusedField, equals: index)
                     .tag(index)
-                    .onChange(of: valueList[index]) { oldValue, newValue in
-                        if valueList[index].count > 1 {
-                            let currentValueList = Array(valueList[index])
+                    .onChange(of: digits[index]) { oldValue, newValue in
+                        if digits[index].count > 1 {
+                            let currentValueList = Array(digits[index])
                             
                             if currentValueList[0] == Character(oldValue) {
-                                valueList[index] = String(valueList[index].suffix(1))
+                                digits[index] = String(digits[index].suffix(1))
                             } else {
-                                valueList[index] = String(valueList[index].prefix(1))
+                                digits[index] = String(digits[index].prefix(1))
                             }
                         }
                         
@@ -87,6 +92,8 @@ struct OTPTextField: View {
                         } else {
                             focusedField = (focusedField ?? 0) - 1
                         }
+                        
+                        code = digits.joined()
                     }
             }
             .onAppear {

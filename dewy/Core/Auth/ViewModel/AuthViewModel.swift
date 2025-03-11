@@ -5,37 +5,37 @@ import GoogleSignInSwift
 
 @MainActor
 class AuthViewModel: ObservableObject {
-    @Published var authState: ActionState<Void, Error> = .idle
-    @Published var email: String = ""
-    @Published var password: String = ""
-    @Published var mode: AuthMode = .signIn
-    @Published var isPasswordVisible: Bool = false
-    @Published var isEditingPassword: Bool = false
-    
-    @Published var phoneNumber: String = ""
-    @Published var verificationCode: String = ""
-    @Published var verficationId: String = ""
-    @Published var phoneAuthState: PhoneAuthState = .idle
-    
-    private let emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
-    
-    private let minLength = 8
-    private let uppercaseRegex = ".*[A-Z]+.*"
-    private let lowercaseRegex = ".*[a-z]+.*"
-    private let numberRegex = ".*[0-9]+.*"
-    private let specialCharRegex = ".*[^A-Za-z0-9].*"
-    
-    enum PhoneAuthState {
-        case idle
-        case verificationSent
-        case verified
-        case error(String)
-    }
     
     enum AuthMode {
         case signIn
         case signUp
     }
+    
+    enum AuthenticationState {
+        case idle
+        case authenticating
+        case authenticated
+        case failed(Error)
+    }
+    
+    @Published var authState: AuthenticationState = .idle
+    @Published var mode: AuthMode = .signIn
+    @Published var email: String = ""
+    @Published var password: String = ""
+    @Published var isPasswordVisible: Bool = false
+    
+    @Published var phoneNumberExtension: String = "+1"
+    @Published var phoneNumber: String = ""
+    @Published var verificationCode: String = ""
+    @Published var countryCode: String = "US"
+    @Published var isCountryCodeSheetPresented: Bool = false
+    
+    private let minLength = 8
+    private let emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+    private let uppercaseRegex = ".*[A-Z]+.*"
+    private let lowercaseRegex = ".*[a-z]+.*"
+    private let numberRegex = ".*[0-9]+.*"
+    private let specialCharRegex = ".*[^A-Za-z0-9].*"
     
     var isEmailValid: Bool {
         guard let regex = try? NSRegularExpression(pattern: emailRegex) else { return false }
@@ -66,23 +66,22 @@ class AuthViewModel: ObservableObject {
     }
     
     func emailPasswordSignIn() async throws {
-        authState = .inFlight
+        authState = .authenticating
         do {
             try await supabase.auth.signIn(email: email, password: password)
-            authState = .result(.success(()))
+            authState = .authenticated
         } catch {
-            authState = .result(.failure(error))
+            authState = .failed(error)
         }
     }
     
     func emailPasswordSignUp() async throws {
-        authState = .inFlight
+        authState = .authenticating
         do {
             try await supabase.auth.signUp(email: email, password: password)
-            authState = .result(.success(()))
+            authState = .authenticated
         } catch {
-            authState = .result(.failure(error))
-            print(error)
+            authState = .failed(error)
         }
     }
     
@@ -104,25 +103,22 @@ class AuthViewModel: ObservableObject {
     
     // TODO: figure out way to get id token and finish method
     
-    func handleAppleSignIn(using idToken: String) async {
+    func handleAppleSignIn(using idToken: String) async throws {
         do {
-            authState = .inFlight
             try await supabase.auth.signInWithIdToken(
                 credentials: OpenIDConnectCredentials(
                     provider: .apple,
                     idToken: idToken
                 )
             )
-            authState = .result(.success(()))
         } catch {
-            authState = .idle
             print("apple sign in failed: \(error)")
         }
     }
     
     func handleGoogleSignIn() async {
+        authState = .authenticating
         do {
-            authState = .inFlight
             guard let rootViewController = getRootViewController() else {
                 print("unable to get root view controller")
                 return
@@ -140,10 +136,25 @@ class AuthViewModel: ObservableObject {
                     accessToken: accessToken
                 )
             )
-            authState = .result(.success(()))
+            authState = .authenticated
         } catch {
             authState = .idle
             print("google sign in failed: \(error)")
+        }
+    }
+    
+    func verifyOTP() async {
+        authState = .authenticating
+        do {
+            try await supabase.auth.verifyOTP(
+                phone: "\(phoneNumberExtension)\(phoneNumber)",
+                token: verificationCode,
+                type: .sms
+            )
+            authState = .authenticated
+        } catch {
+            authState = .failed(error)
+            print(error)
         }
     }
     

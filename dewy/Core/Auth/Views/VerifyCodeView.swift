@@ -11,13 +11,24 @@ struct VerifyCodeView: View {
                 .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            Text("Enter the code sent to +19099673503")
+            Text("Enter the code sent to +\(authViewModel.fullPhoneNumber)")
                 .font(.footnote)
                 .foregroundStyle(.gray)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 20)
             
-            OTPTextField(code: $authViewModel.verificationCode, numberOfDigits: 6)
+            OTPTextField(
+                code: $authViewModel.verificationCode,
+                numberOfDigits: 6,
+                hasError: authViewModel.verifyOTPError != nil
+            )
+            
+            if let error = authViewModel.verifyOTPError {
+                Text(error)
+                    .foregroundStyle(.red)
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
             
             Spacer()
             
@@ -30,7 +41,7 @@ struct VerifyCodeView: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(.black)
+                    .background(authViewModel.verificationCode.count == 6 ? .black : .black.opacity(0.5))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .disabled(authViewModel.verificationCode.count < 6)
@@ -47,10 +58,12 @@ struct OTPTextField: View {
     @FocusState private var focusedField: Int?
     
     let numberOfDigits: Int
+    let hasError: Bool
     
-    init(code: Binding<String>, numberOfDigits: Int) {
+    init(code: Binding<String>, numberOfDigits: Int, hasError: Bool = false) {
         self._code = code
         self.numberOfDigits = numberOfDigits
+        self.hasError = hasError
         self.digits = Array(repeating: "", count: numberOfDigits)
     }
     
@@ -64,8 +77,9 @@ struct OTPTextField: View {
                     .background(
                         VStack {
                             Spacer()
-                            Divider()
-                                .background(.black)
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundColor(hasError ? .red : .black)
                         }
                     )
                     .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -83,7 +97,9 @@ struct OTPTextField: View {
                             }
                         }
                         
-                        if !newValue.isEmpty {
+                        if oldValue.isEmpty && newValue.isEmpty && focusedField == index {
+                            focusedField = max(0, (focusedField ?? 0) - 1)
+                        } else if !newValue.isEmpty {
                             if index == numberOfDigits - 1 {
                                 focusedField = nil
                             } else {
@@ -95,6 +111,13 @@ struct OTPTextField: View {
                         
                         code = digits.joined()
                     }
+            }
+            .onChange(of: hasError) { _, newValue in
+                if newValue {
+                    digits = Array(repeating: "", count: numberOfDigits)
+                    code = ""
+                    focusedField = 0
+                }
             }
             .onAppear {
                 self.focusedField = 0

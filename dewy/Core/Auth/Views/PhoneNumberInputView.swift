@@ -17,7 +17,7 @@ struct PhoneNumberInputView: View {
                 Button(action: {
                     authViewModel.isCountryCodeSheetPresented = true
                 }) {
-                    TextField("", text: .constant("\(authViewModel.countryCode) \(authViewModel.phoneNumberExtension)"))
+                    TextField("", text: .constant("\(authViewModel.countryCode) +\(authViewModel.phoneNumberExtension)"))
                         .disabled(true)
                         .foregroundStyle(.black)
                         .multilineTextAlignment(.leading)
@@ -31,8 +31,9 @@ struct PhoneNumberInputView: View {
                         .background(
                             VStack {
                                 Spacer()
-                                Divider()
-                                    .background(.black)
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(authViewModel.sendPhoneOTPError != nil ? .red : .black)
                             }
                         )
                         .frame(width: 100)
@@ -49,11 +50,24 @@ struct PhoneNumberInputView: View {
                     .background(
                         VStack {
                             Spacer()
-                            Divider()
-                                .background(.black)
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundColor(authViewModel.sendPhoneOTPError != nil ? .red : .black)
                         }
                     )
                     .focused($showKeyboard)
+                    .onChange(of: authViewModel.phoneNumber) { _, _ in
+                        if authViewModel.sendPhoneOTPError != nil {
+                            authViewModel.sendPhoneOTPError = nil
+                        }
+                    }
+            }
+            
+            if let error = authViewModel.sendPhoneOTPError {
+                Text(error)
+                    .foregroundStyle(.red)
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             
             Text("We'll text a verification code to your phone to verify your identity. Message and data rates may apply.")
@@ -63,27 +77,29 @@ struct PhoneNumberInputView: View {
             
             Spacer()
             
-            NavigationLink {
-                VerifyCodeView(authViewModel: authViewModel)
-                    .toolbarRole(.editor)
-            } label: {
+            Button(action: {
+                showKeyboard = false
+                Task {
+                    await authViewModel.sendPhoneVerification()
+                }
+            }) {
                 Text("Send Code")
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(!authViewModel.phoneNumber.isEmpty ? .black : .black.opacity(0.5))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                
             }
             .disabled(authViewModel.phoneNumber.isEmpty)
-            .simultaneousGesture(TapGesture().onEnded {
-                Task {
-//                    await authViewModel.sendPhoneVerification()
-                }
-            })
         }
         .padding()
         .background(Color.primaryBackground.ignoresSafeArea())
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .navigationDestination(isPresented: $authViewModel.navigateToVerify) {
+            VerifyCodeView(authViewModel: authViewModel)
+                .toolbarRole(.editor)
+        }
         .onAppear {
             showKeyboard = true
         }

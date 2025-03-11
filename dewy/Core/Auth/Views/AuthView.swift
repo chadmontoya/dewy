@@ -5,7 +5,7 @@ struct AuthView: View {
     @StateObject private var authViewModel = AuthViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color.primaryBackground
                     .ignoresSafeArea()

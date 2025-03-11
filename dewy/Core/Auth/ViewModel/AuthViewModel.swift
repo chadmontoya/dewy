@@ -24,11 +24,14 @@ class AuthViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isPasswordVisible: Bool = false
     
-    @Published var phoneNumberExtension: String = "+1"
+    @Published var phoneNumberExtension: String = "1"
     @Published var phoneNumber: String = ""
     @Published var verificationCode: String = ""
     @Published var countryCode: String = "US"
     @Published var isCountryCodeSheetPresented: Bool = false
+    @Published var sendPhoneOTPError: String? = nil
+    @Published var verifyOTPError: String? = nil
+    @Published var navigateToVerify: Bool = false
     
     private let minLength = 8
     private let emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
@@ -36,6 +39,10 @@ class AuthViewModel: ObservableObject {
     private let lowercaseRegex = ".*[a-z]+.*"
     private let numberRegex = ".*[0-9]+.*"
     private let specialCharRegex = ".*[^A-Za-z0-9].*"
+    
+    var fullPhoneNumber: String {
+        "\(phoneNumberExtension)\(phoneNumber)"
+    }
     
     var isEmailValid: Bool {
         guard let regex = try? NSRegularExpression(pattern: emailRegex) else { return false }
@@ -86,10 +93,12 @@ class AuthViewModel: ObservableObject {
     }
     
     func sendPhoneVerification() async {
+        sendPhoneOTPError = nil
         do {
-            try await supabase.auth.signInWithOTP(phone: phoneNumber)
+            try await supabase.auth.signInWithOTP(phone: fullPhoneNumber)
+            navigateToVerify = true
         } catch {
-            print("error signing in with otp: \(error)")
+            sendPhoneOTPError = "Unable to send code. Please check the number or try again later."
         }
     }
     
@@ -143,18 +152,27 @@ class AuthViewModel: ObservableObject {
         }
     }
     
+    func resetPhoneAuthState() {
+        phoneNumber = ""
+        verificationCode = ""
+        sendPhoneOTPError = nil
+        verifyOTPError = nil
+        authState = .idle
+    }
+    
     func verifyOTP() async {
         authState = .authenticating
         do {
             try await supabase.auth.verifyOTP(
-                phone: "\(phoneNumberExtension)\(phoneNumber)",
+                phone: fullPhoneNumber,
                 token: verificationCode,
                 type: .sms
             )
             authState = .authenticated
         } catch {
-            authState = .failed(error)
-            print(error)
+            authState = .idle
+            verificationCode = ""
+            verifyOTPError = "Invalid code. Please try again."
         }
     }
     

@@ -119,10 +119,9 @@ struct OTPTextField: View {
                         code = digits.joined()
                     }
             }
-            .onChange(of: hasError) { _, newValue in
-                if newValue {
+            .onChange(of: code) { _, newValue in
+                if newValue.isEmpty {
                     digits = Array(repeating: "", count: numberOfDigits)
-                    code = ""
                     focusedField = 0
                 }
             }

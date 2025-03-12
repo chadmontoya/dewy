@@ -87,19 +87,26 @@ struct OTPTextField: View {
                     .focused($focusedField, equals: index)
                     .tag(index)
                     .onChange(of: digits[index]) { oldValue, newValue in
+                        if index == 0 && digits[index].count > 1 && newValue.count >= numberOfDigits {
+                            let characters = Array(newValue.prefix(numberOfDigits))
+                            for i in 0..<numberOfDigits {
+                                digits[i] = String(characters[i])
+                            }
+                            focusedField = nil
+                            return
+                        }
+                        
                         if digits[index].count > 1 {
                             let currentValueList = Array(digits[index])
                             
-                            if currentValueList[0] == Character(oldValue) {
+                            if !oldValue.isEmpty && currentValueList.first == Character(oldValue) {
                                 digits[index] = String(digits[index].suffix(1))
                             } else {
                                 digits[index] = String(digits[index].prefix(1))
                             }
                         }
                         
-                        if oldValue.isEmpty && newValue.isEmpty && focusedField == index {
-                            focusedField = max(0, (focusedField ?? 0) - 1)
-                        } else if !newValue.isEmpty {
+                        if !newValue.isEmpty {
                             if index == numberOfDigits - 1 {
                                 focusedField = nil
                             } else {

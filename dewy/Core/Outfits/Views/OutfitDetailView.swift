@@ -12,8 +12,8 @@ struct OutfitImageView: View {
             if let outfitImage = outfitImage {
                 outfitImage
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: .infinity, maxHeight: 650)
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.8)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 DismissButton(action: onDismiss)

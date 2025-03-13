@@ -13,7 +13,7 @@ struct OutfitImageView: View {
                 outfitImage
                     .resizable()
                     .scaledToFill()
-                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.8)
+                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.85)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 DismissButton(action: onDismiss)
@@ -49,8 +49,6 @@ struct StyleTagsSection: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Styles").font(.headline).foregroundStyle(Color.black)
-            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(styleIds, id: \.self) { styleId in

@@ -84,33 +84,27 @@ struct OutfitDetailView: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    if let imageURL = outfit.imageURL {
-                        OutfitImageView(
-                            imageURL: imageURL,
-                            outfitImage: outfitsVM.loadedImages[imageURL],
-                            geometry: geometry,
-                            onDismiss: { dismissView() },
-                            loadImage: outfitsVM.loadImage
-                        )
-                    }
+                    OutfitImageView(
+                        imageURL: outfit.imageURL,
+                        outfitImage: outfitsVM.loadedImages[outfit.imageURL],
+                        geometry: geometry,
+                        onDismiss: { dismissView() },
+                        loadImage: outfitsVM.loadImage
+                    )
                     
-                    if let styleIds = outfit.styleIds {
-                        StyleTagsSection(
-                            styleIds: styleIds,
-                            availableStyles: outfitsVM.availableStyles
-                        )
-                    }
+                    StyleTagsSection(
+                        styleIds: outfit.styleIds,
+                        availableStyles: outfitsVM.availableStyles
+                    )
                     
                     VStack(alignment: .leading, spacing: 15) {
-                        if let location = outfit.locationString {
-                            HStack {
-                                Image(systemName: "mappin.and.ellipse")
-                                    .foregroundStyle(Color.black)
-                                Text(location)
-                                    .font(.subheadline)
-                                    .foregroundStyle(Color.black)
-                                
-                            }
+                        HStack {
+                            Image(systemName: "mappin.and.ellipse")
+                                .foregroundStyle(Color.black)
+                            Text(outfit.locationString)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.black)
+                            
                         }
                     }
                 }

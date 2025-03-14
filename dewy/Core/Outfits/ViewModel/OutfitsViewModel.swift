@@ -1,5 +1,12 @@
 import SwiftUI
 
+enum SortOrder: String, CaseIterable, Identifiable {
+    case newestFirst = "Newest First"
+    case oldestFirst = "Oldest First"
+    
+    var id: String { self.rawValue }
+}
+
 class OutfitsViewModel: ObservableObject {
     @Published var outfits: [Outfit] = []
     @Published var availableStyles: [Style] = []
@@ -8,9 +15,33 @@ class OutfitsViewModel: ObservableObject {
     @Published var showOutfitAddedToast: Bool = false
     @Published var uploadOutfit: Bool = false
     
+    @Published var sortOrder: SortOrder = .newestFirst
+    @Published var isCompactGrid: Bool = false
+    @Published var filteredStyles: Set<Int64> = []
+    @Published var showFilterMenu: Bool = false
+    
     private let imageCache: ImageCache = .shared
     private let outfitService: OutfitService
     private let styleService: StyleService
+    
+    var filteredAndSortedOutfits: [Outfit] {
+        var result = outfits
+        
+        if !filteredStyles.isEmpty {
+            result = result.filter { outfit in
+                return !Set(outfit.styleIds).isDisjoint(with: filteredStyles)
+            }
+        }
+        
+        switch sortOrder {
+        case .newestFirst:
+            result.sort { $0.createDate > $1.createDate }
+        case .oldestFirst:
+            result.sort { $0.createDate < $1.createDate }
+        }
+        
+        return result
+    }
     
     init(outfitService: OutfitService, styleService: StyleService) {
         self.outfitService = outfitService
@@ -20,20 +51,21 @@ class OutfitsViewModel: ObservableObject {
     }
     
     func addOutfit(outfit: Outfit) {
-        if let imageURL = outfit.imageURL {
-            loadImage(from: imageURL)
-        }
+        loadImage(from: outfit.imageURL)
         outfits.insert(outfit, at: 0)
+    }
+    
+    func clearStyleFilters() {
+        filteredStyles.removeAll()
     }
     
     func deleteOutfit(outfitId: Int64) async {
         do {
             try await outfitService.deleteOutfit(outfitId: outfitId)
             await MainActor.run {
-                if let index = outfits.firstIndex(where: { $0.id == outfitId }),
-                   let imageURL = outfits[index].imageURL {
-                    imageCache.removeImage(for: imageURL)
-                    loadedImages.removeValue(forKey: imageURL)
+                if let index = outfits.firstIndex(where: { $0.id == outfitId }) {
+                    imageCache.removeImage(for: outfits[index].imageURL)
+                    loadedImages.removeValue(forKey: outfits[index].imageURL)
                     outfits.remove(at: index)
                     showOutfitDeletedToast = true
                 }
@@ -70,6 +102,14 @@ class OutfitsViewModel: ObservableObject {
             } catch {
                 print("failed to load outfit image: \(error)")
             }
+        }
+    }
+    
+    func toggleStyleFilter(styleId: Int64) {
+        if filteredStyles.contains(styleId) {
+            filteredStyles.remove(styleId)
+        } else {
+            filteredStyles.insert(styleId)
         }
     }
 }

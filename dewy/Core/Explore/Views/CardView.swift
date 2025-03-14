@@ -13,8 +13,7 @@ struct CardView: View {
     
     var body: some View {
         ZStack {
-            if let imageURL = model.outfit.imageURL,
-               let preloadedImage = cardsVM.preloadedImages[imageURL] {
+            if let preloadedImage = cardsVM.preloadedImages[model.outfit.imageURL] {
                 Image(uiImage: preloadedImage)
                     .resizable()
                     .scaledToFill()
@@ -23,7 +22,7 @@ struct CardView: View {
                     .contextMenu {
                         Button {
                             collectionsVM.newCollectionOutfitId = model.id
-                            collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL!
+                            collectionsVM.newCollectionOutfitImageUrl = model.outfit.imageURL
                             collectionsVM.saveToCollection = true
                         } label: {
                             Label("Save", systemImage: "bookmark")

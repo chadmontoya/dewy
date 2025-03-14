@@ -45,11 +45,9 @@ class CardsViewModel: ObservableObject {
         var loadedImages: [String: UIImage] = [:]
         
         for card in cards {
-            guard let imageURL = card.outfit.imageURL else { continue }
-            
             do {
-                if let image = try await loadImage(from: imageURL) {
-                    loadedImages[imageURL] = image
+                if let image = try await loadImage(from: card.outfit.imageURL) {
+                    loadedImages[card.outfit.imageURL] = image
                     validCards.append(card)
                 }
             } catch {

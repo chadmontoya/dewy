@@ -13,8 +13,7 @@ struct OutfitCardView: View {
         GeometryReader {
             let size = $0.size
             
-            if let imageURL = outfit.imageURL,
-               let outfitImage = outfitsVM.loadedImages[imageURL] {
+            if let outfitImage = outfitsVM.loadedImages[outfit.imageURL] {
                 outfitImage
                     .resizable()
                     .scaledToFill()
@@ -30,9 +29,7 @@ struct OutfitCardView: View {
                             .repeatForever(autoreverses: false)
                     )
                     .onAppear {
-                        if let imageURL = outfit.imageURL {
-                            outfitsVM.loadImage(from: imageURL)
-                        }
+                        outfitsVM.loadImage(from: outfit.imageURL)
                     }
             }
         }

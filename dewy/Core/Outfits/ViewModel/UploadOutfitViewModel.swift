@@ -84,7 +84,6 @@ class UploadOutfitViewModel: ObservableObject {
         
         do {
             let analysis = try await ImageAnalysisService.shared.analyzeImage(image)
-            print(analysis.isNsfw)
             if analysis.isNsfw {
                 isNSFWContent = true
                 throw ImageAnalysisError.nsfwContentDetected

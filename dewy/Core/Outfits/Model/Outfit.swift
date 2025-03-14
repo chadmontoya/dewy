@@ -3,13 +3,13 @@ import CoreLocation
 
 struct Outfit: Identifiable {
     var id: Int64
-    var createDate: Date?
+    var createDate: Date
     var userId: UUID?
-    var imageURL: String?
+    var imageURL: String
     var location: CLLocationCoordinate2D?
     var isPublic: Bool?
-    var styleIds: [Int64]?
-    var locationString: String?
+    var styleIds: [Int64]
+    var locationString: String
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -24,9 +24,8 @@ struct Outfit: Identifiable {
         case locationString = "location_string"
     }
     
-    init(userId: UUID, imageURL: String? = nil,
-         location: CLLocationCoordinate2D? = nil, isPublic: Bool? = nil, styleIds: [Int64]? = [],
-         locationString: String? = "") {
+    init(userId: UUID, imageURL: String, location: CLLocationCoordinate2D? = nil,
+         isPublic: Bool? = nil, styleIds: [Int64] = [], locationString: String = "") {
         self.id = 0
         self.createDate = Date()
         self.userId = userId
@@ -61,9 +60,9 @@ extension Outfit: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         id = try container.decode(Int64.self, forKey: .id)
-        createDate = try container.decodeIfPresent(Date.self, forKey: .createDate)
+        createDate = try container.decode(Date.self, forKey: .createDate)
         userId = try container.decode(UUID.self, forKey: .userId)
-        imageURL = try container.decodeIfPresent(String.self, forKey: .imageURL)
+        imageURL = try container.decode(String.self, forKey: .imageURL)
         isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic)
         
         if let latitude = try container.decodeIfPresent(Double.self, forKey: .latitude),
@@ -74,8 +73,8 @@ extension Outfit: Codable {
             location = nil
         }
         
-        styleIds = try container.decodeIfPresent([Int64].self, forKey: .styleIds)
-        locationString = try container.decodeIfPresent(String.self, forKey: .locationString)
+        styleIds = try container.decode([Int64].self, forKey: .styleIds)
+        locationString = try container.decode(String.self, forKey: .locationString)
     }
     
     func encode(to encoder: Encoder) throws {

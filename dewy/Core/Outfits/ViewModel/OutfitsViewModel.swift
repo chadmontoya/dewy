@@ -24,6 +24,13 @@ class OutfitsViewModel: ObservableObject {
     private let outfitService: OutfitService
     private let styleService: StyleService
     
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.doesRelativeDateFormatting = true
+        return formatter
+    }()
+    
     var filteredAndSortedOutfits: [Outfit] {
         var result = outfits
         
@@ -87,6 +94,10 @@ class OutfitsViewModel: ObservableObject {
         await MainActor.run {
             self.availableStyles = styles
         }
+    }
+    
+    func formatDate(_ date: Date) -> String {
+        return dateFormatter.string(from: date)
     }
     
     func loadImage(from urlString: String) {

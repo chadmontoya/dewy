@@ -7,7 +7,7 @@ struct Outfit: Identifiable {
     var userId: UUID?
     var imageURL: String
     var location: CLLocationCoordinate2D?
-    var isPublic: Bool?
+    var isPublic: Bool
     var styleIds: [Int64]
     var locationString: String
     
@@ -25,7 +25,7 @@ struct Outfit: Identifiable {
     }
     
     init(userId: UUID, imageURL: String, location: CLLocationCoordinate2D? = nil,
-         isPublic: Bool? = nil, styleIds: [Int64] = [], locationString: String = "") {
+         isPublic: Bool = true, styleIds: [Int64] = [], locationString: String = "") {
         self.id = 0
         self.createDate = Date()
         self.userId = userId
@@ -63,7 +63,7 @@ extension Outfit: Codable {
         createDate = try container.decode(Date.self, forKey: .createDate)
         userId = try container.decode(UUID.self, forKey: .userId)
         imageURL = try container.decode(String.self, forKey: .imageURL)
-        isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic)
+        isPublic = try container.decode(Bool.self, forKey: .isPublic)
         
         if let latitude = try container.decodeIfPresent(Double.self, forKey: .latitude),
            let longitude = try container.decodeIfPresent(Double.self, forKey: .longitude) {

@@ -55,6 +55,18 @@ struct CreateOutfitParams: Encodable, Sendable {
     }
 }
 
+struct UpdateOutfitParams: Encodable, Sendable {
+    let p_outfit_id: Int64
+    let p_public: Bool
+    let p_style_ids: [Int64]
+    
+    init(outfitId: Int64, isPublic: Bool, styleIds: [Int64]) {
+        self.p_outfit_id = outfitId
+        self.p_public = isPublic
+        self.p_style_ids = styleIds
+    }
+}
+
 extension Outfit: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

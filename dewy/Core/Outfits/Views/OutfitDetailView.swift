@@ -1,12 +1,20 @@
 import SwiftUI
+import SimpleToast
 
 struct OutfitDetailView: View {
-    var outfit: Outfit
+    @Binding var outfit: Outfit
     var animation: Namespace.ID
     @EnvironmentObject var outfitsVM: OutfitsViewModel
     @Environment(\.dismiss) private var dismissView
     
     private let spacing = SpacingValues()
+    
+    private let toastOptions = SimpleToastOptions(
+        alignment: .top,
+        hideAfter: 4,
+        animation: .easeInOut,
+        modifierType: .slide
+    )
     
     var body: some View {
         GeometryReader { geometry in
@@ -47,21 +55,29 @@ struct OutfitDetailView: View {
                                 .fontWeight(.medium)
                                 .foregroundStyle(.black.opacity(0.6))
                             
-                            StyleTagsSection(
-                                styleIds: outfit.styleIds,
-                                availableStyles: outfitsVM.availableStyles
-                            )
+                            if outfitsVM.isEditingOutfit && outfitsVM.currentEditingOutfitId == outfit.id {
+                                editableStyleSection
+                            } else {
+                                StyleTagsSection(
+                                    styleIds: outfit.styleIds,
+                                    availableStyles: outfitsVM.availableStyles
+                                )
+                            }
                         }
                         
                         Divider().padding(.vertical, spacing.xsmall)
                         
-                        VStack(alignment: .leading, spacing: spacing.xsmall) {
+                        VStack(alignment: .leading, spacing: spacing.small) {
                             Text("Visibility")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
                                 .foregroundStyle(.black.opacity(0.6))
                             
-                            visibilityDisplay(isPublic: outfit.isPublic)
+                            if outfitsVM.isEditingOutfit && outfitsVM.currentEditingOutfitId == outfit.id {
+                                editableVisibilitySection
+                            } else {
+                                visibilityDisplay
+                            }
                         }
                         
                         Divider().padding(.vertical, spacing.xsmall)
@@ -72,12 +88,44 @@ struct OutfitDetailView: View {
                                 .fontWeight(.medium)
                                 .foregroundStyle(.black.opacity(0.6))
                             
-                            locationDisplay(locationString: outfit.locationString)
+                            locationDisplay
                         }
                         
                         Divider().padding(.vertical, spacing.xsmall)
                         
-                        dateDisplay(date: outfit.createDate)
+                        HStack {
+                            dateDisplay(date: outfit.createDate)
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Button(action: {
+                                    if outfitsVM.isEditingOutfit {
+                                        outfitsVM.cancelOutfitEdit()
+                                    } else {
+                                        outfitsVM.startOutfitEdit(outfit: outfit)
+                                    }
+                                }) {
+                                    Text(outfitsVM.isEditingOutfit ? "Cancel" : "Edit")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.black)
+                                }
+                                
+                                if outfitsVM.isEditingOutfit {
+                                    Button(action: {
+                                        Task {
+                                            await outfitsVM.updateOutfit()
+                                        }
+                                    }) {
+                                        Text("Save")
+                                            .font(.subheadline)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.blue)
+                                    }
+                                    .padding(.leading, spacing.small)
+                                }
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal, spacing.medium)
@@ -87,9 +135,67 @@ struct OutfitDetailView: View {
         .padding()
         .background(Color.primaryBackground)
         .navigationTransition(.zoom(sourceID: outfit.id, in: animation))
+        .simpleToast(isPresented: $outfitsVM.showOutfitUpdatedToast, options: toastOptions) {
+            ToastMessage(iconName: "checkmark.circle", message: "Successfully updated outfit")
+        }
+        .simpleToast(isPresented: $outfitsVM.showOutfitDeletedToast, options: toastOptions) {
+            ToastMessage(iconName: "x.circle", message: "Unable to update outfit. Please try again later.")
+        }
+        .onDisappear {
+            if outfitsVM.isEditingOutfit {
+                outfitsVM.cancelOutfitEdit()
+            }
+        }
     }
     
-    func dateDisplay(date: Date) -> some View {
+    private var editableStyleSection: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: spacing.small) {
+                ForEach(outfitsVM.availableStyles, id: \.id) { style in
+                    styleTagToggle(style: style)
+                }
+            }
+        }
+    }
+    
+    private var editableVisibilitySection: some View {
+        Toggle(isOn: Binding(
+            get: { outfitsVM.editedIsPublic == true},
+            set: { outfitsVM.editedIsPublic = $0 }
+        )) {
+            HStack(spacing: spacing.small) {
+                Image(systemName: outfitsVM.editedIsPublic == true ? "eye.fill" : "eye.slash.fill")
+                    .foregroundStyle(.black)
+                Text(outfitsVM.editedIsPublic == true ? "Public" : "Private")
+                    .font(.subheadline)
+                    .foregroundStyle(.black)
+            }
+        }
+        .frame(height: 20)
+    }
+    
+    private var locationDisplay: some View {
+        HStack {
+            Image(systemName: "mappin.and.ellipse")
+                .foregroundStyle(Color.black)
+            Text(outfit.locationString)
+                .font(.subheadline)
+                .foregroundStyle(Color.black)
+        }
+    }
+    
+    private var visibilityDisplay: some View {
+        HStack(spacing: spacing.small) {
+            Image(systemName: outfit.isPublic == true ? "eye.fill" : "eye.slash.fill")
+                .foregroundStyle(Color.black)
+            Text(outfit.isPublic == true ? "Public" : "Private")
+                .font(.subheadline)
+                .foregroundStyle(Color.black)
+        }
+        .frame(height: 20)
+    }
+    
+    private func dateDisplay(date: Date) -> some View {
         HStack(spacing: 6) {
             Image(systemName: "calendar")
                 .font(.caption)
@@ -105,17 +211,7 @@ struct OutfitDetailView: View {
         .padding(.bottom, 4)
     }
     
-    func locationDisplay(locationString: String) -> some View {
-        HStack {
-            Image(systemName: "mappin.and.ellipse")
-                .foregroundStyle(Color.black)
-            Text(locationString)
-                .font(.subheadline)
-                .foregroundStyle(Color.black)
-        }
-    }
-    
-    func starRatingDisplay(rating: Double, ratingCount: Int) -> some View {
+    private func starRatingDisplay(rating: Double, ratingCount: Int) -> some View {
         let maxStars = 4
         let filledColor: Color = .black
         let emptyColor: Color = .black.opacity(0.3)
@@ -147,7 +243,7 @@ struct OutfitDetailView: View {
         }
     }
     
-    func saveCountDisplay(count: Int) -> some View {
+    private func saveCountDisplay(count: Int) -> some View {
         HStack(spacing: spacing.xsmall) {
             Image(systemName: "bookmark.fill")
                 .font(.footnote)
@@ -165,13 +261,21 @@ struct OutfitDetailView: View {
         )
     }
     
-    func visibilityDisplay(isPublic: Bool) -> some View {
-        HStack {
-            Image(systemName: isPublic == true ? "eye.fill" : "eye.slash.fill")
-                .foregroundStyle(.black)
-            Text(isPublic == true ? "Public" : "Private")
-                .font(.subheadline)
-                .foregroundStyle(.black)
+    private func styleTagToggle(style: Style) -> some View {
+        let isSelected = outfitsVM.editedStyleIds.contains(style.id)
+        
+        return Button(action: {
+            outfitsVM.toggleStyleEdits(styleId: style.id)
+        }) {
+            Text(style.name)
+                .font(.footnote)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? Color.black : Color.black.opacity(0.05))
+                )
+                .foregroundStyle(isSelected ? .white : .black)
         }
     }
 }
@@ -205,7 +309,7 @@ struct OutfitImageView: View {
         }
     }
     
-    func dismissButton(action: @escaping () -> Void) -> some View {
+    private func dismissButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: "chevron.left")
                 .foregroundStyle(.black)
@@ -236,7 +340,7 @@ struct StyleTagsSection: View {
         }
     }
     
-    func styleTag(name: String) -> some View {
+    private func styleTag(name: String) -> some View {
         Text(name)
             .font(.footnote)
             .padding(.horizontal, 12)

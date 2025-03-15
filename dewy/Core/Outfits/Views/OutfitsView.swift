@@ -37,8 +37,10 @@ struct OutfitsView: View {
                 }
                 .background(Color.primaryBackground.ignoresSafeArea())
                 .navigationDestination(for: Outfit.self) { outfit in
-                    OutfitDetailView(outfit: outfit, animation: animation)
-                        .toolbarVisibility(.hidden, for: .navigationBar)
+                    if let index = outfitsVM.outfits.firstIndex(where: { $0.id == outfit.id }) {
+                        OutfitDetailView(outfit: $outfitsVM.outfits[index], animation: animation)
+                            .toolbarVisibility(.hidden, for: .navigationBar)
+                    }
                 }
                 .navigationDestination(isPresented: $outfitsVM.uploadOutfit) {
                     UploadOutfitView(onComplete: {

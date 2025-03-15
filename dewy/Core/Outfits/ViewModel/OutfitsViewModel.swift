@@ -20,6 +20,13 @@ class OutfitsViewModel: ObservableObject {
     @Published var filteredStyles: Set<Int64> = []
     @Published var showFilterMenu: Bool = false
     
+    @Published var isEditingOutfit: Bool = false
+    @Published var editedStyleIds: [Int64] = []
+    @Published var editedIsPublic: Bool?
+    @Published var currentEditingOutfitId: Int64?
+    @Published var showOutfitUpdatedToast: Bool = false
+    @Published var showOutfitUpdateFailedToast: Bool = false
+    
     private let imageCache: ImageCache = .shared
     private let outfitService: OutfitService
     private let styleService: StyleService
@@ -60,6 +67,13 @@ class OutfitsViewModel: ObservableObject {
     func addOutfit(outfit: Outfit) {
         loadImage(from: outfit.imageURL)
         outfits.insert(outfit, at: 0)
+    }
+    
+    func cancelOutfitEdit() {
+        isEditingOutfit = false
+        editedStyleIds = []
+        editedIsPublic = nil
+        currentEditingOutfitId = nil
     }
     
     func clearStyleFilters() {
@@ -116,11 +130,55 @@ class OutfitsViewModel: ObservableObject {
         }
     }
     
+    func startOutfitEdit(outfit: Outfit) {
+        currentEditingOutfitId = outfit.id
+        editedStyleIds = outfit.styleIds
+        editedIsPublic = outfit.isPublic
+        isEditingOutfit = true
+    }
+    
+    func toggleStyleEdits(styleId: Int64) {
+        if editedStyleIds.contains(styleId) {
+            editedStyleIds.removeAll { $0 == styleId }
+        } else {
+            editedStyleIds.append(styleId)
+        }
+    }
+    
     func toggleStyleFilter(styleId: Int64) {
         if filteredStyles.contains(styleId) {
             filteredStyles.remove(styleId)
         } else {
             filteredStyles.insert(styleId)
+        }
+    }
+    
+    func updateOutfit() async {
+        guard let outfitId = currentEditingOutfitId else { return }
+        
+        let isPublic = editedIsPublic ?? true // default visibility of outfit is public if VM can't get from outfit
+        
+        Task {
+            do {
+                let updatedOutfit = try await outfitService.updateOutfit(
+                    outfitId: outfitId,
+                    isPublic: isPublic,
+                    styleIds: editedStyleIds
+                )
+                
+                await MainActor.run {
+                    if let index = outfits.firstIndex(where: { $0.id == outfitId }) {
+                        outfits[index] = updatedOutfit
+                    }
+                    showOutfitUpdatedToast = true
+                    cancelOutfitEdit()
+                }
+            } catch {
+                print("failed to update outfit: \(error)")
+                await MainActor.run {
+                    showOutfitUpdateFailedToast = true
+                }
+            }
         }
     }
 }

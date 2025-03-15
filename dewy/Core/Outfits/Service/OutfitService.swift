@@ -47,4 +47,20 @@ struct OutfitService {
             return []
         }
     }
+    
+    func updateOutfit(outfitId: Int64, isPublic: Bool, styleIds: [Int64]) async throws -> Outfit {
+        let updateParams = UpdateOutfitParams(
+            outfitId: outfitId,
+            isPublic: isPublic,
+            styleIds: styleIds
+        )
+        
+        let outfit: Outfit = try await supabase
+            .rpc("update_outfit", params: updateParams)
+            .single()
+            .execute()
+            .value
+        
+        return outfit
+    }
 }
